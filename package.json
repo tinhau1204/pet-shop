@@ -1,0 +1,52 @@
+{
+    "name": "next-custom-template",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "lint-staged": "lint-staged",
+        "prettier:fix": "prettier --write .",
+        "prettier:check": "prettier --check .",
+        "prepare": "husky install"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "^1.8.4",
+        "axios": "^0.26.1",
+        "next": "12.1.5",
+        "react": "18.0.0",
+        "react-dom": "18.0.0",
+        "react-hook-form": "^7.20.5",
+        "react-icons": "^4.4.0",
+        "react-redux": "^8.0.2",
+        "sass": "^1.49.7"
+    },
+    "devDependencies": {
+        "@types/node": "^18.7.6",
+        "@types/react": "18.0.5",
+        "autoprefixer": "^10.4.8",
+        "eslint-config-next": "12.1.5",
+        "eslint_d": "^12.0.0",
+        "husky": "^7.0.4",
+        "lint-staged": "^12.1.2",
+        "postcss": "^8.4.16",
+        "prettier": "^2.5.0",
+        "stylelint": "^14.7.1",
+        "stylelint-config-recommended-scss": "^6.0.0",
+        "tailwindcss": "^3.1.8",
+        "typescript": "4.6.3"
+    },
+    "lint-staged": {
+        "*.{css,scss}": [
+            "prettier --write",
+            "stylelint --fix"
+        ],
+        "*.{ts,tsx,js,jsx}": [
+            "prettier --write",
+            "eslint_d --fix"
+        ]
+    },
+    "types": "module"
+}
