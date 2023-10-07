@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind utilities;
 @tailwind components;
+
+// custom responsive base-container
+.base-container {
+    padding: 0px;
+    @screen sm {
+        padding: 0 10px;
+    }
+    @screen md {
+        padding: 0 40px;
+    }
+    @screen lg {
+        padding: 0 70px;
+    }
+    @screen xl {
+        padding: 0 100px;
+    }
+    @screen xxl {
+        padding: 0 130px;
+    }
+}
