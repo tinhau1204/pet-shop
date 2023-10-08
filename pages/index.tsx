@@ -1,3 +1,6 @@
+import ProductCard from "@/components/shards/ProductCard";
+import { Group } from "@mantine/core";
+
 type PageProps = {
     [name: string]: any;
 };
@@ -7,6 +10,11 @@ export default function Page(props: PageProps) {
     return (
         <div className="">
             <p className="font-bold">Page: {props.page}</p>
+            <Group>
+                <ProductCard />
+                <ProductCard />
+                <ProductCard />
+            </Group>
         </div>
     );
 }

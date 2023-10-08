@@ -1,7 +1,7 @@
 import { Card, Group, Image, Stack, Text } from "@mantine/core";
 import mock from "./mock.json";
 import PetImage from "@my-images/pet.png";
-import Accessory from "@my-images/accessory.png";
+import AccessoryImage from "@my-images/accessory.png";
 import GiftImage from "@my-images/gift.png";
 import FallbackImage from "@my-images/fallback.png";
 
@@ -27,7 +27,7 @@ export type ProductCardProps = {
 };
 
 function ProductCard(props: ProductCardProps) {
-    const { data = mock.pet } = props;
+    const { data = mock.accessory } = props;
 
     return (
         <Card
@@ -36,17 +36,17 @@ function ProductCard(props: ProductCardProps) {
             className="w-[fit-content]"
             padding={"8px"}
         >
-            <div className="aspect-square w-[264px]">
+            <div className="aspect-square w-full max-w-[264px]">
                 <Image
                     radius={"12px"}
-                    src={data.image || PetImage.src}
+                    src={data.image || AccessoryImage.src}
                     h={264}
                     fallbackSrc={FallbackImage.src}
                 />
             </div>
             <Stack
                 gap={"8px"}
-                className="px-[8px] pt-[8px] pb-[12px] w-[264px]"
+                className="px-[8px] pt-[8px] pb-[12px] w-full max-w-[264px]"
             >
                 {data.name && (
                     <Text fw={700} fz={"16px"} lineClamp={2}>
