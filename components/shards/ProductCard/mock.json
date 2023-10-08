@@ -1,0 +1,17 @@
+{
+    "pet": {
+        "image": "",
+        "name": "MO231 - Pomeranian White",
+        "gene": "Male",
+        "age": "02 months",
+        "price": "6.900.000"
+    },
+    "accessory": {
+        "image": "",
+        "name": "MO231 - Pomeranian White",
+        "type": "Food",
+        "size": "385gm",
+        "promotion": "Free Toy & Free Shaker",
+        "price": "6.900.000"
+    }
+}
