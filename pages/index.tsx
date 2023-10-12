@@ -1,5 +1,7 @@
-import ProductCard from "@/components/shards/ProductCard";
-import { Group } from "@mantine/core";
+import Banner from "@/components/shards/Banner";
+import MyCarousel from "@/components/shards/MyCarousel";
+import { Box } from "@mantine/core";
+import { NextPage } from "next";
 
 type PageProps = {
     [name: string]: any;
@@ -10,11 +12,8 @@ export default function Page(props: PageProps) {
     return (
         <div className="">
             <p className="font-bold">Page: {props.page}</p>
-            <Group>
-                <ProductCard />
-                <ProductCard />
-                <ProductCard />
-            </Group>
+            <Banner />
+            <MyCarousel />
         </div>
     );
 }

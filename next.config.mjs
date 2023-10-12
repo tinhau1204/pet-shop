@@ -4,7 +4,16 @@ const config = {
     swcMinify: true,
     compiler: {
         reactRemoveProperties: true,
-        removeConsole: true,
+        removeConsole: false,
+    },
+    webpack: (config) => {
+        config.module.rules.push({
+            test: /\.svg$/i,
+            issuer: /\.[jt]sx?$/,
+            use: ["@svgr/webpack"],
+        });
+
+        return config;
     },
 };
 

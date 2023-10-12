@@ -36,17 +36,14 @@ module.exports = {
             ["orange"]: {
                 ["normal"]: "#FF912C",
             },
-            ["blue"]: {
-                ["normal"]: "#00A7E7",
-            },
         },
 
         screens: {
-            sm: "320px",
-            md: "768px",
-            lg: "1024px",
-            xl: "1280px",
-            xxl: "1440px",
+            xs: "550px",
+            sm: "768px",
+            md: "1024px",
+            lg: "1280px",
+            xl: "1440px",
         },
 
         extend: {},

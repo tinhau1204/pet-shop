@@ -1,0 +1,58 @@
+[
+    {
+        "image": "",
+        "name": "MO231 - Pomeranian White",
+        "gene": "Male",
+        "age": "02 months",
+        "price": "6.900.000"
+    },
+    {
+        "image": "",
+        "name": "MO502 - Poodle Tiny Yellow",
+        "gene": "Female",
+        "age": "02 months",
+        "price": "3.900.000"
+    },
+    {
+        "image": "",
+        "name": "MO102 - Poodle Tiny Sepia",
+        "gene": "Male",
+        "age": "02 months",
+        "price": "4.000.000"
+    },
+    {
+        "image": "",
+        "name": "MO512 - Alaskan Malamute Grey",
+        "gene": "Male",
+        "age": "02 months",
+        "price": "8.900.000"
+    },
+    {
+        "image": "",
+        "name": "MO231 - Pomeranian White",
+        "gene": "Male",
+        "age": "02 months",
+        "price": "6.900.000"
+    },
+    {
+        "image": "",
+        "name": "MO502 - Poodle Tiny Yellow",
+        "gene": "Female",
+        "age": "02 months",
+        "price": "3.900.000"
+    },
+    {
+        "image": "",
+        "name": "MO102 - Poodle Tiny Sepia",
+        "gene": "Male",
+        "age": "02 months",
+        "price": "4.000.000"
+    },
+    {
+        "image": "",
+        "name": "MO512 - Alaskan Malamute Grey",
+        "gene": "Male",
+        "age": "02 months",
+        "price": "8.900.000"
+    }
+]
