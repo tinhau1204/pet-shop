@@ -5,19 +5,19 @@
 // custom responsive base-container
 .base-container {
     padding: 0px;
-    @screen sm {
+    @screen xs {
         padding: 0 10px;
     }
-    @screen md {
+    @screen sm {
         padding: 0 40px;
     }
-    @screen lg {
+    @screen md {
         padding: 0 70px;
     }
-    @screen xl {
+    @screen lg {
         padding: 0 100px;
     }
-    @screen xxl {
+    @screen xl {
         padding: 0 130px;
     }
 }

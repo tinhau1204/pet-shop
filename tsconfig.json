@@ -3,10 +3,11 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["*"],
-            "@redux": ["redux"],
             "@redux/*": ["redux/*"],
-            "@components/*": ["components/*"],
-            "@shards/*": ["components/shards/*"],
+            "@my-components/*": ["components/*"],
+            "@my-shards/*": ["components/shards/*"],
+            "@my-images/*": ["public/images/*"],
+            "@my-fonts/*": ["public/fonts/*"],
             "@styles/*": ["styles/*"],
             "@lib/*": ["lib/*"]
         },
