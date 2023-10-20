@@ -6,6 +6,20 @@ const config = {
         reactRemoveProperties: true,
         removeConsole: false,
     },
+    images: {
+        remotePatterns: [
+            {
+                protocol: "http",
+                hostname: "localhost",
+                port: "3000",
+                pathname: "/images/**",
+            },
+            {
+                protocol: "https",
+                hostname: "**",
+            },
+        ],
+    },
     webpack: (config) => {
         config.module.rules.push({
             test: /\.svg$/i,

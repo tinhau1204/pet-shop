@@ -1,58 +1,60 @@
 [
     {
-        "image": "",
+        "imageUrl": "http:/localhost:3000/images/product/pet_1.png",
         "name": "MO231 - Pomeranian White",
         "gene": "Male",
         "age": "02 months",
         "price": "6.900.000"
     },
     {
-        "image": "",
+        "imageUrl": "http:/localhost:3000/images/product/pet_1.png",
         "name": "MO502 - Poodle Tiny Yellow",
         "gene": "Female",
         "age": "02 months",
         "price": "3.900.000"
     },
     {
-        "image": "",
+        "imageUrl": "http:/localhost:3000/images/product/pet_1.png",
         "name": "MO102 - Poodle Tiny Sepia",
         "gene": "Male",
         "age": "02 months",
         "price": "4.000.000"
     },
     {
-        "image": "",
+        "imageUrl": "http:/localhost:3000/images/product/pet_1.png",
         "name": "MO512 - Alaskan Malamute Grey",
         "gene": "Male",
         "age": "02 months",
         "price": "8.900.000"
     },
     {
-        "image": "",
+        "imageUrl": "/images/product/accessory_1.png",
         "name": "MO231 - Pomeranian White",
-        "gene": "Male",
-        "age": "02 months",
+        "type": "Food",
+        "size": "385gm",
+        "promotion": "Free Toy & Free Shaker",
         "price": "6.900.000"
     },
     {
-        "image": "",
+        "imageUrl": "http:/localhost:3000/images/product/pet_1.png",
         "name": "MO502 - Poodle Tiny Yellow",
         "gene": "Female",
         "age": "02 months",
         "price": "3.900.000"
     },
     {
-        "image": "",
+        "imageUrl": "http:/localhost:3000/images/product/pet_1.png",
         "name": "MO102 - Poodle Tiny Sepia",
         "gene": "Male",
         "age": "02 months",
         "price": "4.000.000"
     },
     {
-        "image": "",
-        "name": "MO512 - Alaskan Malamute Grey",
-        "gene": "Male",
-        "age": "02 months",
-        "price": "8.900.000"
+        "imageUrl": "/images/product/accessory_1.png",
+        "name": "MO231 - Pomeranian White",
+        "type": "Food",
+        "size": "385gm",
+        "promotion": "Free Toy & Free Shaker",
+        "price": "6.900.000"
     }
 ]

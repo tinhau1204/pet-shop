@@ -1,7 +1,8 @@
 import Banner from "@/components/shards/Banner";
+import Blog from "@/components/shards/Blog";
+import Brand from "@/components/shards/Brand";
 import MyCarousel from "@/components/shards/MyCarousel";
-import { Box } from "@mantine/core";
-import { NextPage } from "next";
+import { Stack } from "@mantine/core";
 
 type PageProps = {
     [name: string]: any;
@@ -10,11 +11,18 @@ type PageProps = {
 export default function Page(props: PageProps) {
     // Render data...
     return (
-        <div className="">
-            <p className="font-bold">Page: {props.page}</p>
+        <Stack gap={"60px"}>
             <Banner />
             <MyCarousel />
-        </div>
+            <Banner
+                mainHeading="One more friend"
+                subHeading="Thousands more fun!"
+                description="Having a pet means you have more joy, a new friend, a happy person who will always be with you to have fun. We have 200+ different pets that can meet your needs"
+                imageUrl="http:/localhost:3000/images/banner/banner_2.png"
+            />
+            <Brand />
+            <Blog />
+        </Stack>
     );
 }
 
