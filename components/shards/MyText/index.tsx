@@ -1,6 +1,6 @@
 import { Text, TextProps } from "@mantine/core";
 
-type MyTextProps = {
+export type MyTextProps = {
     children?: any;
     styles?: Omit<TextProps, "fz">;
     type: "heading" | "body";

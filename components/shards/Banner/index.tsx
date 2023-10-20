@@ -1,17 +1,24 @@
-import { Box, Button, Flex, Group, Image, Stack, Text } from "@mantine/core";
-import BannerImage from "@my-images/banner.png";
-import { StaticImageData } from "next/image";
+import {
+    AspectRatio,
+    Box,
+    Button,
+    Flex,
+    Group,
+    Stack,
+    Text,
+} from "@mantine/core";
+import Image from "next/image";
 import React from "react";
 import MyText from "../MyText";
-import PlayCircleSVG from "@my-images/play_circle.svg";
+import PlayCircleSVG from "@my-images/button/play_circle.svg";
 
-type BannerProps = {
+export type BannerProps = {
     mainHeading?: string;
     subHeading?: string;
     description?: string;
     header?: JSX.Element;
     buttons?: JSX.Element[];
-    image?: StaticImageData;
+    imageUrl?: string;
 };
 
 function Banner(props: BannerProps) {
@@ -37,11 +44,11 @@ function Banner(props: BannerProps) {
                 Explore Now
             </Button>,
         ],
-        image = BannerImage,
+        imageUrl = "http:/localhost:3000/images/banner/banner_1.png",
     } = props;
 
     return (
-        <div className="bg-yellow-light relative w-[100vw] left-[50%] right-[50%] mr-[-50vw] ml-[-50vw] sm:aspect-[1440/695] pt-[32px] sm:pt-0 px-[16px] sm:px-0">
+        <div className="bg-yellow-light relative w-[100vw] left-[50%] right-[50%] mr-[-50vw] ml-[-50vw] pt-[32px] px-[16px] sm:px-0">
             <div className="base-container h-full">
                 {header}
                 <Flex
@@ -50,7 +57,7 @@ function Banner(props: BannerProps) {
                     direction={{ base: "column", sm: "row" }}
                     align={{ base: "center", sm: "center" }}
                 >
-                    <Stack gap={"24px"} className="basis-[50%]">
+                    <Stack gap={"24px"} className="mb-[32px]">
                         <Box>
                             <Text fw={700} fz={{ base: "42px", lg: "60px" }}>
                                 {mainHeading}
@@ -66,14 +73,16 @@ function Banner(props: BannerProps) {
                             ))}
                         </Group>
                     </Stack>
-                    <Box className="basis-[50%] h-full">
+                    <AspectRatio ratio={3 / 2} w={"100%"} className="!self-end">
                         <Image
                             alt="image"
-                            src={image.src}
-                            w={"100%"}
-                            h={"100%"}
+                            src={imageUrl}
+                            fill
+                            priority
+                            className="!object-contain"
+                            sizes="auto"
                         />
-                    </Box>
+                    </AspectRatio>
                 </Flex>
             </div>
         </div>

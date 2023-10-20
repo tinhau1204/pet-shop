@@ -1,13 +1,13 @@
 {
     "pet": {
-        "image": "",
+        "imageUrl": "http:/localhost:3000/images/product/pet.png",
         "name": "MO231 - Pomeranian White",
         "gene": "Male",
         "age": "02 months",
         "price": "6.900.000"
     },
     "accessory": {
-        "image": "",
+        "imageUrl": "http:/localhost:3000/images/product/accessory.png",
         "name": "MO231 - Pomeranian White",
         "type": "Food",
         "size": "385gm",
