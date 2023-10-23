@@ -19,6 +19,8 @@ export type BannerProps = {
     header?: JSX.Element;
     buttons?: JSX.Element[];
     imageUrl?: string;
+    imagePosition?: string;
+    elementReverse?: boolean;
 };
 
 function Banner(props: BannerProps) {
@@ -45,16 +47,18 @@ function Banner(props: BannerProps) {
             </Button>,
         ],
         imageUrl = "http:/localhost:3000/images/banner/banner_1.png",
+        imagePosition = "",
+        elementReverse = false,
     } = props;
 
     return (
         <div className="bg-yellow-light relative w-[100vw] left-[50%] right-[50%] mr-[-50vw] ml-[-50vw] pt-[32px] px-[16px] sm:px-0">
-            <div className="base-container h-full">
+            <div className="base-container h-full overflow-hidden">
                 {header}
                 <Flex
-                    gap={{ base: "25px", sm: "0px" }}
+                    gap={{ base: "25px", sm:`${elementReverse ? '1rem': '0px' }` }}
                     className="h-full"
-                    direction={{ base: "column", sm: "row" }}
+                    direction={{ base: "column", sm: `${elementReverse ? 'row-reverse': 'row' }`  }}
                     align={{ base: "center", sm: "center" }}
                 >
                     <Stack gap={"24px"} className="mb-[32px]">
@@ -79,7 +83,7 @@ function Banner(props: BannerProps) {
                             src={imageUrl}
                             fill
                             priority
-                            className="!object-contain"
+                            className={`!object-contain ${imagePosition}`}
                             sizes="auto"
                         />
                     </AspectRatio>
