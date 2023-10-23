@@ -37,7 +37,7 @@ function Footer({ className }: FooterProps) {
                     gap="xl"
                 >
                     <Text size="lg" c="white" className="sm:text-left font-semibold">
-                        Register Now So You Don't Miss Our Programs
+                        Register Now For more information on Our Programs
                     </Text>
 
                     <form className="flex flex-col sm:flex-row  w-full bg-primary rounded-lg p-3 gap-3">
