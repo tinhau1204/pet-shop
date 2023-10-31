@@ -22,14 +22,15 @@ export type AccessoryType = {
 
 export type ProductCardProps = {
     data?: PetType | AccessoryType;
+    classContainer?: string;
 };
 
 function ProductCard(props: ProductCardProps) {
-    const { data = mock.accessory } = props;
+    const { data = mock.accessory, classContainer } = props;
 
     return (
         <Box
-            className="px-[10px]"
+            className={`px-[10px] ${classContainer}`}
             w={{
                 base: "100%",
                 xs: "50%",
@@ -58,7 +59,12 @@ function ProductCard(props: ProductCardProps) {
                     className="px-[8px] pt-[8px] pb-[12px] w-full max-w-[264px]"
                 >
                     {data.name && (
-                        <Text fw={700} fz={"16px"} lineClamp={1}>
+                        <Text
+                            fw={700}
+                            fz={"16px"}
+                            lineClamp={1}
+                            className="max-w-[12.5rem] sm:max-w-fit"
+                        >
                             {data.name}
                         </Text>
                     )}

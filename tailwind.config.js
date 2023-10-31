@@ -49,4 +49,5 @@ module.exports = {
         extend: {},
     },
     plugins: [],
+    important: '#__next',
 };
