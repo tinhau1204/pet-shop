@@ -2,6 +2,7 @@ import { AspectRatio, Box, Card, Group, Stack, Text } from "@mantine/core";
 import mock from "./mock.json";
 import GiftImage from "@my-images/product/gift.png";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 export type PetType = {
     imageUrl: string;
@@ -27,6 +28,7 @@ export type ProductCardProps = {
 
 function ProductCard(props: ProductCardProps) {
     const { data = mock.accessory, classContainer } = props;
+    const router = useRouter();
 
     return (
         <Box
@@ -63,7 +65,8 @@ function ProductCard(props: ProductCardProps) {
                             fw={700}
                             fz={"16px"}
                             lineClamp={1}
-                            className="max-w-[12.5rem] sm:max-w-fit"
+                            className="max-w-[12.5rem] sm:max-w-fit hover:underline hover:cursor-pointer"
+                            onClick={() => router.push("/products/[id]")}
                         >
                             {data.name}
                         </Text>

@@ -1,5 +1,6 @@
 import "@/styles/globals.scss";
 import "@mantine/core/styles.css";
+import "@mantine/carousel/styles.css";
 import {
     MantineBreakpointsValues,
     MantineProvider,
@@ -43,9 +44,7 @@ const theme = createTheme({
 
 function MyApp({ Component, pageProps }: AppProps) {
     return (
-        <MantineProvider
-            withCssVariables={false}
-            theme={theme}>
+        <MantineProvider withCssVariables={false} theme={theme}>
             <Provider store={store}>
                 <Layout>
                     <Component {...pageProps} />
@@ -61,11 +60,13 @@ function Layout({ children }: any) {
             <div className="base-container">
                 <Header />
                 <BreadCrumbs
-                    homeElement={'Home'}
-                    separator={<span className="text-center px-2"> {'>'} </span>}
-                    activeClasses='text-gray-500'
-                    containerClasses='flex py-5 text-black-normal'
-                    listClasses='hover:underline hover:text-blue-medium font-normal text-sm pt-0.5'
+                    homeElement={"Home"}
+                    separator={
+                        <span className="text-center px-2"> {">"} </span>
+                    }
+                    activeClasses="text-gray-500"
+                    containerClasses="flex py-5 text-black-normal"
+                    listClasses="hover:underline hover:text-blue-medium font-normal text-sm pt-0.5"
                     capitalizeLinks
                 />
                 {children}
