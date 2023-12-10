@@ -16,6 +16,7 @@ import Footer from "@/components/shards/Footer";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "@/tailwind.config";
 import BreadCrumbs from "@/components/shards/BreadCrumbs";
+import React, { useEffect } from "react";
 
 const myFont = localFont({
     src: [
@@ -43,12 +44,27 @@ const theme = createTheme({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+    const [isLogin, setIsLogin] = React.useState(false);
+
+    useEffect(() => {
+        if (window.location.pathname == "/login") setIsLogin(true);
+
+        return () => {
+            setIsLogin(false);
+        };
+    });
     return (
         <MantineProvider withCssVariables={false} theme={theme}>
             <Provider store={store}>
-                <Layout>
-                    <Component {...pageProps} />
-                </Layout>
+                {isLogin ? (
+                    <LoginLayout>
+                        <Component {...pageProps} />
+                    </LoginLayout>
+                ) : (
+                    <Layout>
+                        <Component {...pageProps} />
+                    </Layout>
+                )}
             </Provider>
         </MantineProvider>
     );
@@ -72,6 +88,14 @@ function Layout({ children }: any) {
                 {children}
                 <Footer />
             </div>
+        </>
+    );
+}
+
+function LoginLayout({ children }: any) {
+    return (
+        <>
+            <div className="base-container">{children}</div>
         </>
     );
 }
