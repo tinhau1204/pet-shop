@@ -14,12 +14,24 @@ import {
     Drawer,
     Input,
     CloseButton,
+    ActionIcon,
+    Tooltip,
+    Image,
+    Menu,
+    CloseIcon,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Search from "../Search";
 import Dropdown from "../Dropdown";
 import type { DropdownDataProps } from "../Dropdown";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import ProfileIcon from "@my-images/profile.svg";
+import CartIcon from "@my-images/Cart.svg";
+import CartCheckedIcon from "@my-images/Cart_Checked.svg";
+import SettingIcon from "@my-images/Settings.svg";
+import SignOutIcon from "@my-images/Sign_out.svg";
+
 type HeaderProps = {
     [name: string]: any;
 };
@@ -43,6 +55,7 @@ function Header(props: HeaderProps) {
     const [opened, { open, close }] = useDisclosure();
     const [isMobile, setIsMobile] = React.useState(false);
     const [isSearch, setIsSearch] = React.useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -61,7 +74,12 @@ function Header(props: HeaderProps) {
 
     const headerLinkContent = HeaderLink.map((item, index) => (
         <Link key={index} href={item.link} onClick={close}>
-            <Text key={index} fw={800} size="md" className="!text-blue-medium">
+            <Text
+                key={index}
+                fw={800}
+                size="md"
+                className="!text-blue-medium hover:underline"
+            >
                 {item.name}
             </Text>
         </Link>
@@ -164,9 +182,72 @@ function Header(props: HeaderProps) {
                     radius="xl"
                     variant="filled"
                     className="!bg-blue-medium !text-white !hidden md:!block"
+                    onClick={() => router.push("/login")}
                 >
-                    Join the community
+                    Join our community
                 </Button>
+
+                <Tooltip label="user">
+                    <Menu shadow="md" width={200}>
+                        <Menu.Target>
+                            <ActionIcon
+                                className="border border-black-light/30"
+                                radius="xl"
+                                size="lg"
+                                variant="transparent"
+                            >
+                                <Image
+                                    className="p-1.5 rounded-full"
+                                    src="https://cdn-icons-png.flaticon.com/512/21/21104.png"
+                                    alt="test"
+                                />
+                            </ActionIcon>
+                        </Menu.Target>
+
+                        <Menu.Dropdown>
+                            <Menu.Item
+                                onClick={() => router.push("/profile")}
+                                leftSection={
+                                    <ProfileIcon className="w-4 h-4 text-black-bold/50" />
+                                }
+                                className="font-bold"
+                            >
+                                Profile
+                            </Menu.Item>
+                            <Menu.Item
+                                onClick={() => router.push("/cart")}
+                                leftSection={
+                                    <CartIcon className="w-5 h-5 text-black-medium/50" />
+                                }
+                            >
+                                Cart
+                            </Menu.Item>
+                            <Menu.Item
+                                leftSection={
+                                    <CartCheckedIcon className="w-4 h-4 text-black-medium/50" />
+                                }
+                            >
+                                Cart History
+                            </Menu.Item>
+                            <Menu.Item
+                                leftSection={
+                                    <SettingIcon className="w-4 h-4 text-black-medium/50" />
+                                }
+                            >
+                                Settings
+                            </Menu.Item>
+                            <Menu.Divider />
+                            <Menu.Item
+                                color="red"
+                                leftSection={
+                                    <SignOutIcon className="w-4 h-4 text-black-bold/50" />
+                                }
+                            >
+                                Logout
+                            </Menu.Item>
+                        </Menu.Dropdown>
+                    </Menu>
+                </Tooltip>
 
                 <Dropdown
                     data={selectData}

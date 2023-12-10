@@ -23,6 +23,7 @@ export type AccessoryType = {
 
 export type ProductCardProps = {
     data?: PetType | AccessoryType;
+    productType?: PetType | AccessoryType;
     classContainer?: string;
 };
 
@@ -32,20 +33,19 @@ function ProductCard(props: ProductCardProps) {
 
     return (
         <Box
-            className={`px-[10px] ${classContainer}`}
-            w={{
-                base: "100%",
-                xs: "50%",
-                md: "33.33%",
-                lg: "25%",
-                xl: "25%",
-            }}
+            className={`px-[10px] ${classContainer} max-w-[280px] w-full`}
+            // w={{
+            //     base: "100%",
+            //     xs: "50%",
+            //     md: "33.33%",
+            //     lg: "25%",
+            //     xl: "25%",
+            // }}
         >
             <Card
                 shadow="0px 4px 28px -2px rgba(0, 0, 0, 0.08)"
                 radius={12}
-                className="w-full items-center"
-                padding={"8px"}
+                className="w-full items-center p-2"
             >
                 <AspectRatio ratio={1} className="!w-full !max-w-[264px]">
                     <Image
@@ -104,7 +104,7 @@ function ProductCard(props: ProductCardProps) {
                             {data.price} VND
                         </Text>
                     )}
-                    {(data as AccessoryType).promotion && (
+                    {(data as AccessoryType).promotion ? (
                         <Group
                             className="px-[10px] py-[6px] bg-yellow-light rounded-[8px]"
                             wrap="nowrap"
@@ -118,6 +118,16 @@ function ProductCard(props: ProductCardProps) {
                                     sizes="auto"
                                 />
                             </Box>
+                            <Text fw={700} fz={"14px"} lineClamp={2}>
+                                {(data as AccessoryType).promotion}
+                            </Text>
+                        </Group>
+                    ) : (
+                        <Group
+                            className="px-[10px] py-[6px] bg-white rounded-[8px]"
+                            wrap="nowrap"
+                        >
+                            <Box className="w-[20px] h-[20px] relative"></Box>
                             <Text fw={700} fz={"14px"} lineClamp={2}>
                                 {(data as AccessoryType).promotion}
                             </Text>
