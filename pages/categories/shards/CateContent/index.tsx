@@ -31,7 +31,7 @@ export default function CateContent({ data = mock }: CateContentProps) {
             >
                 <div className="flex flex-row items-center gap-3">
                     <Text fw={700} className="text-blue-medium text-2xl">
-                        Small Dog
+                        Small Cat
                     </Text>
                     <Text className="text-black-normal text-sm mt-1">
                         52 puppies

@@ -1,6 +1,6 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { Carousel } from "@mantine/carousel";
-import { Button, Group, Table, Text } from "@mantine/core";
+import { Button, Grid, Group, Stack, Table, Text } from "@mantine/core";
 import ChatIcon from "@my-images/Chat_Dots.svg";
 import FacebookIcon from "@my-images/facebook.svg";
 import TwitterIcon from "@my-images/twitter.svg";
@@ -8,6 +8,12 @@ import InstagramIcon from "@my-images/instagram.svg";
 import YoutubeIcon from "@my-images/youtube.svg";
 import ShareIcon from "@my-images/Share_Android.svg";
 import Link from "next/link";
+import GuaranteeIcon from "@my-images/gurantee.svg";
+import HeathGIcon from "@my-images/healthG.svg";
+import Image from "next/image";
+import ProductCard from "@/components/shards/ProductCard";
+import mock from "./mock.json";
+
 type PageProps = {
     [name: string]: any;
 };
@@ -39,10 +45,40 @@ const socialMedia = [
     },
 ];
 
+const customerList = [
+    { image: "/images/customer/customer1.png", alt: "customer1" },
+    { image: "/images/customer/customer2.png", alt: "customer2" },
+    { image: "/images/customer/customer3.png", alt: "customer3" },
+    { image: "/images/customer/customer4.png", alt: "customer4" },
+    { image: "/images/customer/customer5.png", alt: "customer5" },
+    { image: "/images/customer/customer1.png", alt: "customer1" },
+    { image: "/images/customer/customer2.png", alt: "customer2" },
+    { image: "/images/customer/customer3.png", alt: "customer3" },
+    { image: "/images/customer/customer4.png", alt: "customer4" },
+    { image: "/images/customer/customer5.png", alt: "customer5" },
+];
+
+function CardImage({ image, alt }: { image: string; alt: string }) {
+    return (
+        <div className="w-[15.5rem] h-[21.25rem] rounded-xl overflow-hidden">
+            <Image
+                src={image}
+                alt={alt}
+                width={328}
+                height={352}
+                className="object-cover object-center rounded-xl"
+            />
+        </div>
+    );
+}
+
 export default function Page(props: PageProps) {
     const guarantee = [
-        { image: "", title: "100% health guarantee for pets" },
-        { image: "", title: "100% guarantee of pet identification" },
+        { icon: <HeathGIcon />, title: "100% health guarantee for pets" },
+        {
+            icon: <GuaranteeIcon />,
+            title: "100% guarantee of pet identification",
+        },
     ];
 
     const elements = [
@@ -105,10 +141,12 @@ export default function Page(props: PageProps) {
             <Table.Td className="text-black-normal">{element.content}</Table.Td>
         </Table.Tr>
     ));
+
+    const data = mock;
     // Render data...
     return (
         <>
-            <div className="flex flex-row items-start justify-center min-h-screen border border-black-light/50 px-5 py-[22px] gap-8 rounded-xl  bg-black-light/20">
+            <div className="flex flex-row items-start justify-center min-h-screen border border-black-light/50 px-5 py-[22px] gap-8 rounded-xl  bg-black-light/5 mb-5">
                 <div className="left w-full h-full">
                     <Carousel
                         withIndicators
@@ -134,11 +172,7 @@ export default function Page(props: PageProps) {
                                 key={index}
                                 className="flex flex-row items-center justify-between gap-2"
                             >
-                                <img
-                                    src={item.image}
-                                    alt="image"
-                                    className="w-8 h-8"
-                                />
+                                {item.icon}
                                 <Text className="text-blue-medium font-bold text-sm">
                                     {item.title}
                                 </Text>
@@ -172,7 +206,7 @@ export default function Page(props: PageProps) {
                         </div>
                     </div>
                 </div>
-
+                {/* infor */}
                 <div className="right w-full h-full">
                     <Text className="text-black-light text-sm">
                         SKU #1000078
@@ -208,6 +242,56 @@ export default function Page(props: PageProps) {
                         <Table.Tbody>{rows}</Table.Tbody>
                     </Table>
                 </div>
+            </div>
+            {/* customer  */}
+            <div className="w-full mt-6 mb-14 mr-4 pl-4">
+                <Text className="font-bold text-blue-medium text-2xl">
+                    Our lovely customer
+                </Text>
+
+                <Carousel
+                    align="start"
+                    slideGap="md"
+                    withControls={false}
+                    controlSize={30}
+                    loop
+                    dragFree
+                    withIndicators
+                    slideSize="12%"
+                    className="w-full h-full overflow-hidden mt-3"
+                >
+                    {customerList.map((image, index) => (
+                        <Carousel.Slide key={index}>
+                            <CardImage image={image.image} alt={image.alt} />
+                        </Carousel.Slide>
+                    ))}
+                </Carousel>
+            </div>
+
+            {/* recommend  */}
+            <div>
+                <Stack>
+                    <Text className="font-medium text-base text-black-bold">
+                        Whats new?
+                    </Text>
+                    <Text className="font-bold text-2xl text-blue-medium">
+                        See More Puppies
+                    </Text>
+
+                    <Grid
+                        align="center"
+                        className="max-h-[26rem] w-full overflow-hidden"
+                    >
+                        {mock.map((item, index) => (
+                            <Grid.Col
+                                key={index}
+                                span={{ base: 6, xs: 6, sm: 4, md: 3 }}
+                            >
+                                <ProductCard data={item} />
+                            </Grid.Col>
+                        ))}
+                    </Grid>
+                </Stack>
             </div>
         </>
     );

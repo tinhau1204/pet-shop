@@ -2,7 +2,7 @@ import Banner from "@/components/shards/Banner";
 import Blog from "@/components/shards/Blog";
 import Brand from "@/components/shards/Brand";
 import MyCarousel from "@/components/shards/MyCarousel";
-import { Stack } from "@mantine/core";
+import { Group, Stack } from "@mantine/core";
 
 type PageProps = {
     [name: string]: any;
@@ -21,7 +21,12 @@ export default function Page(props: PageProps) {
                 imageUrl="http:/localhost:3000/images/banner/banner_2.png"
             />
             <Brand />
-            <Blog />
+
+            <Group gap="0">
+                <Blog />
+                <Blog />
+                <Blog />
+            </Group>
         </Stack>
     );
 }
