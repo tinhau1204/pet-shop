@@ -33,6 +33,10 @@ import SettingIcon from "@my-images/Settings.svg";
 import SignOutIcon from "@my-images/Sign_out.svg";
 import useStore from "@/lib/store";
 import { IUser } from "@/lib/api/types";
+import { useMutation } from "react-query";
+import { accountLogout } from "@/lib/api";
+import { toast } from "react-toastify";
+import { log } from "console";
 const Cookies = require("js-cookie");
 
 type HeaderProps = {
@@ -62,6 +66,28 @@ function Header(props: HeaderProps) {
     const router = useRouter();
     const [user, setUser] = React.useState<IUser | null | string>(null);
     const authUser = store.authUser;
+
+    function handleLogout() {
+        store.setAuthUser(null);
+        Cookies.remove("accessToken");
+        Cookies.remove("refreshToken");
+        Cookies.remove("user");
+        router.push("/auth/login");
+    }
+
+    const logoutMutation = useMutation({
+        mutationKey: "logout",
+        mutationFn: accountLogout,
+        onSuccess: (data) => {
+            console.log("logout success", data);
+            toast.success(data?.message);
+            handleLogout();
+        },
+        onError: (err) => {
+            toast.error("Something went wrong");
+        },
+    });
+
     useEffect(() => {
         const intervalId = setInterval(() => {
             setIsMobile(window.matchMedia("(max-width: 768px)").matches);
@@ -97,12 +123,6 @@ function Header(props: HeaderProps) {
 
     function handleHomePage() {
         router.push("/");
-    }
-
-    function handleLogout() {
-        store.setAuthUser(null);
-        Cookies.remove("accessToken");
-        router.push("/auth/login");
     }
 
     return (
@@ -256,7 +276,7 @@ function Header(props: HeaderProps) {
                                     leftSection={
                                         <SignOutIcon className="w-4 h-4 text-black-bold/50" />
                                     }
-                                    onClick={handleLogout}
+                                    onClick={() => logoutMutation.mutate()}
                                 >
                                     Logout
                                 </Menu.Item>
