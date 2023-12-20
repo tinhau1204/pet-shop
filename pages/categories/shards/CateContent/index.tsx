@@ -52,7 +52,7 @@ export default function CateContent({ data = mock }: CateContentProps) {
                     }
                     classNames={{
                         section: "w-fit px-2 py-1 text-center align-middle",
-                        input: "pl-16 sm:ml-2 text-black-normal text-base  font-semibold",
+                        input: "pl-16 sm:ml-2 text-black-normal text-base font-semibold [&>*]:py-2",
                     }}
                     radius="xl"
                     className="w-fit"

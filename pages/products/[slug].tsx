@@ -157,10 +157,12 @@ export default function Page(props: PageProps) {
                     >
                         {images.map((image, index) => (
                             <Carousel.Slide key={index}>
-                                <img
+                                <Image
                                     src={image.src}
                                     alt={image.alt}
-                                    className="w-full h-full object-cover rounded-xl"
+                                    className="w-full h-full  object-contain object-center rounded-xl"
+                                    width={500}
+                                    height={100}
                                 />
                             </Carousel.Slide>
                         ))}

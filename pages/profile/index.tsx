@@ -11,9 +11,10 @@ import {
     Button,
     Radio,
     RadioGroup,
+    Group,
 } from "@mantine/core";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import HouseIcon from "@my-images/icon/House_01.svg";
 import PhoneIcon from "@my-images/icon/Phone.svg";
 import MailIcon from "@my-images/icon/Mail.svg";
@@ -24,26 +25,66 @@ import CardTotal from "./shards/TotalCard";
 
 import BackGround from "@my-images/background.png";
 import { useForm } from "@mantine/form";
+import useStore from "@/lib/store";
+import { useMutation, useQuery } from "react-query";
+import { getUserById } from "@/lib/api";
+import { IUser } from "@/lib/api/types";
+import dayjs from "dayjs";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+import { useRouter } from "next/router";
+const Cookies = require("js-cookie");
 
 export default function Profile() {
     const [readOnly, setReadOnly] = React.useState(true);
+    const store = useStore();
+    const router = useRouter();
+    const cookieUser = Cookies.get("user");
+    console.log("check cookieUser", cookieUser);
+    const user = store.authUser;
+
     const form = useForm({
         initialValues: {
-            firstName: "",
-            lastName: "",
-            gender: "male",
-            email: "",
-            phoneNumber: "",
-            address: "",
+            name: user?.name,
+            gender: user?.gender || "male",
+            email: user?.email,
+            phone: user?.phone,
+            address: user?.address || "",
         },
     });
 
+    const getUserQuery = useQuery({
+        queryKey: ["getUserById", store.authUser?.id],
+        queryFn: () => getUserById(parseInt(cookieUser)),
+        onSuccess: (data: IUser) => {
+            store.setAuthUser(data);
+            form.setValues({
+                name: data.name,
+                gender: data.gender || "male",
+                email: data.email,
+                phone: data.phone,
+                address: data.address || "",
+            });
+        },
+        onError: (err) => {
+            if (err instanceof AxiosError) {
+                toast.error(err.response?.data.message);
+            }
+            router.push("/");
+        },
+        refetchOnWindowFocus: false,
+    });
+
+    useEffect(() => {
+        getUserQuery;
+    }, [getUserQuery]);
+
     const dataTotal = [
         { totalName: "Total Bought", totalNum: 10 },
-        { totalName: "Total Bought", totalNum: 10 },
+        { totalName: "Total Reviews", totalNum: 10 },
     ];
 
-    return (
+    return getUserQuery.data && store.authUser !== null ? (
         <Paper
             className={`h-screen overflow-auto w-full `}
             withBorder
@@ -51,12 +92,13 @@ export default function Profile() {
         >
             <BackgroundImage src={BackGround.src}>
                 <div className="relative h-48 border-b border-black-light/20 flex flex-col justify-center items-center w-full gap-3">
-                    <Avatar size="xl" />
+                    <Avatar size="xl" src={user?.avatar_url} />
                     <h2 className="text-xl font-semibold text-center text-blue-normal">
-                        User Test
+                        {user?.name}
                     </h2>
                     <Text className="text-center text-sm text-black-light">
-                        Registered: 30th Nov 2023{" "}
+                        Registered:{" "}
+                        {dayjs(user?.created_at).format("MMM DD , YYYY")}{" "}
                     </Text>
                 </div>
             </BackgroundImage>
@@ -103,67 +145,57 @@ export default function Profile() {
                         <Grid.Col span={{ base: 6, md: 4 }}>
                             <Flex className="gap-2" align="center">
                                 <Text className="font-normal text-black-light">
-                                    First Name:
+                                    Full Name:
                                 </Text>
                                 <TextInput
+                                    name="name"
                                     variant="unstyled"
-                                    placeholder={"User"}
+                                    placeholder={""}
                                     className="font-semibold border-none"
                                     readOnly={readOnly}
                                     radius={0}
                                     classNames={{
                                         input: "border-0 focus:border-b focus:border-blue-medium/50 ",
                                     }}
+                                    {...form.getInputProps("name")}
                                 />
                             </Flex>
                         </Grid.Col>
 
-                        <Grid.Col span={{ base: 6, md: 4 }}>
-                            <Flex className="gap-2" align="center">
-                                <Text className="font-normal text-black-light">
-                                    Last Name:
-                                </Text>
-                                <TextInput
-                                    variant="unstyled"
-                                    placeholder={"Test"}
-                                    className="font-semibold border-none"
-                                    readOnly={readOnly}
-                                    radius={0}
-                                    classNames={{
-                                        input: "border-0 focus:border-b focus:border-blue-medium/50 ",
-                                    }}
-                                />
-                            </Flex>
-                        </Grid.Col>
-
-                        <Grid.Col span={{ base: 6, md: 4 }}>
-                            <Flex className="gap-2" align="center">
+                        <Grid.Col span={{ base: 6, md: 4 }} className="">
+                            <Flex className="gap-2 h-full" align="center">
                                 <Text className="font-normal text-black-light">
                                     Gender:
                                 </Text>
                                 <Flex className="gap-2" align="center">
-                                    <Radio
+                                    <Radio.Group
                                         name="gender"
-                                        value="male"
-                                        label="Nam"
-                                        labelPosition="left"
-                                        color="blue"
-                                        classNames={{
-                                            label: "font-semibold pr-2",
-                                        }}
-                                        disabled={readOnly}
-                                    />
-                                    <Radio
-                                        name="gender"
-                                        value="female"
-                                        label="Nữ"
-                                        labelPosition="left"
-                                        color="red"
-                                        classNames={{
-                                            label: "font-semibold pr-2",
-                                        }}
-                                        disabled={readOnly}
-                                    />
+                                        {...form.getInputProps("gender")}
+                                    >
+                                        <Group>
+                                            <Radio
+                                                value="male"
+                                                label="Nam"
+                                                labelPosition="left"
+                                                color="blue"
+                                                classNames={{
+                                                    label: "font-semibold pr-2",
+                                                }}
+                                                disabled={readOnly}
+                                            />
+
+                                            <Radio
+                                                value="female"
+                                                label="Nữ"
+                                                labelPosition="left"
+                                                color="red"
+                                                classNames={{
+                                                    label: "font-semibold pr-2",
+                                                }}
+                                                disabled={readOnly}
+                                            />
+                                        </Group>
+                                    </Radio.Group>
                                 </Flex>
                             </Flex>
                         </Grid.Col>
@@ -174,14 +206,16 @@ export default function Profile() {
                                     Email:
                                 </Text>
                                 <TextInput
+                                    name="email"
                                     variant="unstyled"
-                                    placeholder={"tinhau1204@gmail.com"}
+                                    placeholder=""
                                     className="font-semibold border-none"
                                     readOnly={readOnly}
                                     radius={0}
                                     classNames={{
                                         input: "border-0 focus:border-b focus:border-blue-medium/50 ",
                                     }}
+                                    {...form.getInputProps("email")}
                                 />
                             </Flex>
                         </Grid.Col>
@@ -192,14 +226,16 @@ export default function Profile() {
                                     Phone Number:
                                 </Text>
                                 <TextInput
+                                    name="phone"
                                     variant="unstyled"
-                                    placeholder={"0123456789"}
+                                    placeholder=""
                                     className="font-semibold border-none"
                                     readOnly={readOnly}
                                     radius={0}
                                     classNames={{
                                         input: "border-0 focus:border-b focus:border-blue-medium/50 ",
                                     }}
+                                    {...form.getInputProps("phone")}
                                 />
                             </Flex>
                         </Grid.Col>
@@ -210,19 +246,21 @@ export default function Profile() {
                                     Address:
                                 </Text>
                                 <TextInput
+                                    name="address"
                                     variant="unstyled"
-                                    placeholder={
-                                        "so 1 Vo Van Ngan, Linh Chieu Thu Duc"
-                                    }
+                                    placeholder=""
                                     className="font-semibold border-none"
                                     readOnly={readOnly}
                                     radius={0}
                                     classNames={{
                                         input: "border-0 focus:border-b focus:border-blue-medium/50 ",
                                     }}
+                                    {...form.getInputProps("address")}
                                 />
                             </Flex>
                         </Grid.Col>
+
+                        <Grid.Col span={{ base: 6, md: 4 }}></Grid.Col>
 
                         <Grid.Col span={{ base: 12 }}>
                             <Flex
@@ -243,9 +281,12 @@ export default function Profile() {
 
                                 <Button
                                     leftSection={<SaveIcon />}
+                                    type="submit"
                                     variant="outline"
                                     className="border-green-normal text-green-normal/70 hover:bg-green-normal/20"
-                                    onClick={() => setReadOnly(true)}
+                                    // onClick={() => {
+                                    //     setReadOnly(true)
+                                    // }}
                                     disabled={readOnly}
                                 >
                                     Save Profile
@@ -256,5 +297,11 @@ export default function Profile() {
                 </form>
             </Flex>
         </Paper>
+    ) : (
+        <div className="flex justify-center items-center h-screen">
+            <Text className="text-2xl font-semibold text-center">
+                Loading...
+            </Text>
+        </div>
     );
 }
