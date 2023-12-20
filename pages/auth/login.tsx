@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "react-query";
 import { toast } from "react-toastify";
 const Cookies = require("js-cookie");
+import { API } from "@/lib/config/env";
 
 export default function Login() {
     const router = useRouter();
@@ -45,35 +46,35 @@ export default function Login() {
         loginForm.reset();
     }
 
-    const googleLoginQuery = useMutation({
-        mutationKey: "login",
-        mutationFn: googleLogin,
-        onSuccess: (data) => {
-            reset();
-            toast.success(data?.message, {
-                position: "bottom-right",
-            });
-            Cookies.set("accessToken", data?.data?.tokens?.accessToken);
-            Cookies.set("refreshToken", data?.data?.tokens?.refreshToken);
-            Cookies.set("user", data?.data?.user.id, {
-                expires: Date.now() + 30 * 60 * 1000,
-            });
-            store.setAuthUser(data?.data?.user);
-            //add toast
-            router.push("/");
-        },
-        onError: (e) => {
-            if (e instanceof AxiosError) {
-                console.log("error", e);
-                toast.error(e?.response?.data?.message, {
-                    position: "bottom-right",
-                });
-            }
-        },
-    });
+    // const googleLoginQuery = useMutation({
+    //     mutationKey: "login",
+    //     mutationFn: googleLogin,
+    //     onSuccess: (data) => {
+    //         reset();
+    //         toast.success(data?.message, {
+    //             position: "bottom-right",
+    //         });
+    //         Cookies.set("accessToken", data?.data?.tokens?.accessToken);
+    //         Cookies.set("refreshToken", data?.data?.tokens?.refreshToken);
+    //         Cookies.set("user", data?.data?.user.id, {
+    //             expires: Date.now() + 30 * 60 * 1000,
+    //         });
+    //         store.setAuthUser(data?.data?.user);
+    //         //add toast
+    //         router.push("/");
+    //     },
+    //     onError: (e) => {
+    //         if (e instanceof AxiosError) {
+    //             console.log("error", e);
+    //             toast.error(e?.response?.data?.message, {
+    //                 position: "bottom-right",
+    //             });
+    //         }
+    //     },
+    // });
 
     const onSubmitGoogleHandler = () => {
-        googleLoginQuery.mutate();
+        router.push(`${API}/auth/signin/google`);
     };
 
     const loginMutation = useMutation({
