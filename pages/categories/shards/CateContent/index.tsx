@@ -31,7 +31,7 @@ export default function CateContent({ data = mock }: CateContentProps) {
             >
                 <div className="flex flex-row items-center gap-3">
                     <Text fw={700} className="text-blue-medium text-2xl">
-                        Small Dog
+                        Small Cat
                     </Text>
                     <Text className="text-black-normal text-sm mt-1">
                         52 puppies
@@ -52,7 +52,7 @@ export default function CateContent({ data = mock }: CateContentProps) {
                     }
                     classNames={{
                         section: "w-fit px-2 py-1 text-center align-middle",
-                        input: "pl-16 sm:ml-2 text-black-normal text-base  font-semibold",
+                        input: "pl-16 sm:ml-2 text-black-normal text-base font-semibold [&>*]:py-2",
                     }}
                     radius="xl"
                     className="w-fit"

@@ -16,7 +16,7 @@ export type FilterPartProps = {
 
 export type FilterCheckBoxItemProps = {
     title: string;
-    items?: { label: string; value: string }[];
+    items?: { label: string; value: string; color?: string }[];
     onClick?: (item: string) => void;
 };
 
@@ -46,7 +46,9 @@ export function FilterCheckBox({
                                 <span className="flex flex-row items-center gap-2">
                                     {title == "Color" ? (
                                         <>
-                                            <div className="min-w-[15px] h-[15px] rounded-full bg-red-normal"></div>
+                                            <div
+                                                className={`min-w-[15px] h-[15px] rounded-full ${element.color} border border-black-light/20`}
+                                            ></div>
                                             {element.label}
                                         </>
                                     ) : (

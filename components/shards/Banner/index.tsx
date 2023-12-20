@@ -56,17 +56,31 @@ function Banner(props: BannerProps) {
             <div className="base-container h-full overflow-hidden">
                 {header}
                 <Flex
-                    gap={{ base: "25px", sm:`${elementReverse ? '1rem': '0px' }` }}
+                    gap={{
+                        base: "25px",
+                        sm: `${elementReverse ? "1rem" : "0px"}`,
+                    }}
                     className="h-full"
-                    direction={{ base: "column", sm: `${elementReverse ? 'row-reverse': 'row' }`  }}
+                    direction={{
+                        base: "column",
+                        sm: `${elementReverse ? "row-reverse" : "row"}`,
+                    }}
                     align={{ base: "center", sm: "center" }}
                 >
                     <Stack gap={"24px"} className="mb-[32px]">
                         <Box>
-                            <Text fw={700} fz={{ base: "42px", lg: "60px" }}>
+                            <Text
+                                className="text-blue-bold"
+                                fw={700}
+                                fz={{ base: "42px", lg: "60px" }}
+                            >
                                 {mainHeading}
                             </Text>
-                            <Text fw={700} fz={{ base: "26px", lg: "46px" }}>
+                            <Text
+                                fw={700}
+                                className="text-blue-bold"
+                                fz={{ base: "26px", lg: "46px" }}
+                            >
                                 {subHeading}
                             </Text>
                         </Box>
