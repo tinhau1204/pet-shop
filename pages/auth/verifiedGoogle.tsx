@@ -6,30 +6,17 @@ import LinkIcon from "@my-images/Link.svg";
 export default function verifiedSignUp() {
     return (
         <div className="bg-gray-100 min-h-screen flex items-center justify-center">
-            <Paper
-                className="h-fit p-8 border border-black-bold/5 w-fit m-auto"
-                radius="md"
-                shadow="lg"
-            >
-                <Flex
-                    direction="column"
-                    justify="center"
-                    align="start"
-                    className="gap-2"
-                >
-                    <Text className="text-black-bold text-3xl font-bold mt-4">
+            <div className="h-fit p-8 border border-black-bold/5 w-fit m-auto rounded-xl shadow-lg">
+                <div className="flex flex-col justify-center items-start gap-2">
+                    <h2 className="text-black-bold text-3xl font-bold mt-4">
                         Congratulations!
-                    </Text>
-                    <Text className="text-black-bold text-sm font-normal">
+                    </h2>
+                    <p className="text-black-bold text-sm font-normal">
                         Your Google account has been linked to our Monito
                         account.
-                    </Text>
-                    <Flex
-                        direction="row"
-                        justify="start"
-                        align="center"
-                        className="gap-2 py-4 px-2"
-                    >
+                    </p>
+
+                    <div className="flex flex-row justify-start items-center gap-2 py-4 px-2">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="48"
@@ -53,21 +40,18 @@ export default function verifiedSignUp() {
                                 d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917"
                             />
                         </svg>
-
                         <LinkIcon className="text-green-normal" />
-
                         <MonitoIcon />
-                    </Flex>
+                    </div>
 
-                    <Button
-                        className="bg-blue-medium"
-                        size="md"
+                    <button
+                        className="bg-blue-medium text-primary font-semibold text-base px-5 py-2 rounded"
                         onClick={() => console.log("go to Login ")}
                     >
                         Continue
-                    </Button>
-                </Flex>
-            </Paper>
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }

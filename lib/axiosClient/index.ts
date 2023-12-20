@@ -17,7 +17,7 @@ client.interceptors.request.use(
             config.url &&
             (config.url.indexOf("/auth/register") >= 0 ||
                 config.url.indexOf("/auth/login") >= 0 ||
-                config.url.indexOf("/accesory/search") >= 0 ||
+                config.url.indexOf("/accessory/search") >= 0 ||
                 config.url.indexOf("/pet/search") >= 0 ||
                 config.url.indexOf("/auth/signin/google") >= 0)
         ) {
