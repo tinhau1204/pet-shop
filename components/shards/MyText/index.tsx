@@ -4,10 +4,11 @@ export type MyTextProps = {
     children?: any;
     styles?: Omit<TextProps, "fz">;
     type: "heading" | "body";
+    className?: string;
 };
 
 function MyText(props: MyTextProps) {
-    const { children, styles, type } = props;
+    const { children, styles, type, className } = props;
     let fz = null;
     if (type === "heading") {
         fz = {
@@ -28,7 +29,7 @@ function MyText(props: MyTextProps) {
     }
 
     return (
-        <Text {...styles} fz={{ ...fz }}>
+        <Text className={className} {...styles} fz={{ ...fz }}>
             {children}
         </Text>
     );

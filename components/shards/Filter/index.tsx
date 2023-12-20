@@ -23,22 +23,14 @@ const data = [
         name: "Color",
         type: "checkbox",
         items: [
-            { value: "red", label: "Red" },
-            { value: "apricot", label: "Apricot" },
-            { value: "black", label: "Black" },
-            { value: "blackandwhite", label: "Black & White" },
-            { value: "silver", label: "Silver" },
-            { value: "tan", label: "Tan" },
+            { value: "red", label: "Red", color: "bg-red-normal" },
+            { value: "blue", label: "Apricot", color: "bg-blue-light" },
+            { value: "black", label: "Black", color: "bg-black-bold" },
+            { value: "gray", label: "Black & White", color: "bg-black-light" },
+            { value: "white", label: "White", color: "primary" },
         ],
     },
-    {
-        name: "Price",
-        type: "value",
-        items: [
-            { value: "min", label: "Min" },
-            { value: "max", label: "Max" },
-        ],
-    },
+
     {
         name: "Breed",
         type: "checkbox",

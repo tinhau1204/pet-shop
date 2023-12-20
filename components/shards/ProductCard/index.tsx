@@ -1,39 +1,50 @@
-import { AspectRatio, Box, Card, Group, Stack, Text } from "@mantine/core";
+import {
+    ActionIcon,
+    AspectRatio,
+    Box,
+    Card,
+    Group,
+    Stack,
+    Text,
+} from "@mantine/core";
 import mock from "./mock.json";
 import GiftImage from "@my-images/product/gift.png";
 import Image from "next/image";
 import { useRouter } from "next/router";
-
-export type PetType = {
-    imageUrl: string;
-    name: string;
-    gene: string;
-    age: string;
-    price: string;
-};
-
-export type AccessoryType = {
-    imageUrl: string;
-    name: string;
-    type: string;
-    size: string;
-    price: string;
-    promotion: string;
-};
+import CartIcon from "@my-images/Cart.svg";
+import { petsData, accessoriesData } from "@/lib/api/types";
 
 export type ProductCardProps = {
-    data?: PetType | AccessoryType;
-    productType?: PetType | AccessoryType;
+    data?: petsData | accessoriesData;
     classContainer?: string;
 };
 
 function ProductCard(props: ProductCardProps) {
-    const { data = mock.accessory, classContainer } = props;
+    const { data, classContainer } = props;
     const router = useRouter();
+
+    function checkGene(gene: boolean) {
+        if (gene) {
+            return "Male";
+        } else {
+            return "Female";
+        }
+    }
+
+    function formatPrice(price: string | number | undefined) {
+        return price?.toLocaleString("it-IT", {
+            style: "currency",
+            currency: "VND",
+        });
+    }
+
+    function addToCart(id?: number) {
+        console.log("add to cart ", id);
+    }
 
     return (
         <Box
-            className={`px-[10px] ${classContainer} max-w-[280px] w-full`}
+            className={`relative px-[10px] ${classContainer} max-w-[280px] w-full group z-10 `}
             // w={{
             //     base: "100%",
             //     xs: "50%",
@@ -42,15 +53,22 @@ function ProductCard(props: ProductCardProps) {
             //     xl: "25%",
             // }}
         >
+            <ActionIcon
+                size="lg"
+                className="absolute z-20 right-0 top-0 bg-blue-bold group-hover:animate-bounce"
+                onClick={() => addToCart(data?.id)}
+            >
+                <CartIcon className="font-bold" />
+            </ActionIcon>
             <Card
                 shadow="0px 4px 28px -2px rgba(0, 0, 0, 0.08)"
                 radius={12}
-                className="w-full items-center p-2"
+                className="w-full items-center p-2 group-hover:scale-[1.01] z-10"
             >
                 <AspectRatio ratio={1} className="!w-full !max-w-[264px]">
                     <Image
                         alt="image"
-                        src={data.imageUrl}
+                        src={""}
                         fill
                         className="!object-contain !rounded-[12px]"
                         sizes="auto"
@@ -60,7 +78,7 @@ function ProductCard(props: ProductCardProps) {
                     gap={"8px"}
                     className="px-[8px] pt-[8px] pb-[12px] w-full max-w-[264px]"
                 >
-                    {data.name && (
+                    {data?.name && (
                         <Text
                             fw={700}
                             fz={"16px"}
@@ -72,39 +90,51 @@ function ProductCard(props: ProductCardProps) {
                         </Text>
                     )}
                     <Group fz={"12px"}>
-                        {((data as PetType).gene ||
-                            (data as AccessoryType).type) && (
+                        {((data as petsData) || (data as accessoriesData)) && (
                             <Group gap={"6px"}>
                                 <Text inherit>
-                                    {(data as PetType).gene
+                                    {(data as petsData).type.name
                                         ? "Gene:"
                                         : "Product:"}
                                 </Text>
+
                                 <Text inherit c={"dimmed"} fw={700}>
-                                    {(data as PetType).gene ||
-                                        (data as AccessoryType).type}
+                                    {checkGene(
+                                        (data as petsData).isMale,
+                                    ).toString() ||
+                                        ((data as accessoriesData).type &&
+                                            (data as accessoriesData).type
+                                                .name)}
                                 </Text>
                             </Group>
                         )}
-                        {((data as PetType).age ||
-                            (data as AccessoryType).size) && (
+
+                        {((data as petsData).age ||
+                            (data as accessoriesData).stock_quantity) && ( //add accessories product weight
                             <Group gap={"6px"}>
                                 <Text inherit>
-                                    {(data as PetType).gene ? "Age:" : "Size:"}
+                                    {(data as petsData).age ? "Age:" : "Size:"}
                                 </Text>
                                 <Text inherit c={"dimmed"} fw={700}>
-                                    {(data as PetType).age ||
-                                        (data as AccessoryType).size}
+                                    {
+                                        (data as petsData).age ||
+                                            (data as accessoriesData)
+                                                .stock_quantity
+                                        //change stock_quantity to weight
+                                    }
                                 </Text>
                             </Group>
                         )}
                     </Group>
-                    {data.price && (
+                    {((data as petsData) || (data as accessoriesData))
+                        .price && (
                         <Text fw={700} fz={"14px"}>
-                            {data.price} VND
+                            {formatPrice(data?.price)}
                         </Text>
                     )}
-                    {(data as AccessoryType).promotion ? (
+
+                    {/* add this later */}
+                    {/* {(data as AccessoryType).promotion ? (
                         <Group
                             className="px-[10px] py-[6px] bg-yellow-light rounded-[8px]"
                             wrap="nowrap"
@@ -132,7 +162,7 @@ function ProductCard(props: ProductCardProps) {
                                 {(data as AccessoryType).promotion}
                             </Text>
                         </Group>
-                    )}
+                    )} */}
                 </Stack>
             </Card>
         </Box>
