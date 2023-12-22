@@ -1,4 +1,4 @@
-import { accountLogin, googleLogin } from "@/lib/api";
+import { accountLogin, googleLogin, accountLoginWithGoogle } from "@/lib/api";
 import useCookie from "@/lib/hooks/useCookie/useCookie";
 import useStore from "@/lib/store";
 import {
@@ -19,6 +19,11 @@ import { useMutation, useQuery } from "react-query";
 import { toast } from "react-toastify";
 const Cookies = require("js-cookie");
 import { API } from "@/lib/config/env";
+import {
+    GoogleLogin,
+    GoogleOAuthProvider,
+    useGoogleLogin,
+} from "@react-oauth/google";
 
 export default function Login() {
     const router = useRouter();
@@ -120,6 +125,19 @@ export default function Login() {
         loginMutation.mutate(login);
     };
 
+    // const login = useGoogleLogin({
+    //     onSuccess: async (codeResponse) => {
+    //         const code = codeResponse.code;
+    //         const result = await accountLoginWithGoogle(code);
+    //         console.log("result :>> ", result);
+    //     },
+    //     flow: "auth-code",
+    // });
+    const login = async () => {
+        const result = await accountLoginWithGoogle("hello");
+        console.log("result :>> ", result);
+    };
+
     return (
         <div className="bg-gray-100 min-h-screen flex items-center justify-center">
             <Paper
@@ -211,10 +229,9 @@ export default function Login() {
                         </div>
 
                         <Stack>
-                            <Button
+                            <button
                                 className="w-full text-white "
-                                variant="outline"
-                                onClick={onSubmitGoogleHandler}
+                                onClick={login}
                             >
                                 <div className="flex items-center justify-center">
                                     <svg
@@ -252,7 +269,7 @@ export default function Login() {
                                     </svg>
                                     Continue with Google
                                 </div>
-                            </Button>
+                            </button>
                             <Button
                                 className="w-full  hover:bg-blue-light/75"
                                 variant="filled"

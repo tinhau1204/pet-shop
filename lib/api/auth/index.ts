@@ -22,6 +22,12 @@ export async function accountLogin(user: accountLoginData) {
     return await client.post("/auth/login", user).then((res) => res.data);
 }
 
+export async function accountLoginWithGoogle(code: string) {
+    return await client
+        .post("/auth/signin/google", {}, { headers: { ["auth-code"]: code } })
+        .then((res) => res.data);
+}
+
 export async function refreshToken(refreshToken: string) {
     return await client
         .post("auth/refresh-token", { refreshToken: refreshToken })

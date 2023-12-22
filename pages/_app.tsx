@@ -21,6 +21,7 @@ import BreadCrumbs from "@/components/shards/BreadCrumbs";
 import React, { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const myFont = localFont({
     src: [
@@ -89,7 +90,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 function Layout({ children }: any) {
     return (
-        <>
+        <GoogleOAuthProvider
+            clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
+        >
             <div className="base-container">
                 <Header />
                 <BreadCrumbs
@@ -105,15 +108,17 @@ function Layout({ children }: any) {
                 {children}
                 <Footer />
             </div>
-        </>
+        </GoogleOAuthProvider>
     );
 }
 
 function LoginLayout({ children }: any) {
     return (
-        <>
+        <GoogleOAuthProvider
+            clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
+        >
             <div className="base-container">{children}</div>
-        </>
+        </GoogleOAuthProvider>
     );
 }
 export default MyApp;
