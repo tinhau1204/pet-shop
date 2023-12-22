@@ -56,6 +56,7 @@ export type accessoriesData = {
     description_images: string[];
     origin: string;
     description: string;
+    weight: number;
     type_id: number;
     state: string;
     created_at: string;
@@ -71,6 +72,73 @@ export type accessoriesData = {
         deleted_at?: string;
     };
 };
+
+export type petTypesData = {
+    id: number;
+    name: string;
+    parent_id?: number | null;
+    state: "ACTIVE" | "INACTIVE";
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+    pets: [
+        {
+            id: number;
+            sku: string;
+            name: string;
+            stock_quantity: number;
+            price: number;
+            thumbnail_image: string;
+            description_images: string[];
+            age: number;
+            isMale: boolean;
+            color: string;
+            weight: number;
+            height: number;
+            birthday: string;
+            origin: string;
+            description: string;
+            type_id: number;
+            state: string;
+            created_at: string;
+            updated_at: string;
+            deleted_at?: string | null;
+        }
+    ],
+    parent?: string | null;
+    children?: string[];
+}
+
+export type accessoriesTypesData = {
+    id: number;
+    name: string;
+    parent_id?: number | null;
+    state: "ACTIVE" | "INACTIVE";
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+    accessories: [
+        {
+            id: number;
+            sku: string;
+            name: string;
+            stock_quantity: number;
+            price: number;
+            thumbnail_image: string;
+            description_images: string[];
+            origin: string;
+            description: string;
+            weight: number;
+            type_id: number;
+            state: string;
+            created_at: string;
+            updated_at: string;
+            deleted_at?: string;
+        }
+    ]
+    parent?: string | null;
+    children?: string[];
+}
 
 export interface GenericResponse {
     status: string;

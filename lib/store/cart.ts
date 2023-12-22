@@ -8,12 +8,12 @@ interface CartItem extends petsData, accessoriesData {
 export type CartStore = {
     cart: CartItem[];
     count: () => number;
-    add: (product: petsData | accessoriesData) => void;
+    add: (product: petsData | accessoriesData | undefined) => void;
     remove: (idProduct: number) => void;
     removeAll: () => void;
 };
 
-export const userCartStore = create<CartStore>((set, get) => ({
+export const useCartStore = create<CartStore>((set, get) => ({
     cart: [],
     count: () => {
         const { cart } = get();
@@ -24,7 +24,8 @@ export const userCartStore = create<CartStore>((set, get) => ({
         }
         return 0;
     },
-    add: (product: petsData | accessoriesData) => {
+    add: (product: petsData | accessoriesData | undefined) => {
+        console.log("product :>> ", product)
         const { cart } = get();
         const updatedCart = updateCart(product, cart);
         set({ cart: updatedCart });
@@ -38,15 +39,15 @@ export const userCartStore = create<CartStore>((set, get) => ({
 }));
 
 function updateCart(
-    product: petsData | accessoriesData,
+    product: petsData | accessoriesData | undefined,
     cart: CartItem[],
 ): CartItem[] {
     const cartItem = { ...product, count: 1 } as CartItem;
-    const productOnCart = cart.map((item) => item.id).includes(product.id);
+    const productOnCart = cart.map((item) => item.id).includes((product?.id || 1));
     if (!productOnCart) cart.push(cartItem);
     else {
         return cart.map((item) => {
-            if (item.id === product.id) {
+            if (item.id === product?.id) {
                 return { ...item, count: item.count + 1 } as CartItem;
             }
             return item;

@@ -13,6 +13,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import CartIcon from "@my-images/Cart.svg";
 import { petsData, accessoriesData } from "@/lib/api/types";
+import { useCartStore } from "@/lib/store/cart";
 
 export type ProductCardProps = {
     data?: petsData | accessoriesData;
@@ -22,6 +23,7 @@ export type ProductCardProps = {
 function ProductCard(props: ProductCardProps) {
     const { data, classContainer } = props;
     const router = useRouter();
+    const { add: handleAddToCart } = useCartStore();
 
     function checkGene(gene: boolean) {
         if (gene) {
@@ -38,25 +40,55 @@ function ProductCard(props: ProductCardProps) {
         });
     }
 
-    function addToCart(id?: number) {
-        console.log("add to cart ", id);
+    function formatWeight(weight: number) {
+        if (weight < 1000) {
+            return `${weight}g`;
+        } else if (weight >= 1000 && weight < 1000000) {
+            return `${weight / 1000}kg`;
+        }
     }
+
+    function formatAge(birthday: string) {
+        const birthDate = new Date(birthday);
+        const currentDate = new Date();
+
+        let age = currentDate.getFullYear() - birthDate.getFullYear();
+
+        if (
+            currentDate.getMonth() < birthDate.getMonth() ||
+            (currentDate.getMonth() === birthDate.getMonth() &&
+                currentDate.getDate() < birthDate.getDate())
+        ) {
+            age--;
+        }
+
+        return age;
+    }
+
+    function Age(age: string) {
+        if (formatAge(age) < 1) {
+            return "Newborn";
+        } else {
+            return `${formatAge(age)} years`;
+        }
+    }
+
 
     return (
         <Box
             className={`relative px-[10px] ${classContainer} max-w-[280px] w-full group z-10 `}
-            // w={{
-            //     base: "100%",
-            //     xs: "50%",
-            //     md: "33.33%",
-            //     lg: "25%",
-            //     xl: "25%",
-            // }}
+        // w={{
+        //     base: "100%",
+        //     xs: "50%",
+        //     md: "33.33%",
+        //     lg: "25%",
+        //     xl: "25%",
+        // }}
         >
             <ActionIcon
                 size="lg"
                 className="absolute z-20 right-0 top-0 bg-blue-bold group-hover:animate-bounce"
-                onClick={() => addToCart(data?.id)}
+                onClick={() => handleAddToCart((data as petsData).isMale !== undefined ? (data as petsData) : (data as accessoriesData))}
             >
                 <CartIcon className="font-bold" />
             </ActionIcon>
@@ -68,7 +100,7 @@ function ProductCard(props: ProductCardProps) {
                 <AspectRatio ratio={1} className="!w-full !max-w-[264px]">
                     <Image
                         alt="image"
-                        src={""}
+                        src={`/${data?.thumbnail_image}` || mock.pet.imageUrl}
                         fill
                         className="!object-contain !rounded-[12px]"
                         sizes="auto"
@@ -84,7 +116,10 @@ function ProductCard(props: ProductCardProps) {
                             fz={"16px"}
                             lineClamp={1}
                             className="max-w-[12.5rem] sm:max-w-fit hover:underline hover:cursor-pointer"
-                            onClick={() => router.push("/products/[id]")}
+                            onClick={() => {
+                                const productType = (data as petsData).isMale ? 'pet' : 'accessory';
+                                router.push(`/products/${productType}/${data.id}`)
+                            }}
                         >
                             {data.name}
                         </Text>
@@ -93,7 +128,7 @@ function ProductCard(props: ProductCardProps) {
                         {((data as petsData) || (data as accessoriesData)) && (
                             <Group gap={"6px"}>
                                 <Text inherit>
-                                    {(data as petsData).type.name
+                                    {(data as petsData)?.type?.name
                                         ? "Gene:"
                                         : "Product:"}
                                 </Text>
@@ -109,29 +144,31 @@ function ProductCard(props: ProductCardProps) {
                             </Group>
                         )}
 
-                        {((data as petsData).age ||
-                            (data as accessoriesData).stock_quantity) && ( //add accessories product weight
-                            <Group gap={"6px"}>
-                                <Text inherit>
-                                    {(data as petsData).age ? "Age:" : "Size:"}
-                                </Text>
-                                <Text inherit c={"dimmed"} fw={700}>
-                                    {
-                                        (data as petsData).age ||
-                                            (data as accessoriesData)
-                                                .stock_quantity
-                                        //change stock_quantity to weight
-                                    }
-                                </Text>
-                            </Group>
-                        )}
+                        {((data as petsData).birthday ||
+                            (data as accessoriesData).weight) && (
+                                <Group gap={"6px"}>
+                                    <Text inherit>
+                                        {(data as petsData).age ? "Age:" : "Size:"}
+                                    </Text>
+                                    <Text inherit c={"dimmed"} fw={700}>
+                                        {
+                                            (data as petsData)?.birthday ? (
+                                                (Age((data as petsData)?.birthday))
+                                            ) : (
+                                                formatWeight((data as accessoriesData)
+                                                    ?.weight)
+                                            )
+                                        }
+                                    </Text>
+                                </Group>
+                            )}
                     </Group>
                     {((data as petsData) || (data as accessoriesData))
                         .price && (
-                        <Text fw={700} fz={"14px"}>
-                            {formatPrice(data?.price)}
-                        </Text>
-                    )}
+                            <Text fw={700} fz={"14px"}>
+                                {formatPrice(data?.price)}
+                            </Text>
+                        )}
 
                     {/* add this later */}
                     {/* {(data as AccessoryType).promotion ? (

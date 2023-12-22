@@ -15,15 +15,19 @@ client.interceptors.request.use(
     async (config) => {
         if (
             config.url &&
-            (config.url.indexOf("/auth/register") >= 0 ||
-                config.url.indexOf("/auth/login") >= 0 ||
-                config.url.indexOf("/accessory/search") >= 0 ||
-                config.url.indexOf("/pet/search") >= 0 ||
-                config.url.indexOf("/auth/signin/google") >= 0)
+            (config.url.search("/auth/register") >= 0 ||
+                config.url.search("/auth/login") >= 0 ||
+                config.url.search("/accessory/search") >= 0 ||
+                config.url.search("/pet/search") >= 0 ||
+                config.url.search("/pet-type/search") >= 0 ||
+                config.url.search("/accessory-type/search") >= 0 ||
+                config.url.search("/auth/signin/google") >= 0 ||
+                config.url.search(/\/pet.+/ig) >= 0 ||
+                config.url.search(/\/accessory.+/ig) >= 0
+            )
         ) {
             return config;
         }
-
         if (!isRefreshing) {
             isRefreshing = true;
             client.defaults.headers.common[
@@ -42,7 +46,7 @@ client.interceptors.request.use(
                     accessTokenResponse &&
                     accessTokenResponse?.data == null
                 ) {
-                    return config;
+                    config.headers.set("Authorization", `Bearer ${Cookies.get("accessToken")}`)
                 }
             } catch (error) {
                 // Handle token refresh error, e.g., redirect to login page

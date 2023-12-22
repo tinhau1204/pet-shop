@@ -20,9 +20,7 @@ import { toast } from "react-toastify";
 const Cookies = require("js-cookie");
 import { API } from "@/lib/config/env";
 import {
-    GoogleLogin,
-    GoogleOAuthProvider,
-    useGoogleLogin,
+    useGoogleLogin
 } from "@react-oauth/google";
 
 export default function Login() {
@@ -50,37 +48,6 @@ export default function Login() {
     function reset() {
         loginForm.reset();
     }
-
-    // const googleLoginQuery = useMutation({
-    //     mutationKey: "login",
-    //     mutationFn: googleLogin,
-    //     onSuccess: (data) => {
-    //         reset();
-    //         toast.success(data?.message, {
-    //             position: "bottom-right",
-    //         });
-    //         Cookies.set("accessToken", data?.data?.tokens?.accessToken);
-    //         Cookies.set("refreshToken", data?.data?.tokens?.refreshToken);
-    //         Cookies.set("user", data?.data?.user.id, {
-    //             expires: Date.now() + 30 * 60 * 1000,
-    //         });
-    //         store.setAuthUser(data?.data?.user);
-    //         //add toast
-    //         router.push("/");
-    //     },
-    //     onError: (e) => {
-    //         if (e instanceof AxiosError) {
-    //             console.log("error", e);
-    //             toast.error(e?.response?.data?.message, {
-    //                 position: "bottom-right",
-    //             });
-    //         }
-    //     },
-    // });
-
-    const onSubmitGoogleHandler = () => {
-        router.push(`${API}/auth/signin/google`);
-    };
 
     const loginMutation = useMutation({
         mutationKey: "login",
@@ -125,19 +92,33 @@ export default function Login() {
         loginMutation.mutate(login);
     };
 
-    // const login = useGoogleLogin({
-    //     onSuccess: async (codeResponse) => {
-    //         const code = codeResponse.code;
-    //         const result = await accountLoginWithGoogle(code);
-    //         console.log("result :>> ", result);
-    //     },
-    //     flow: "auth-code",
-    // });
-    const login = async () => {
-        const result = await accountLoginWithGoogle("hello");
-        console.log("result :>> ", result);
-    };
+    const login = useGoogleLogin({
+        onSuccess: async (codeResponse: any) => {
+            try {
+                console.log('codeResponse :>> ', codeResponse)
+                const code = codeResponse?.code;
+                const result = await accountLoginWithGoogle(code);
 
+                if (result) {
+                    toast.success(result?.message, {
+                        position: "bottom-right",
+                    });
+                    Cookies.set("accessToken", result?.data?.tokens?.accessToken);
+                    Cookies.set("refreshToken", result?.data?.tokens?.refreshToken);
+                    Cookies.set("user", result?.data?.user.id, {
+                        expires: Date.now() + 30 * 60 * 1000,
+                    });
+                    store.setAuthUser(result?.data?.user);
+                    //add toast
+                    router.push("/");
+                }
+
+            } catch (e) {
+                console.error('error', e)
+            }
+        },
+        flow: "auth-code",
+    });
     return (
         <div className="bg-gray-100 min-h-screen flex items-center justify-center">
             <Paper

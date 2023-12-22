@@ -7,6 +7,7 @@ import { useQuery } from "react-query";
 import { getAccessories, getPet } from "@/lib/api/product";
 import { accessoriesData, petsData } from "@/lib/api/types";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export type MyCarouselProps = {
     heading?: string;
@@ -14,11 +15,13 @@ export type MyCarouselProps = {
     carouselType?: "pets" | "accessories";
     data?: typeof mock;
     button?: JSX.Element;
+    onClick?: (type: string) => void;
 };
 
 function MyCarousel(props: MyCarouselProps) {
     const [pets, setPets] = useState<petsData[] | []>([]);
     const [accessories, setAccessories] = useState<accessoriesData[] | []>([]);
+    const router = useRouter();
     const getPetsQuery = useQuery({
         queryKey: "getPet",
         queryFn: () => getPet(),
@@ -47,12 +50,15 @@ function MyCarousel(props: MyCarouselProps) {
         question = "Whats new?",
         heading = "Take a look at some of our pets",
         carouselType = "pets",
-        data = mock,
         button = (
             <Button
                 className="!bg-[transparent] !text-black-bold !border-blue-bold !py-[14px] !px-[28px] !h-[48px]"
                 radius={"57px"}
                 rightSection={<ChevronRight />}
+                onClick={() => {
+                    props.onClick && props.onClick(carouselType)
+                    router.push(`/categories/${carouselType}`)
+                }}  
             >
                 View More
             </Button>
@@ -78,7 +84,7 @@ function MyCarousel(props: MyCarouselProps) {
             </Group>
             <Grid>
                 {carouselType == "pets" && getPetsQuery.data
-                    ? pets.map((item) => (
+                    ? getPetsQuery?.data?.map((item) => (
                           <Grid.Col
                               span={{ base: 6, xs: 6, sm: 4, md: 3 }}
                               key={item.id}
@@ -86,7 +92,7 @@ function MyCarousel(props: MyCarouselProps) {
                               <ProductCard data={item} />
                           </Grid.Col>
                       ))
-                    : accessories.map((item) => (
+                    : getAccessoriesQuery?.data?.map((item) => (
                           <Grid.Col
                               span={{ base: 6, xs: 6, sm: 4, md: 3 }}
                               key={item.id}

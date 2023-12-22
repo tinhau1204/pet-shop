@@ -6,6 +6,7 @@ import MyCarousel from "@/components/shards/MyCarousel";
 import useStore from "@/lib/store";
 import { Group, Stack } from "@mantine/core";
 import { useEffect } from "react";
+import { useQuery } from "react-query";
 const Cookies = require("js-cookie");
 
 type PageProps = {
@@ -13,6 +14,7 @@ type PageProps = {
 };
 
 export default function Page(props: PageProps) {
+
     return (
         <Stack gap={"60px"}>
             <Banner />

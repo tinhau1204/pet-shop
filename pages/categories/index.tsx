@@ -1,15 +1,16 @@
 import Banner from "@/components/shards/Banner";
 import BannerImage from "@my-images/banner/banner_3.png";
-type PageProps = {
-    [name: string]: any;
-};
 import CateContent from "./shards/CateContent";
 import Filter from "@/components/shards/Filter";
 import FilterPart from "@/components/shards/Filter/FilterPart";
 import { Flex } from "@mantine/core";
 
+type PageProps = {
+    [name: string]: any;
+};
 export default function Page(props: PageProps) {
     // Render data...
+
     return (
         <section id="categories" className="mb-4">
             {/* <p className="font-bold">Page: {props.page}</p> */}
@@ -25,7 +26,7 @@ export default function Page(props: PageProps) {
                 direction={{ base: "row-reverse", sm: "row" }}
             >
                 <Filter />
-                <CateContent />
+                {/* <CateContent data={} slug={}/> */}
             </Flex>
         </section>
     );
@@ -34,5 +35,6 @@ export default function Page(props: PageProps) {
 // This gets called on every request
 export async function getServerSideProps() {
     // Pass data to the page via props
+
     return { props: { page: "category" } };
 }

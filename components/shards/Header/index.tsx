@@ -90,7 +90,7 @@ function Header(props: HeaderProps) {
 
     useEffect(() => {
         const intervalId = setInterval(() => {
-            setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+            setIsMobile(window.matchMedia("(max-width: 767px)").matches);
         }, 200); // Adjust the interval time as needed
 
         if (authUser !== null) {
@@ -266,8 +266,9 @@ function Header(props: HeaderProps) {
                                     leftSection={
                                         <CartCheckedIcon className="w-4 h-4 text-black-medium/50" />
                                     }
+                                    onClick={() => router.push("/order/history")}
                                 >
-                                    Cart History
+                                    Order History
                                 </Menu.Item>
 
                                 <Menu.Divider />
