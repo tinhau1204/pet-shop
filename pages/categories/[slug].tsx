@@ -23,7 +23,6 @@ export default function Page(props: PageProps) {
         queryKey: ['pets'],
         queryFn: getPet,
         onSuccess: (data) => {
-            console.log(data)
         },
         onError: (error) => {
             console.log(error)
@@ -44,7 +43,6 @@ export default function Page(props: PageProps) {
     })
 
     useEffect(() => {
-        console.log('check filter', filter)
         if (filter.length > 0) {
             function handleFilterData(data: petsData[] | accessoriesData[]) {
                 if (props.slug === 'pets') {

@@ -23,8 +23,6 @@ export type CateContentProps = {
 export default function CateContent({ data, slug }: CateContentProps) {
     const pagination = usePagination({ total: 28, initialPage: 1 });
 
-    console.log('check data', data);
-
     return (
         <section id="cate-content" className="w-full h-full mt-8 ">
             <Flex
