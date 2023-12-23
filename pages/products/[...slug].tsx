@@ -84,8 +84,10 @@ function CardImage({ image, alt }: { image: string; alt: string }) {
 
 export default function Page(props: PageProps) {
     const router = useRouter();
-    const [element, setElement] = React.useState<any>([]);
+    const [petTable, setPetTable] = React.useState<any>([]);
+    const [accessTable, setAccessTable] = React.useState<any>([]);
     const { add: handleAddToCart } = useCartStore();
+    const [shouldRefetch, setShouldRefetch] = React.useState<boolean>(false);
 
     const { slug } = router.query;
 
@@ -94,13 +96,11 @@ export default function Page(props: PageProps) {
         queryFn: () => getPetById(parseInt(slug?.[1] as string)),
         onSuccess: (data) => {
             const result = convertData(data.data, petMapping);
-            setElement(result);
-            console.log("result", result);
+            setPetTable(result);
         },
         onError: (error) => {
-            console.log(error);
+            console.error(error);
         },
-        refetchOnMount: true,
         refetchOnWindowFocus: false,
     });
 
@@ -109,13 +109,11 @@ export default function Page(props: PageProps) {
         queryFn: () => getAccessoriesById(parseInt(slug?.[1] as string)),
         onSuccess: (data) => {
             const result = convertData(data.data, accessMapping);
-            setElement(result);
-            console.log("result", result);
+            setAccessTable(result);
         },
         onError: (error) => {
-            console.log(error);
+            console.error(error);
         },
-        refetchOnMount: true,
         refetchOnWindowFocus: false,
     });
 
@@ -124,40 +122,36 @@ export default function Page(props: PageProps) {
     };
 
     useEffect(() => {
-        // This effect will run when the component mounts
-        // You can also put logic here if you need to do something else
-
-        // Trigger a refetch only if the query is not loading
-        if (slug?.[0] === "pet" && !petDetailQuery.isLoading) {
-            petDetailQuery.refetch();
-        } else if (slug?.[0] === "accessory" && !accessoriesQuery.isLoading) {
-            accessoriesQuery.refetch();
+        if (shouldRefetch) {
+            // Trigger a refetch only if the query is not loading
+            if (slug?.[0] === "pet" && !petDetailQuery.isLoading) {
+                petDetailQuery.refetch();
+            }
+            // Set shouldRefetch to false to prevent future refetches
+            setShouldRefetch(false);
         }
-    }, [slug, accessoriesQuery, petDetailQuery]);
+    }, [shouldRefetch, slug, petDetailQuery]);
+
+    useEffect(() => {
+        if (shouldRefetch) {
+            if (slug?.[0] === "accessory" && !accessoriesQuery.isLoading) {
+                accessoriesQuery.refetch();
+            }
+            setShouldRefetch(false);
+        }
+    }, [shouldRefetch, slug, accessoriesQuery]);
+
+    useEffect(() => {
+        // Set shouldRefetch to true whenever the location changes
+        // (i.e., when navigating from another page)
+        setShouldRefetch(true);
+    }, []);
+
     const guarantee = [
         { icon: <HeathGIcon />, title: "100% health guarantee for pets" },
         {
             icon: <GuaranteeIcon />,
             title: "100% guarantee of pet identification",
-        },
-    ];
-
-    const elements = [
-        { title: "SKU", content: ": #1000078" },
-        { title: "Gender", content: ": Female" },
-        { title: "Age", content: ": 2 months" },
-        { title: "Size", content: ": Small" },
-        { title: "Color", content: ": Appricot & Tan" },
-        { title: "Vaccinated", content: ": Yes" },
-        { title: "Dewormed", content: ": Yes" },
-        { title: "Cert", content: ": Yes (MKA)" },
-        { title: "Microchip", content: ": Yes" },
-        { title: "Location", content: ": Vietnam" },
-        { title: "Published Date", content: ": 12-Oct-2022" },
-        {
-            title: "Additional Information",
-            content:
-                ": Pure breed Shih Tzu. Good body structure. With MKA cert and Microchip. Father from champion lineage.",
         },
     ];
 
@@ -221,6 +215,7 @@ export default function Page(props: PageProps) {
         stock_quantity: "stock_quantity",
         weight: "Weight",
         type: "Type",
+        description: "Description",
         // Add more mappings as needed
     };
 
@@ -244,7 +239,11 @@ export default function Page(props: PageProps) {
                     } else if (key === "age") {
                         value = `${value} months`;
                     } else if (key === "weight") {
-                        value = `${value / 1000} kg`;
+                        if (value < 1000) {
+                            value = `${value} g`;
+                        } else {
+                            value = `${value / 1000} kg`;
+                        }
                     } else if (key === "birthday") {
                         value = dayjs(value).format("DD/MM/YYYY");
                     }
@@ -402,8 +401,8 @@ export default function Page(props: PageProps) {
                                 <Table.Tbody>
                                     {slug?.[0] === "pet" &&
                                         (petDetailQuery.data &&
-                                        element.length > 0 ? (
-                                            element?.map((element: any) => (
+                                        petTable.length > 0 ? (
+                                            petTable?.map((element: any) => (
                                                 <Table.Tr key={element.title}>
                                                     <Table.Td className="text-black-normal">
                                                         {element.title}
@@ -418,8 +417,8 @@ export default function Page(props: PageProps) {
                                         ))}
                                     {slug?.[0] === "accessory" &&
                                         (accessoriesQuery.data &&
-                                        element.length > 0 ? (
-                                            element?.map((element: any) => (
+                                        accessTable.length > 0 ? (
+                                            accessTable?.map((element: any) => (
                                                 <Table.Tr key={element.title}>
                                                     <Table.Td className="text-black-normal">
                                                         {element.title}

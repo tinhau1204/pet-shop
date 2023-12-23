@@ -79,7 +79,6 @@ function Header(props: HeaderProps) {
         mutationKey: "logout",
         mutationFn: accountLogout,
         onSuccess: (data) => {
-            console.log("logout success", data);
             toast.success(data?.message);
             handleLogout();
         },
@@ -266,7 +265,9 @@ function Header(props: HeaderProps) {
                                     leftSection={
                                         <CartCheckedIcon className="w-4 h-4 text-black-medium/50" />
                                     }
-                                    onClick={() => router.push("/order/history")}
+                                    onClick={() =>
+                                        router.push("/order/history")
+                                    }
                                 >
                                     Order History
                                 </Menu.Item>
