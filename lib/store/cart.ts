@@ -52,7 +52,7 @@ function updateCart(
     const productOnCart = cart.some(
         (item) =>
             item.id === (product?.id || 1) &&
-            item.type.parent.name === (product?.type.parent.name || ""),
+            item.type?.parent?.name === (product?.type.parent.name || ""),
     );
     if (!productOnCart) cart.push(cartItem);
     else {
