@@ -67,7 +67,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         return () => {
             setIsLogin(false);
         };
-    },[setIsLogin]);
+    }, [setIsLogin]);
     return (
         <MantineProvider withCssVariables={false} theme={theme}>
             <Provider store={store}>
