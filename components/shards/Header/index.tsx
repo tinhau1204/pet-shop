@@ -79,7 +79,6 @@ function Header(props: HeaderProps) {
         mutationKey: "logout",
         mutationFn: accountLogout,
         onSuccess: (data) => {
-            console.log("logout success", data);
             toast.success(data?.message);
             handleLogout();
         },

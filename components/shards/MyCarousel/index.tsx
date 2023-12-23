@@ -29,7 +29,7 @@ function MyCarousel(props: MyCarouselProps) {
             setPets(data);
         },
         onError: (err) => {
-            console.log("error ", err);
+            console.error("error ", err);
         },
         refetchOnWindowFocus: false,
     });
@@ -41,7 +41,7 @@ function MyCarousel(props: MyCarouselProps) {
             setAccessories(data);
         },
         onError: (err) => {
-            console.log("error ", err);
+            console.error("error ", err);
         },
         refetchOnWindowFocus: false,
     });

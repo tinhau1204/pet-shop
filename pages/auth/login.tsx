@@ -95,7 +95,6 @@ export default function Login() {
     const login = useGoogleLogin({
         onSuccess: async (codeResponse: any) => {
             try {
-                console.log('codeResponse :>> ', codeResponse)
                 const code = codeResponse?.code;
                 const result = await accountLoginWithGoogle(code);
 

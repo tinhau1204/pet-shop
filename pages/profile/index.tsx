@@ -40,8 +40,8 @@ export default function Profile() {
     const store = useStore();
     const router = useRouter();
     const cookieUser = Cookies.get("user");
-    console.log("check cookieUser", cookieUser);
     const user = store.authUser;
+    const [isRefetch, setIsRefetch] = React.useState(false)
 
     const form = useForm({
         initialValues: {
@@ -76,8 +76,16 @@ export default function Profile() {
     });
 
     useEffect(() => {
-        getUserQuery;
-    }, [getUserQuery]);
+        if (isRefetch) {
+            getUserQuery.refetch();
+            setIsRefetch(false)
+        }
+        
+    }, [getUserQuery, isRefetch]);
+
+    useEffect(() => {
+        setIsRefetch(true)
+    },[])
 
     const dataTotal = [
         { totalName: "Total Bought", totalNum: 10 },
