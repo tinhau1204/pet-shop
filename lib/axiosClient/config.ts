@@ -2,10 +2,11 @@ import { API } from "@lib/config/env";
 import { AxiosRequestConfig } from "axios";
 
 const axiosConfig: AxiosRequestConfig = {
-    baseURL: API,
-    timeout: 5000,
+    baseURL: process.env.NEXT_PUBLIC_API,
+    timeout: Infinity,
     headers: {
-        "content-type": "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
     },
     params: {},
 };

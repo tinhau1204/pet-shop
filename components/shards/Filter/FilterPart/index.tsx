@@ -1,27 +1,31 @@
-import React from "react";
-import { Button, Checkbox } from "@mantine/core";
+import React, { useEffect } from "react";
+import { Button, Checkbox, Radio } from "@mantine/core";
+import { set } from "react-hook-form";
 
 export type FilterPartProps = {
     title?: string;
     items?: {
-        name: string;
+        name: string | false;
         type: string;
         items: { label: string; value: string }[];
-    }[];
+    }[] | undefined;
     selectedItems?: string[];
-    onClick?: () => void;
+    onClick?: (item: string) => void;
+    onClickCheckbox?: (item: string[]) => void;
+    onClickRadiobox?: (item: string) => void;
     color?: string;
     type?: string;
 };
 
 export type FilterCheckBoxItemProps = {
-    title: string;
-    items?: { label: string; value: string }[];
+    title: string | false;
+    items?: { label: string; value: string; color?: string }[];
     onClick?: (item: string) => void;
 };
 
-export type FilterValueItemProps = {
-    title: string;
+export type FilterRadioItemProps = {
+    name: string | false;
+    type?: string;
     items?: { label: string; value: string }[];
     onClick?: (item: string) => void;
 };
@@ -46,7 +50,9 @@ export function FilterCheckBox({
                                 <span className="flex flex-row items-center gap-2">
                                     {title == "Color" ? (
                                         <>
-                                            <div className="min-w-[15px] h-[15px] rounded-full bg-red-normal"></div>
+                                            <div
+                                                className={`min-w-[15px] h-[15px] rounded-full ${element.color} border border-black-light/20`}
+                                            ></div>
                                             {element.label}
                                         </>
                                     ) : (
@@ -65,34 +71,93 @@ export function FilterCheckBox({
     );
 }
 
-export function FilterValue({ title }: FilterValueItemProps) {
+export function FilterRadioBox({ name, type, items, onClick }: FilterRadioItemProps) {
+    const [value, setValue] = React.useState<string>("");
     return (
-        <>
-            <p className="font-bold mb-2.5">{title}</p>
-        </>
+        <div className="mb-4 border-b pb-4 border-black-light/20">
+            <p className="font-bold mb-2.5">{name}</p>
+            <div className="flex flex-col gap-y-2">
+                {items?.map((element, index) => (
+                    <Radio.Group
+                        key={index}
+                        name={name.toString()}
+                        value={value}
+                        onChange={() => {
+                            setValue(element.value) 
+                            onClick?.(element.value)
+                         }}
+                    >
+                        <Radio
+                            classNames={{
+                                labelWrapper: "w-fit",
+                                body: "items-center",
+                            }}
+                            label={
+                                element.label
+                            }
+                            value={element.value}
+                        />
+                    </Radio.Group>
+                ))}
+            </div>
+        </div>
     );
+
 }
 
-export default function FilterPart({ items, onClick }: FilterPartProps) {
+export default function FilterPart({ items, onClickCheckbox, onClickRadiobox, onClick }: FilterPartProps) {
+    const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
+    const [value, setValue] = React.useState<string>("");
+
+    const handleCheckboxChange = (value: string) => {
+        
+        setSelectedItems((prevSelectedItems) => {
+            if (prevSelectedItems.includes(value)) {
+                // If the item is already selected, remove it
+                return prevSelectedItems.filter((item) => item !== value);
+            } else {
+                // If the item is not selected, add it
+                return [...prevSelectedItems, value];
+            }
+        });
+        
+    }
+
     return (
         <form>
             {items?.map((item, index) => (
                 <React.Fragment key={index}>
-                    {item.type == "checkbox" ? (
+                    {item?.type == "checkbox" ? (
                         <>
                             <FilterCheckBox
                                 title={item.name}
                                 items={item.items}
+                                onClick={handleCheckboxChange}
                             />
                         </>
                     ) : (
-                        item.type === "value" && (
-                            <FilterValue title={item.name} />
+                        item?.type === "radio" && (
+                            <FilterRadioBox 
+                                name={item.name} 
+                                items={item.items}
+                                onClick={(item) => setValue(item)}
+                            />
                         )
                     )}
                 </React.Fragment>
             ))}
-            <Button fullWidth variant="outline" onClick={onClick} radius="md">
+            <Button
+                fullWidth
+                variant="outline"
+                onClick={() => {
+                    if (selectedItems.length > 0) {
+                        onClickCheckbox?.(selectedItems)
+                    } else {
+                        onClickRadiobox?.(value)
+                    }
+                
+                }}
+                radius="md">
                 Filter
             </Button>
         </form>
