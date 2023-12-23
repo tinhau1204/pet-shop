@@ -102,7 +102,7 @@ function Header(props: HeaderProps) {
         return () => {
             clearInterval(intervalId);
         };
-    }, []);
+    }, [authUser]);
 
     function handleClickSearch() {
         setIsSearch(!isSearch);
