@@ -4,6 +4,7 @@ import Brand from "@/components/shards/Brand";
 import MyCarousel from "@/components/shards/MyCarousel";
 // import useCookie from "@/lib/hooks/useCookie/useCookie";
 import useStore from "@/lib/store";
+import { useCartStore } from "@/lib/store/cart";
 import { Group, Stack } from "@mantine/core";
 import { useEffect } from "react";
 import { useQuery } from "react-query";
@@ -14,7 +15,8 @@ type PageProps = {
 };
 
 export default function Page(props: PageProps) {
-
+    const { cart } = useCartStore();
+    console.log("check cart", cart);
     return (
         <Stack gap={"60px"}>
             <Banner />

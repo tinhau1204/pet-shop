@@ -38,7 +38,15 @@ export type petsData = {
     type: {
         id: number;
         name: string;
-        parent_id?: number | null;
+        parent: {
+            created_at?: string;
+            deleted_at?: string;
+            id: number;
+            name: string;
+            parent_id?: number | null;
+            state: string;
+            updated_at?: string;
+        };
         state: string;
         created_at: string;
         updated_at: string;
@@ -65,7 +73,15 @@ export type accessoriesData = {
     type: {
         id: number;
         name: string;
-        parent_id?: number | null;
+        parent: {
+            created_at?: string;
+            deleted_at?: string;
+            id: number;
+            name: string;
+            parent_id?: number | null;
+            state: string;
+            updated_at?: string;
+        };
         state: string;
         created_at: string;
         updated_at: string;
@@ -103,11 +119,11 @@ export type petTypesData = {
             created_at: string;
             updated_at: string;
             deleted_at?: string | null;
-        }
-    ],
+        },
+    ];
     parent?: string | null;
     children?: string[];
-}
+};
 
 export type accessoriesTypesData = {
     id: number;
@@ -134,11 +150,11 @@ export type accessoriesTypesData = {
             created_at: string;
             updated_at: string;
             deleted_at?: string;
-        }
-    ]
+        },
+    ];
     parent?: string | null;
     children?: string[];
-}
+};
 
 export interface GenericResponse {
     status: string;

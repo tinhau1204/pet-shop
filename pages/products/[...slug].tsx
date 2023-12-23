@@ -133,7 +133,7 @@ export default function Page(props: PageProps) {
         } else if (slug?.[0] === "accessory" && !accessoriesQuery.isLoading) {
             accessoriesQuery.refetch();
         }
-    }, [slug?.[0], slug?.[1]]);
+    }, [slug, accessoriesQuery, petDetailQuery]);
     const guarantee = [
         { icon: <HeathGIcon />, title: "100% health guarantee for pets" },
         {

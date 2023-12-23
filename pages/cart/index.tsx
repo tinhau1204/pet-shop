@@ -19,6 +19,7 @@ import ArrowLeft from "@my-images/Arrow_Left_SM.svg";
 import Link from "next/link";
 import React, { MouseEventHandler } from "react";
 import ArrowDownIcon from "@my-images/Caret_Down_MD.svg";
+import { useCartStore } from "@/lib/store/cart";
 
 function ProductInfo({
     src,
@@ -68,6 +69,9 @@ function ProductSize({ data }: { data?: string[] }) {
 
 export default function Cart() {
     const [payment, setPayment] = React.useState("Credit Card");
+    const { cart } = useCartStore();
+
+    console.log("cart", cart);
 
     const handlePaymentChange: MouseEventHandler<HTMLButtonElement> = (
         event,
@@ -225,7 +229,7 @@ export default function Cart() {
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 4 }}>
                 <Paper
-                    className="h-screen overflow-auto py-4 pl-12 pr-8 bg-blue-medium"
+                    className="h-fit overflow-auto py-4 pl-12 pr-8 bg-blue-medium"
                     radius="md"
                 >
                     <Link
