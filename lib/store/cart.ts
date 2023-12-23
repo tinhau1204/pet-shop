@@ -11,7 +11,8 @@ export type CartStore = {
     count: () => number;
     // type: (type: string) => CartItem[];
     add: (product: petsData | accessoriesData | undefined) => void;
-    remove: (idProduct: number) => void;
+    updateCartProduct: (sku: string, newQuantity: number) => void;
+    remove: (idProduct: number, sku: string) => void;
     removeAll: () => void;
 };
 
@@ -26,19 +27,23 @@ export const useCartStore = create<CartStore>((set, get) => ({
         }
         return 0;
     },
-    // type: (type: string) => {
-    //     const {cart} = get();
-    //     return cart.filter((item) => item.type. === type)
-    // },
     add: (product: petsData | accessoriesData | undefined) => {
-        console.log("product :>> ", product);
         const { cart } = get();
         const updatedCart = updateCart(product, cart);
         set({ cart: updatedCart });
     },
-    remove: (idProduct: number) => {
+    updateCartProduct: (sku: string, newQuantity: number) => {
+        set((state) => ({
+            cart: state.cart.map((product) =>
+                product.sku === sku
+                    ? { ...product, count: newQuantity }
+                    : product,
+            ),
+        }));
+    },
+    remove: (idProduct: number, sku: string) => {
         const { cart } = get();
-        const updateCart = removeCart(idProduct, cart);
+        const updateCart = removeCart(idProduct, sku, cart);
         set({ cart: updateCart });
     },
     removeAll: () => set({ cart: [] }),
@@ -66,14 +71,10 @@ function updateCart(
     return cart;
 }
 
-function removeCart(idProduct: number, cart: CartItem[]): CartItem[] {
-    return cart
-        .map((item) => {
-            if (item.id === idProduct)
-                return { ...item, count: item.count - 1 };
-            return item;
-        })
-        .filter((item) => {
-            return item.count;
-        });
+function removeCart(
+    idProduct: number,
+    sku: string,
+    cart: CartItem[],
+): CartItem[] {
+    return cart.filter((item) => !(item.id == idProduct && item.sku == sku));
 }
