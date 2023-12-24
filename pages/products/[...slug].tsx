@@ -21,7 +21,8 @@ import React, { useEffect } from "react";
 import dayjs from "dayjs";
 import CartIcon from "@my-images/Cart.svg";
 import { useCartStore } from "@/lib/store/cart";
-
+import { toast } from "react-toastify";
+const Cookies = require("js-cookie");
 type PageProps = {
     [name: string]: any;
 };
@@ -84,10 +85,9 @@ function CardImage({ image, alt }: { image: string; alt: string }) {
 export default function Page(props: PageProps) {
     const router = useRouter();
     const [petTable, setPetTable] = React.useState<any>([]);
-    const [accessTable, setAccessTable]=React.useState<any>([]);
-    const { add: handleAddToCart } = useCartStore();
+    const [accessTable, setAccessTable] = React.useState<any>([]);
+    const { add: handleAddToCart, cart } = useCartStore();
     const [shouldRefetch, setShouldRefetch] = React.useState<boolean>(false);
-  
 
     const { slug } = router.query;
 
@@ -135,7 +135,7 @@ export default function Page(props: PageProps) {
             }
             setShouldRefetch(false);
         }
-    },[shouldRefetch, slug, accessoriesQuery])
+    }, [shouldRefetch, slug, accessoriesQuery])
 
     useEffect(() => {
         // Set shouldRefetch to true whenever the location changes
@@ -267,6 +267,26 @@ export default function Page(props: PageProps) {
         return convertedData;
     };
 
+    const handleActionClick = (data: any) => {
+        const authorize = Cookies.get("user");
+        if (authorize !== undefined) {
+            handleAddToCart(
+                (data as petsData).isMale !== undefined
+                    ? (data as petsData)
+                    : (data as accessoriesData),
+            )
+            Cookies.set("cartUser", JSON.stringify(cart))
+            toast.success(`Đã thêm sản phẩm ${data?.name} vào giỏ hàng`, {
+                autoClose: 2000,
+            })
+        } else {
+            toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng", {
+                autoClose: 2000,
+            })
+            router.push("/auth/login")
+        }
+    }
+
     // Render data...
     return (
         <>
@@ -286,10 +306,10 @@ export default function Page(props: PageProps) {
                                     classNames={{ control: "bg-primary/30" }}
                                     loop
                                 >
-                                    {images.map((image, index) => (
+                                    {(petDetailQuery.data) && petDetailQuery.data?.data?.description_images.map((image: string, index: any) => (
                                         <Carousel.Slide key={index}>
                                             <Image
-                                                src={image.src}
+                                                src={image}
                                                 alt={'image'}
                                                 className="w-full h-full  object-contain object-center rounded-xl"
                                                 width={500}
@@ -374,6 +394,7 @@ export default function Page(props: PageProps) {
                                         variant="filled"
                                         className="bg-blue-medium rounded-full"
                                         onClick={() => console.log('click')}
+                                        disabled
                                     >
                                         Contact Us
                                     </Button>
@@ -384,6 +405,7 @@ export default function Page(props: PageProps) {
                                         className="text-blue-medium border-blue-medium rounded-full"
                                         leftSection={<ChatIcon className="w-6 h-6" />}
                                         onClick={() => console.log('click')}
+                                        disabled
                                     >
                                         Chat with Monito
                                     </Button>
@@ -423,7 +445,7 @@ export default function Page(props: PageProps) {
                                         leftSection={<CartIcon />}
                                         radius="md"
                                         className="bg-blue-bold mt-10 w-[20rem]"
-                                        onClick={() => handleAddToCart(((slug?.[0] === 'pet') ? petDetailQuery.data?.data : accessoriesQuery.data?.data))}
+                                        onClick={() => handleActionClick((slug?.[0] === 'pet') ? petDetailQuery.data?.data : accessoriesQuery.data?.data)}
                                     >
                                         Add to Cart
                                     </Button>

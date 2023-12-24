@@ -14,6 +14,8 @@ import { useRouter } from "next/router";
 import CartIcon from "@my-images/Cart.svg";
 import { petsData, accessoriesData } from "@/lib/api/types";
 import { useCartStore } from "@/lib/store/cart";
+import { toast } from "react-toastify";
+const Cookies = require("js-cookie");
 
 export type ProductCardProps = {
     data?: petsData | accessoriesData;
@@ -23,7 +25,7 @@ export type ProductCardProps = {
 function ProductCard(props: ProductCardProps) {
     const { data, classContainer } = props;
     const router = useRouter();
-    const { add: handleAddToCart } = useCartStore();
+    const { add: handleAddToCart, cart } = useCartStore();
 
     function checkGene(gene: boolean) {
         if (gene) {
@@ -73,27 +75,41 @@ function ProductCard(props: ProductCardProps) {
         }
     }
 
+    const handleActionClick = () => {
+        const authorize = Cookies.get("user");
+        if (authorize !== undefined){
+            handleAddToCart(
+                (data as petsData).isMale !== undefined
+                    ? (data as petsData)
+                    : (data as accessoriesData),
+            )
+            Cookies.set("cartUser", JSON.stringify(cart))
+            toast.success(`Đã thêm sản phẩm ${data?.name} vào giỏ hàng`, {
+                autoClose: 2000,
+            })
+        } else {
+            toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng", {
+                autoClose: 2000,
+            })
+            router.push("/auth/login")
+        }
+    }
+
     return (
         <Box
             className={`relative px-[10px] ${classContainer} max-w-[280px] w-full group z-10 `}
-            // w={{
-            //     base: "100%",
-            //     xs: "50%",
-            //     md: "33.33%",
-            //     lg: "25%",
-            //     xl: "25%",
-            // }}
+        // w={{
+        //     base: "100%",
+        //     xs: "50%",
+        //     md: "33.33%",
+        //     lg: "25%",
+        //     xl: "25%",
+        // }}
         >
             <ActionIcon
                 size="lg"
                 className="absolute z-20 right-0 top-0 bg-blue-bold group-hover:animate-bounce"
-                onClick={() =>
-                    handleAddToCart(
-                        (data as petsData).isMale !== undefined
-                            ? (data as petsData)
-                            : (data as accessoriesData),
-                    )
-                }
+                onClick={() => handleActionClick()}
             >
                 <CartIcon className="font-bold" />
             </ActionIcon>
@@ -122,7 +138,7 @@ function ProductCard(props: ProductCardProps) {
                             lineClamp={1}
                             className="max-w-[12.5rem] sm:max-w-fit hover:underline hover:cursor-pointer"
                             onClick={() => {
-                                const productType = (data as petsData).isMale
+                                const productType = (data as petsData).type.parent.name === "pet"
                                     ? "pet"
                                     : "accessory";
                                 router.push(
@@ -155,26 +171,26 @@ function ProductCard(props: ProductCardProps) {
 
                         {((data as petsData).birthday ||
                             (data as accessoriesData).weight) && (
-                            <Group gap={"6px"}>
-                                <Text inherit>
-                                    {(data as petsData).age ? "Age:" : "Size:"}
-                                </Text>
-                                <Text inherit c={"dimmed"} fw={700}>
-                                    {(data as petsData)?.birthday
-                                        ? Age((data as petsData)?.birthday)
-                                        : formatWeight(
-                                              (data as accessoriesData)?.weight,
-                                          )}
-                                </Text>
-                            </Group>
-                        )}
+                                <Group gap={"6px"}>
+                                    <Text inherit>
+                                        {(data as petsData).age ? "Age:" : "Size:"}
+                                    </Text>
+                                    <Text inherit c={"dimmed"} fw={700}>
+                                        {(data as petsData)?.birthday
+                                            ? Age((data as petsData)?.birthday)
+                                            : formatWeight(
+                                                (data as accessoriesData)?.weight,
+                                            )}
+                                    </Text>
+                                </Group>
+                            )}
                     </Group>
                     {((data as petsData) || (data as accessoriesData))
                         .price && (
-                        <Text fw={700} fz={"14px"}>
-                            {formatPrice(data?.price)}
-                        </Text>
-                    )}
+                            <Text fw={700} fz={"14px"}>
+                                {formatPrice(data?.price)}
+                            </Text>
+                        )}
 
                     {/* add this later */}
                     {/* {(data as AccessoryType).promotion ? (

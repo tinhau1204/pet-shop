@@ -62,7 +62,8 @@ function MyApp({ Component, pageProps }: AppProps) {
             window.location.pathname == "/auth/login" ||
             window.location.pathname == "/auth/register" ||
             window.location.pathname == "/auth/verified" ||
-            window.location.pathname == "/auth/verifiedRegister"
+            window.location.pathname == "/auth/verifiedRegister" ||
+            window.location.pathname.startsWith("/checkout")
         )
             setIsLogin(true);
         return () => {
