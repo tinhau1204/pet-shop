@@ -11,8 +11,6 @@ import Link from "next/link";
 import GuaranteeIcon from "@my-images/gurantee.svg";
 import HeathGIcon from "@my-images/healthG.svg";
 import Image from "next/image";
-import ProductCard from "@/components/shards/ProductCard";
-import mock from "./mock.json";
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import { getAccessoriesById, getPetById } from "@/lib/api";
@@ -115,10 +113,6 @@ export default function Page(props: PageProps) {
         },
         refetchOnWindowFocus: false,
     });
-
-    const sendInteraction = async () => {
-        await recombee.send(new recombee_api.AddDetailView("1", "1"));
-    };
 
     useEffect(() => {
         if (shouldRefetch) {
@@ -536,10 +530,6 @@ export default function Page(props: PageProps) {
                             </Text>
                             <Text
                                 className="text-black-bold text-2xl font-bold mt-0.5"
-                                onClick={() => {
-                                    console.log("send recombee");
-                                    sendInteraction();
-                                }}
                             >
                                 {slug?.[0] === "pet"
                                     ? petDetailQuery.data?.data?.name

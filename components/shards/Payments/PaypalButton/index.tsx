@@ -42,7 +42,7 @@ const PaypalButton = ({ cartData, totalAmount, orderID }: PaypalProps) => {
         <>
             {/* {isPending ? <div className="spinner" /> : null} */}
             <PayPalButtons
-                disabled={false}
+                disabled={totalAmount && parseInt(totalAmount) !== 0 ? false : true}
                 createOrder={(data, actions) => {
                     return actions.order
                         .create({

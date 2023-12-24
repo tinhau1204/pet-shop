@@ -16,14 +16,18 @@ import { accountRegister } from "@/lib/api";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import useStore from "@/lib/store";
+import { useRouter } from "next/router";
 
 export default function Register() {
     const store = useStore();
+    const router = useRouter();
 
     const registerForm = useForm({
         initialValues: {
             email: "",
             password: "",
+            phone: "",
+            address: "",
         },
 
         validate: {
@@ -35,6 +39,8 @@ export default function Register() {
                 )
                     ? null
                     : "Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character",
+            phone: (value) => /^\d{10}$/.test(value) ? null : "Phone number required 10 digits!",
+            address: (value) => value.length > 0 ? null : "Address can't be empty!",
         },
     });
 
@@ -45,7 +51,8 @@ export default function Register() {
         },
         onSuccess: (data) => {
             reset();
-            toast.success(data?.message);
+            toast.success(`${data?.message + ". " + "Hãy đăng nhập vào gmail cá nhân để xác thực!"} `);
+            router.push("/auth/login")
         },
         onError: (e) => {
             store.setRequestLoading(false);
@@ -63,6 +70,8 @@ export default function Register() {
     type registerFormType = {
         email: string;
         password: string;
+        phone: string;
+        address: string;
     };
 
     const onSubmitHandler = (values: registerFormType) => {
@@ -70,6 +79,8 @@ export default function Register() {
             register: {
                 email: values.email,
                 password: values.password,
+                phone: values.phone,
+                address: values.address,
             },
         };
         registerMutation.mutate(register);
@@ -130,6 +141,28 @@ export default function Register() {
                                     type="password"
                                     withAsterisk
                                     {...registerForm.getInputProps("password")}
+                                />
+                            </div>
+
+                            <div className="space-y-2 mt-2">
+                                <label htmlFor="phone">Phone: </label>
+                                <TextInput
+                                    placeholder="0988xxxxxx"
+                                    required
+                                    type="number"
+                                    withAsterisk
+                                    {...registerForm.getInputProps("phone")}
+                                />
+                            </div>
+
+                            <div className="space-y-2 mt-2">
+                                <label htmlFor="address">Address: </label>
+                                <TextInput
+                                    placeholder="so 1 Vo Van Ngan"
+                                    required
+                                    type="text"
+                                    withAsterisk
+                                    {...registerForm.getInputProps("address")}
                                 />
                             </div>
 

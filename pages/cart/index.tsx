@@ -124,14 +124,14 @@ function QuantityField({
 
 export default function Cart() {
     const router = useRouter();
-    const [payment, setPayment] = React.useState("Credit Card");
+    const [payment, setPayment] = React.useState("");
     const { cart, updateCartProduct, remove } = useCartStore();
 
     const handlePaymentChange: MouseEventHandler<HTMLButtonElement> = (
         event,
     ) => {
         setPayment(
-            event.currentTarget.textContent?.toString() || "Credit Card",
+            event.currentTarget.textContent?.toString() || "",
         );
     };
 
@@ -311,7 +311,7 @@ export default function Cart() {
                                 Credit Card
                             </Button> */}
                             <Button
-                                className={`w-full col-span-3  ${payment == "Mo Mo"
+                                className={`w-full col-span-3  ${payment == "MoMo"
                                     ? "text-primary border-primary"
                                     : "text-primary/40 border-primary/40"
                                     }`}
@@ -319,7 +319,7 @@ export default function Cart() {
                                 radius="xl"
                                 onClick={handlePaymentChange}
                             >
-                                Mo Mo
+                                MoMo
                             </Button>
                             <Button
                                 className={`w-full col-span-3  ${payment == "Paypal"
@@ -336,10 +336,12 @@ export default function Cart() {
                     </div>
 
                     <div className="w-full mt-8 pb-4">
-                        {payment == "Mo Mo" ? (
+                        {payment == "MoMo" ? (
                             <MoMoMethod />
-                        ) : (
+                        ) : payment == "Paypal" ? (
                             <PaypalMethod cart={cart} />
+                        ) : (
+                            <></>
                         )}
                     </div>
                 </Paper>
@@ -539,12 +541,7 @@ function MoMoMethod() {
         mutationFn: () => paymentMomo(dataMapping),
         onSuccess: (data: any) => {
             console.log(data),
-                setMomoUrl(data.data),
-                toast.success("Payment success", {
-                    position: "top-right",
-                    autoClose: 5000,
-                    closeOnClick: true,
-                });
+            setMomoUrl(data.data)
         },
         onError: (error) => {
             console.log(error),
@@ -613,11 +610,13 @@ function PaypalMethod({ cart }: { cart?: any }) {
             ]
         }
     }
+    console.log('totalAmount', totalAmount)
     // Convert VND to USD and pass into totalAmount
     // get orderID from API to pass
 
     return <div>
-        {totalAmount ? (
+        { 
+        ( 
             <PayPalScriptProvider
                 options={{
                     clientId: clientId,
@@ -631,7 +630,6 @@ function PaypalMethod({ cart }: { cart?: any }) {
                     orderID={"#test123"}
                 />
             </PayPalScriptProvider>
-        ) : (<>
-        </>)}
+        ) }
     </div>;
 }
