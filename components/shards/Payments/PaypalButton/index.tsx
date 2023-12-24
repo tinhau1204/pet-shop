@@ -16,15 +16,11 @@ const PaypalButton = ({ cartData, totalAmount, orderID }: PaypalProps) => {
     const [{ options }, dispatch] = usePayPalScriptReducer();
     const [{ isPending }] = usePayPalScriptReducer();
 
-
     // Add function to save order data to database
     const createOrderWithPaypal = async (values: any) => {
-
-
-
         const buyerName =
-            values?.details?.payer?.name?.given_name + values?.details?.payer?.name?.surname;
-   
+            values?.details?.payer?.name?.given_name +
+            values?.details?.payer?.name?.surname;
 
         let order_info = {
             orderID: orderID,
@@ -42,7 +38,9 @@ const PaypalButton = ({ cartData, totalAmount, orderID }: PaypalProps) => {
         <>
             {/* {isPending ? <div className="spinner" /> : null} */}
             <PayPalButtons
-                disabled={totalAmount && parseInt(totalAmount) !== 0 ? false : true}
+                disabled={
+                    totalAmount && parseInt(totalAmount) !== 0 ? false : true
+                }
                 createOrder={(data, actions) => {
                     return actions.order
                         .create({
@@ -50,7 +48,7 @@ const PaypalButton = ({ cartData, totalAmount, orderID }: PaypalProps) => {
                                 {
                                     amount: {
                                         currency_code: "USD",
-                                        value: totalAmount,
+                                        value: totalAmount || "1",
                                     },
                                 },
                             ],
@@ -70,8 +68,12 @@ const PaypalButton = ({ cartData, totalAmount, orderID }: PaypalProps) => {
                         }
                     });
                 }}
-                onCancel={(data) => {console.log("Cancel", data)}}
-                onError={(data) => {console.log("Error", data)}}
+                onCancel={(data) => {
+                    console.log("Cancel", data);
+                }}
+                onError={(data) => {
+                    console.log("Error", data);
+                }}
             />
         </>
     );
