@@ -32,25 +32,23 @@ export default function CateContent({ data, slug }: CateContentProps) {
                 gap={{ base: "25px" }}
                 className="h-fit px-2 mb-3"
             >
-                <div className="flex flex-row items-center gap-3" > {/* search name */}
+                <div className="flex flex-row items-center gap-3">
+                    {" "}
+                    {/* search name */}
                     <Text fw={700} className="text-blue-medium text-2xl">
                         {slug}
                     </Text>
                     <Text className="text-black-normal text-sm mt-1">
-                        {
-                            (slug === "pets" && data as petsData[]) ?
-                                (data as petsData[])?.length
-                                : (data as accessoriesData[])?.length
-                        }
-                        {
-                            slug === "pets" ?
-                                (data as petsData[])?.length > 1
-                                    ? " pets found"
-                                    : " pet found"
-                                : (data as accessoriesData[])?.length > 1
-                                    ? " accessories found"
-                                    : " accessory found"
-                        }
+                        {slug === "pets" && (data as petsData[])
+                            ? (data as petsData[])?.length
+                            : (data as accessoriesData[])?.length}
+                        {slug === "pets"
+                            ? (data as petsData[])?.length > 1
+                                ? " pets found"
+                                : " pet found"
+                            : (data as accessoriesData[])?.length > 1
+                            ? " accessories found"
+                            : " accessory found"}
                     </Text>
                 </div>
                 {/* filter card value */}
@@ -80,50 +78,48 @@ export default function CateContent({ data, slug }: CateContentProps) {
                 className="gap-x-3 sm:gap-x-5 gap-y-[1.625rem] w-auto sm:w-full px-2 place-items-stretch"
                 cols={{ base: 2, xs: 3, sm: 3, lg: 4 }}
             >
-                {(Array.isArray(data) && data?.length > 0) ? (
-
-                    slug === "pets" ?
+                {Array.isArray(data) && data?.length > 0 ? (
+                    slug === "pets" ? (
                         (data as petsData[])?.map((item, index) => (
                             <ProductCard
                                 data={item}
                                 key={index}
                                 classContainer=" w-fit h-full !px-0"
                             />
-                        )) : (
-                            (data as accessoriesData[])?.map((item, index) => (
-                                <ProductCard
-                                    data={item}
-                                    key={index}
-                                    classContainer=" w-fit h-full !px-0"
-                                />
-                            ))
-                        )
+                        ))
+                    ) : (
+                        (data as accessoriesData[])?.map((item, index) => (
+                            <ProductCard
+                                data={item}
+                                key={index}
+                                classContainer=" w-fit h-full !px-0"
+                            />
+                        ))
+                    )
                 ) : (
                     <div className="flex flex-col align-middle w-full col-span-full min-h-[300px]">
-                        <h2 className=" mx-auto text-2xl font-bold text-blue-medium m-auto">There are no products to be found</h2>
+                        <h2 className=" mx-auto text-2xl font-bold text-blue-medium m-auto">
+                            There are no products to be found
+                        </h2>
                     </div>
                 )}
-
             </SimpleGrid>
 
-
-            {
-                Array.isArray(data) && data?.length > 0 && (
-                    <Flex justify="center" className="mt-10">
-                        <Pagination
-                            total={28}
-                            nextIcon={ArrowRightIcon}
-                            previousIcon={ArrowLeftIcon}
-                            size="lg"
-                            color="#003459"
-                            fw={700}
-                            classNames={{
-                                control: "border-0",
-                            }}
-                        />
-                    </Flex>
-                )
-            }
+            {Array.isArray(data) && data?.length > 0 && (
+                <Flex justify="center" className="mt-10">
+                    <Pagination
+                        total={28}
+                        nextIcon={ArrowRightIcon}
+                        previousIcon={ArrowLeftIcon}
+                        size="lg"
+                        color="#003459"
+                        fw={700}
+                        classNames={{
+                            control: "border-0",
+                        }}
+                    />
+                </Flex>
+            )}
         </section>
     );
 }

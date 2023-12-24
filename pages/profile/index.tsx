@@ -41,7 +41,7 @@ export default function Profile() {
     const router = useRouter();
     const cookieUser = Cookies.get("user");
     const user = store.authUser;
-    const [isRefetch, setIsRefetch] = React.useState(false)
+    const [isRefetch, setIsRefetch] = React.useState(false);
 
     const form = useForm({
         initialValues: {
@@ -78,14 +78,13 @@ export default function Profile() {
     useEffect(() => {
         if (isRefetch) {
             getUserQuery.refetch();
-            setIsRefetch(false)
+            setIsRefetch(false);
         }
-        
     }, [getUserQuery, isRefetch]);
 
     useEffect(() => {
-        setIsRefetch(true)
-    },[])
+        setIsRefetch(true);
+    }, []);
 
     const dataTotal = [
         { totalName: "Total Bought", totalNum: 10 },
@@ -117,7 +116,7 @@ export default function Profile() {
                 align={{ base: "center", md: "start" }}
                 className="py-4 px-8 w-full min-h-fit overflow-y-auto"
             >
-                <Text className="text-lg font-bold text-left py-4">
+                {/* <Text className="text-lg font-bold text-left py-4">
                     1. Total Bought
                 </Text>
                 <Grid
@@ -133,7 +132,7 @@ export default function Profile() {
                             />
                         </Grid.Col>
                     ))}
-                </Grid>
+                </Grid> */}
                 <Flex
                     direction="row"
                     justify="flex-start"
@@ -141,7 +140,7 @@ export default function Profile() {
                     className="w-full gap-1"
                 >
                     <Text className="text-lg font-bold text-left py-4">
-                        2. Account Details
+                        1. Account Details
                     </Text>
                 </Flex>
                 <form onSubmit={form.onSubmit((values) => console.log(values))}>

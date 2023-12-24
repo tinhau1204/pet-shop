@@ -18,11 +18,15 @@ import { YearPickerInput } from "@mantine/dates";
 import ArrownDown from "@my-images/arrowDown.svg";
 import ArrowLeft from "@my-images/Arrow_Left_SM.svg";
 import Link from "next/link";
-import React, { ChangeEvent, MouseEventHandler } from "react";
+import React, { ChangeEvent, MouseEventHandler, useEffect } from "react";
 import ArrowDownIcon from "@my-images/Caret_Down_MD.svg";
 import { useCartStore } from "@/lib/store/cart";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import { useMutation, useQuery } from "react-query";
+import { paymentMomo } from "@/lib/api/payment";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import PaypalButton from "@/components/shards/Payments/PaypalButton";
 
 function ProductInfo({
     src,
@@ -69,11 +73,9 @@ function QuantityField({
         const newQuantity = parseInt(event.target.value, 10);
 
         const validQuantity = newQuantity <= element.stock_quantity;
-        let message = `There ${
-            element.stock_quantity > 1 ? "are" : "is"
-        } only ${element.stock_quantity} product${
-            element.stock_quantity > 1 ? "s" : ""
-        } left`;
+        let message = `There ${element.stock_quantity > 1 ? "are" : "is"
+            } only ${element.stock_quantity} product${element.stock_quantity > 1 ? "s" : ""
+            } left`;
         if (!validQuantity) {
             setQuantity(element.stock_quantity);
             const sku = element.sku;
@@ -122,42 +124,16 @@ function QuantityField({
 
 export default function Cart() {
     const router = useRouter();
-    const [payment, setPayment] = React.useState("Credit Card");
+    const [payment, setPayment] = React.useState("");
     const { cart, updateCartProduct, remove } = useCartStore();
 
     const handlePaymentChange: MouseEventHandler<HTMLButtonElement> = (
         event,
     ) => {
         setPayment(
-            event.currentTarget.textContent?.toString() || "Credit Card",
+            event.currentTarget.textContent?.toString() || "",
         );
     };
-    const elements = [
-        {
-            src: "",
-            name: "Product 1",
-            color: "Brown",
-            size: "S",
-            quantity: 1,
-            price: 15.49,
-        },
-        {
-            src: "",
-            name: "Product 1",
-            color: "Brown",
-            size: "S",
-            quantity: 1,
-            price: 15.49,
-        },
-        {
-            src: "",
-            name: "Product 1",
-            color: "Brown",
-            size: "S",
-            quantity: 1,
-            price: 15.49,
-        },
-    ];
 
     const rows =
         cart &&
@@ -323,36 +299,33 @@ export default function Cart() {
                         </Text>
 
                         <div className="grid grid-cols-6 justify-around place-items-center gap-y-2 gap-x-6 mt-4">
-                            <Button
-                                className={`w-full col-span-3  ${
-                                    payment == "Credit Card"
-                                        ? "text-primary border-primary"
-                                        : "text-primary/40 border-primary/40"
-                                }`}
+                            {/* <Button
+                                className={`w-full col-span-3  ${payment == "Credit Card"
+                                    ? "text-primary border-primary"
+                                    : "text-primary/40 border-primary/40"
+                                    }`}
                                 variant="outline"
                                 radius="xl"
                                 onClick={handlePaymentChange}
                             >
                                 Credit Card
-                            </Button>
+                            </Button> */}
                             <Button
-                                className={`w-full col-span-3  ${
-                                    payment == "Mo Mo"
-                                        ? "text-primary border-primary"
-                                        : "text-primary/40 border-primary/40"
-                                }`}
+                                className={`w-full col-span-3  ${payment == "MoMo"
+                                    ? "text-primary border-primary"
+                                    : "text-primary/40 border-primary/40"
+                                    }`}
                                 variant="outline"
                                 radius="xl"
                                 onClick={handlePaymentChange}
                             >
-                                Mo Mo
+                                MoMo
                             </Button>
                             <Button
-                                className={`w-full col-span-3  ${
-                                    payment == "Paypal"
-                                        ? "text-primary border-primary"
-                                        : "text-primary/40 border-primary/40"
-                                }`}
+                                className={`w-full col-span-3  ${payment == "Paypal"
+                                    ? "text-primary border-primary"
+                                    : "text-primary/40 border-primary/40"
+                                    }`}
                                 variant="outline"
                                 radius="xl"
                                 onClick={handlePaymentChange}
@@ -363,12 +336,12 @@ export default function Cart() {
                     </div>
 
                     <div className="w-full mt-8 pb-4">
-                        {payment == "Credit Card" ? (
-                            <CreditCardMethod />
-                        ) : payment == "Mo Mo" ? (
+                        {payment == "MoMo" ? (
                             <MoMoMethod />
+                        ) : payment == "Paypal" ? (
+                            <PaypalMethod cart={cart} />
                         ) : (
-                            <PaypalMethod />
+                            <></>
                         )}
                     </div>
                 </Paper>
@@ -377,169 +350,286 @@ export default function Cart() {
     );
 }
 
-type CreditCard = {
-    cardHolderName: String;
-    cardNumber: Number;
-    expirationDate?: Date | null;
-    cvv: Number;
-};
+// type CreditCard = {
+//     cardHolderName: String;
+//     cardNumber: Number;
+//     expirationDate?: Date | null;
+//     cvv: Number;
+// };
 
-function CreditCardMethod() {
-    const [value, setValue] = React.useState<CreditCard | undefined>({
-        cardHolderName: "",
-        cardNumber: 0,
-        expirationDate: new Date(),
-        cvv: 0,
+// function CreditCardMethod() {
+//     const [value, setValue] = React.useState<CreditCard | undefined>({
+//         cardHolderName: "",
+//         cardNumber: 0,
+//         expirationDate: new Date(),
+//         cvv: 0,
+//     });
+
+//     const handleExpirationDateChange = (newDate: Date | null) => {
+//         setValue((prev) => ({ ...prev!, expirationDate: newDate }));
+//     };
+
+// return (
+//     <form className="h-full flex flex-col justify-center w-full items-start gap-4">
+//         <div className="flex flex-row justify-center w-full items-center gap-3">
+//             <svg
+//                 xmlns="http://www.w3.org/2000/svg"
+//                 width="24"
+//                 height="24"
+//                 viewBox="0 0 36 36"
+//             >
+//                 <path
+//                     fill="#FFAC33"
+//                     d="M4 5a4 4 0 0 0-4 4v18a4 4 0 0 0 4 4h28a4 4 0 0 0 4-4V9s0-4-4-4z"
+//                 />
+//                 <path fill="#292F33" d="M0 10h36v5H0z" />
+//                 <path fill="#F4F7F9" d="M4 19h28v6H4z" />
+//                 <path
+//                     fill="#8899A6"
+//                     d="M19 24c-1.703 0-2.341-1.21-2.469-1.801c-.547.041-1.08.303-1.805.764C13.961 23.449 13.094 24 12 24c-1.197 0-1.924-.675-2-2c-.003-.056.038-.188.021-.188c-1.858 0-3.202 1.761-3.215 1.779a.997.997 0 0 1-1.397.215a1 1 0 0 1-.215-1.398C5.271 22.303 7.11 20 10 20c1.937 0 2.048 1.375 2.078 1.888l.007.109c.486-.034.991-.354 1.57-.723c.961-.61 2.153-1.371 3.75-.962c.871.223 1.007 1.031 1.059 1.336c.013.076.032.19.049.226c.007 0 .146.091.577.13c.82.075 1.721-.279 2.675-.653c.988-.388 2.01-.788 3.111-.788c3.389 0 4.767 1.635 4.913 1.821a1 1 0 1 1-1.575 1.232c-.024-.027-.93-1.054-3.337-1.054c-.723 0-1.528.315-2.381.649c-1.009.396-2.434.789-3.496.789"
+//                 />
+//             </svg>
+//             <Text className="text-2xl font-bold text-primary">
+//                 Credit Card
+//             </Text>
+//         </div>
+
+//         <TextInput
+//             label="Cardholder Name"
+//             placeholder="Anton Juan"
+//             name="cardholderName"
+//             variant="unstyled"
+//             radius={0}
+//             size="lg"
+//             classNames={{
+//                 input: "border-0 border-b border-primary text-primary ",
+//                 label: "text-primary font-semibold text-sm mb-2",
+//             }}
+//             className="w-full"
+//         />
+
+//         <TextInput
+//             label="Card Number"
+//             placeholder="4433123456789876"
+//             name="cardNumber"
+//             variant="unstyled"
+//             type="number"
+//             radius={0}
+//             size="lg"
+//             classNames={{
+//                 input: "border-0 border-b border-primary text-primary ",
+//                 label: "text-primary font-semibold text-sm mb-2",
+//             }}
+//             className="w-full"
+//         />
+
+//         <div className="w-full flex flex-row justify-start items-center gap-4">
+//             <div className="w-full basis-full">
+//                 <Text className="text-primary font-semibold text-sm">
+//                     Expiration Date:
+//                 </Text>
+
+//                 <div className="w-full flex flex-row justify-start items-center gap-4">
+//                     <NativeSelect
+//                         placeholder="MM"
+//                         variant="unstyled"
+//                         rightSection={
+//                             <ArrowDownIcon className="text-primary font-bold" />
+//                         }
+//                         radius={0}
+//                         size="lg"
+//                         classNames={{
+//                             input: "border-0 border-b border-primary text-primary [&>*]:text-black-bold [&>*]:overflow-auto",
+//                             section: "justify-end",
+//                         }}
+//                         className="w-full lg:max-w-[5.5rem]"
+//                         data={[
+//                             "01",
+//                             "02",
+//                             "03",
+//                             "04",
+//                             "05",
+//                             "06",
+//                             "07",
+//                             "08",
+//                             "09",
+//                             "10",
+//                             "11",
+//                             "12",
+//                         ]}
+//                     />
+
+//                     <YearPickerInput
+//                         placeholder="YYYY"
+//                         variant="unstyled"
+//                         size="lg"
+//                         rightSection={
+//                             <ArrowDownIcon className="text-primary font-bold" />
+//                         }
+//                         radius={0}
+//                         classNames={{
+//                             input: "border-0 border-b border-primary text-primary [&>*]:text-black-bold [&>*]:overflow-auto",
+//                             section: "justify-end",
+//                         }}
+//                         className="w-full lg:max-w-[6.5rem]"
+//                         value={value?.expirationDate}
+//                         onChange={handleExpirationDateChange}
+//                     />
+//                 </div>
+//             </div>
+//             <div className="max-w-[5.5rem]">
+//                 <Text className="text-primary font-semibold text-sm">
+//                     CVV:
+//                 </Text>
+//                 <TextInput
+//                     placeholder="XXX"
+//                     name="cardNumber"
+//                     variant="unstyled"
+//                     type="number"
+//                     max="9999"
+//                     radius={0}
+//                     size="lg"
+//                     classNames={{
+//                         input: "border-0 border-b border-primary text-primary ",
+//                         label: "text-primary font-semibold text-sm mb-2",
+//                     }}
+//                     className="w-full"
+//                 />
+//             </div>
+//         </div>
+
+//         <Button
+//             radius="xl"
+//             className="text-bold text-xl w-full mt-4"
+//             size="lg"
+//         >
+//             Confirm and Pay 17.49 VND
+//         </Button>
+//     </form>
+// );
+
+function MoMoMethod() {
+
+    const { cart } = useCartStore();
+    const [momoUrl, setMomoUrl] = React.useState("");
+
+    const data = cart.map((item) => {
+        return item.type.parent.name === "pet" ?
+            {
+                pet_id: item.id,
+                quantity: item.count,
+            } :
+            {
+                accessory_id: item.id,
+                quantity: item.count,
+            };
     });
 
-    const handleExpirationDateChange = (newDate: Date | null) => {
-        setValue((prev) => ({ ...prev!, expirationDate: newDate }));
-    };
+    const dataMapping = {
+        checkout: {
+            items: [
+                ...data
+            ]
+        }
+    }
+
+    console.log(cart);
+    console.log('dataMapping', dataMapping)
+
+    const usePaymentMutation = useMutation({
+        mutationKey: ["payment"],
+        mutationFn: () => paymentMomo(dataMapping),
+        onSuccess: (data: any) => {
+            console.log(data),
+            setMomoUrl(data.data)
+        },
+        onError: (error) => {
+            console.log(error),
+                toast.error("Payment failed", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    closeOnClick: true,
+                });
+        }
+    })
+
+    useEffect(() => {
+        if (momoUrl) window.open(momoUrl, "_blank");
+    }, [momoUrl])
 
     return (
-        <form className="h-full flex flex-col justify-center w-full items-start gap-4">
-            <div className="flex flex-row justify-center w-full items-center gap-3">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 36 36"
-                >
-                    <path
-                        fill="#FFAC33"
-                        d="M4 5a4 4 0 0 0-4 4v18a4 4 0 0 0 4 4h28a4 4 0 0 0 4-4V9s0-4-4-4z"
-                    />
-                    <path fill="#292F33" d="M0 10h36v5H0z" />
-                    <path fill="#F4F7F9" d="M4 19h28v6H4z" />
-                    <path
-                        fill="#8899A6"
-                        d="M19 24c-1.703 0-2.341-1.21-2.469-1.801c-.547.041-1.08.303-1.805.764C13.961 23.449 13.094 24 12 24c-1.197 0-1.924-.675-2-2c-.003-.056.038-.188.021-.188c-1.858 0-3.202 1.761-3.215 1.779a.997.997 0 0 1-1.397.215a1 1 0 0 1-.215-1.398C5.271 22.303 7.11 20 10 20c1.937 0 2.048 1.375 2.078 1.888l.007.109c.486-.034.991-.354 1.57-.723c.961-.61 2.153-1.371 3.75-.962c.871.223 1.007 1.031 1.059 1.336c.013.076.032.19.049.226c.007 0 .146.091.577.13c.82.075 1.721-.279 2.675-.653c.988-.388 2.01-.788 3.111-.788c3.389 0 4.767 1.635 4.913 1.821a1 1 0 1 1-1.575 1.232c-.024-.027-.93-1.054-3.337-1.054c-.723 0-1.528.315-2.381.649c-1.009.396-2.434.789-3.496.789"
-                    />
-                </svg>
-                <Text className="text-2xl font-bold text-primary">
-                    Credit Card
-                </Text>
-            </div>
-
-            <TextInput
-                label="Cardholder Name"
-                placeholder="Anton Juan"
-                name="cardholderName"
-                variant="unstyled"
-                radius={0}
-                size="lg"
-                classNames={{
-                    input: "border-0 border-b border-primary text-primary ",
-                    label: "text-primary font-semibold text-sm mb-2",
-                }}
-                className="w-full"
-            />
-
-            <TextInput
-                label="Card Number"
-                placeholder="4433123456789876"
-                name="cardNumber"
-                variant="unstyled"
-                type="number"
-                radius={0}
-                size="lg"
-                classNames={{
-                    input: "border-0 border-b border-primary text-primary ",
-                    label: "text-primary font-semibold text-sm mb-2",
-                }}
-                className="w-full"
-            />
-
-            <div className="w-full flex flex-row justify-start items-center gap-4">
-                <div className="w-full basis-full">
-                    <Text className="text-primary font-semibold text-sm">
-                        Expiration Date:
-                    </Text>
-
-                    <div className="w-full flex flex-row justify-start items-center gap-4">
-                        <NativeSelect
-                            placeholder="MM"
-                            variant="unstyled"
-                            rightSection={
-                                <ArrowDownIcon className="text-primary font-bold" />
-                            }
-                            radius={0}
-                            size="lg"
-                            classNames={{
-                                input: "border-0 border-b border-primary text-primary [&>*]:text-black-bold [&>*]:overflow-auto",
-                                section: "justify-end",
-                            }}
-                            className="w-full lg:max-w-[5.5rem]"
-                            data={[
-                                "01",
-                                "02",
-                                "03",
-                                "04",
-                                "05",
-                                "06",
-                                "07",
-                                "08",
-                                "09",
-                                "10",
-                                "11",
-                                "12",
-                            ]}
-                        />
-
-                        <YearPickerInput
-                            placeholder="YYYY"
-                            variant="unstyled"
-                            size="lg"
-                            rightSection={
-                                <ArrowDownIcon className="text-primary font-bold" />
-                            }
-                            radius={0}
-                            classNames={{
-                                input: "border-0 border-b border-primary text-primary [&>*]:text-black-bold [&>*]:overflow-auto",
-                                section: "justify-end",
-                            }}
-                            className="w-full lg:max-w-[6.5rem]"
-                            value={value?.expirationDate}
-                            onChange={handleExpirationDateChange}
-                        />
-                    </div>
-                </div>
-                <div className="max-w-[5.5rem]">
-                    <Text className="text-primary font-semibold text-sm">
-                        CVV:
-                    </Text>
-                    <TextInput
-                        placeholder="XXX"
-                        name="cardNumber"
-                        variant="unstyled"
-                        type="number"
-                        max="9999"
-                        radius={0}
-                        size="lg"
-                        classNames={{
-                            input: "border-0 border-b border-primary text-primary ",
-                            label: "text-primary font-semibold text-sm mb-2",
-                        }}
-                        className="w-full"
-                    />
-                </div>
-            </div>
-
-            <Button
-                radius="xl"
-                className="text-bold text-xl w-full mt-4"
-                size="lg"
-            >
-                Confirm and Pay 17.49 VND
-            </Button>
-        </form>
+        <Button className="rounded-lg w-full bg-pink-normal" size="xl"
+            classNames={{
+                inner: "justify-around w-full",
+                label: "flex flex-row justify-center w-full gap-4"
+            }}
+            onClick={() => usePaymentMutation.mutate()}
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 48 48"><circle cx="34.571" cy="13.429" r="7.929" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" /><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M5.5 21.357V9.466c0-1.985 1.851-3.964 3.965-3.964c2.119 0 3.965 1.978 3.965 3.964v11.891" /><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M13.429 9.465c0-1.985 1.85-3.964 3.964-3.964c2.119 0 3.965 1.978 3.965 3.964v11.891M5.5 42.5V30.608c0-1.985 1.85-3.965 3.964-3.965c2.119 0 3.965 1.979 3.965 3.965V42.5m0-11.892c0-1.985 1.85-3.965 3.964-3.965c2.119 0 3.965 1.979 3.965 3.965V42.5" /><circle cx="34.571" cy="34.571" r="7.929" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            PAY WITH MOMO
+        </Button>
     );
 }
 
-function MoMoMethod() {
-    return <div>Momo</div>;
-}
+function PaypalMethod({ cart }: { cart?: any }) {
 
-function PaypalMethod() {
-    return <div>Paypal</div>;
+    const [totalAmount, setTotalAmount] = React.useState(0)
+    const clientId = "ATLuxXz6BMwtkXqYwxQCWv-FHEx3EigLmvQhfAOyhJZqtHDiys5hj5OW8IAKuK3B8yzcFg2vNB0MleMA"
+
+
+    console.log('cart paypal', cart)
+
+
+    useEffect(() => {
+        console.log('cart', cart)
+        const curentTotal = cart.reduce(
+            (acc: any, cur: any) =>
+                acc + cur.price * cur.count,
+            0,
+        );
+        console.log('cureentTotal', curentTotal)
+        setTotalAmount(curentTotal)
+    }, [cart])
+
+    const data = cart.map((item: any) => {
+        return item.type.parent.name === "pet" ?
+            {
+                pet_id: item.id,
+                quantity: item.count,
+            } :
+            {
+                accessory_id: item.id,
+                quantity: item.count,
+            };
+    });
+
+    const dataMapping = {
+        checkout: {
+            items: [
+                ...data
+            ]
+        }
+    }
+    console.log('totalAmount', totalAmount)
+    // Convert VND to USD and pass into totalAmount
+    // get orderID from API to pass
+
+    return <div>
+        { 
+        ( 
+            <PayPalScriptProvider
+                options={{
+                    clientId: clientId,
+                    components: "buttons",
+                    currency: "USD",
+                }}
+            >
+                <PaypalButton
+                    cartData={dataMapping}
+                    totalAmount={totalAmount.toString()}
+                    orderID={"#test123"}
+                />
+            </PayPalScriptProvider>
+        ) }
+    </div>;
 }

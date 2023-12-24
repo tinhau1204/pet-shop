@@ -58,11 +58,13 @@ function MyApp({ Component, pageProps }: AppProps) {
     const router = useRouter();
 
     useEffect(() => {
+        console.log(" window.location :>> ", window.location);
         if (
             window.location.pathname == "/auth/login" ||
             window.location.pathname == "/auth/register" ||
             window.location.pathname == "/auth/verified" ||
-            window.location.pathname == "/auth/verifiedRegister"
+            window.location.pathname == "/auth/verifiedRegister" ||
+            window.location.pathname.startsWith("/checkout")
         )
             setIsLogin(true);
         return () => {

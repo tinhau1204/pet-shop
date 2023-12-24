@@ -36,6 +36,9 @@ module.exports = {
             ["orange"]: {
                 ["normal"]: "#FF912C",
             },
+            ["pink"]: {
+                ["normal"]: "#D82D8B",
+            }
         },
 
         screens: {
