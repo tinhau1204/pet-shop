@@ -57,16 +57,21 @@ const PaypalButton = ({ cartData, totalAmount, orderID }: PaypalProps) => {
                             return orderId;
                         });
                 }}
-                onApprove={(data, actions) => {
-                    return actions?.order?.capture().then(function (
-                        details: any,
-                    ) {
-                        if (data) {
-                            createOrderWithPaypal({
-                                details,
-                            });
+                onApprove={async (data, actions) => {
+                    const capturePromise = actions?.order?.capture();
+                    if (capturePromise) {
+                        try {
+                            const details = await capturePromise;
+                            if (data) {
+                                createOrderWithPaypal({
+                                    details,
+                                });
+                            }
+                        } catch (error) {
+                            // Handle any errors that might occur during capture
+                            console.error(error);
                         }
-                    });
+                    }
                 }}
                 onCancel={(data) => {
                     console.log("Cancel", data);
