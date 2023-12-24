@@ -27,3 +27,35 @@ export async function getAccessoriesType(data?: any) {
         .post("/accessory-type/search", data)
         .then((res) => res.data.data);
 }
+
+export type PetSearchType = {
+    name: string | null;
+    type?: { id: number } | null;
+    someStates?: [] | null;
+    notInIds?: [] | null;
+};
+export type AccessorySearchType = {
+    name: string | null;
+    type?: { id: number } | null;
+    someStates?: [] | null;
+    notInIds?: [] | null;
+};
+
+export async function searchPets(data: PetSearchType) {
+    return await client
+        .post("/pet/search", {
+            search: {
+                ...data,
+            },
+        })
+        .then((res) => res.data.data);
+}
+export async function searchAccessories(data: AccessorySearchType) {
+    return await client
+        .post("/accessory/search", {
+            search: {
+                ...data,
+            },
+        })
+        .then((res) => res.data.data);
+}

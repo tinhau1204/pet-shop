@@ -56,9 +56,9 @@ function MyCarousel(props: MyCarouselProps) {
                 radius={"57px"}
                 rightSection={<ChevronRight />}
                 onClick={() => {
-                    props.onClick && props.onClick(carouselType)
-                    router.push(`/categories/${carouselType}`)
-                }}  
+                    props.onClick && props.onClick(carouselType);
+                    router.push(`/categories/${carouselType}`);
+                }}
             >
                 View More
             </Button>

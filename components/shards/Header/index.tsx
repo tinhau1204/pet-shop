@@ -36,7 +36,6 @@ import { IUser } from "@/lib/api/types";
 import { useMutation } from "react-query";
 import { accountLogout } from "@/lib/api";
 import { toast } from "react-toastify";
-import { log } from "console";
 const Cookies = require("js-cookie");
 
 type HeaderProps = {
@@ -46,8 +45,8 @@ type HeaderProps = {
 const HeaderLink = [
     { name: "Home", link: "/" },
     { name: "Category", link: "/categories" },
-    { name: "About", link: "/about" },
-    { name: "Contact", link: "/contact" },
+    // { name: "About", link: "/about" },
+    // { name: "Contact", link: "/contact" },
 ];
 
 // const selectData: DropdownDataProps[] = [
@@ -265,7 +264,9 @@ function Header(props: HeaderProps) {
                                     leftSection={
                                         <CartCheckedIcon className="w-4 h-4 text-black-medium/50" />
                                     }
-                                    onClick={() => router.push("/order/history")}
+                                    onClick={() =>
+                                        router.push("/order/history")
+                                    }
                                 >
                                     Order History
                                 </Menu.Item>

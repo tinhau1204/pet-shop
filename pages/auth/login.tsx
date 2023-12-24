@@ -19,9 +19,7 @@ import { useMutation, useQuery } from "react-query";
 import { toast } from "react-toastify";
 const Cookies = require("js-cookie");
 import { API } from "@/lib/config/env";
-import {
-    useGoogleLogin
-} from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 
 export default function Login() {
     const router = useRouter();
@@ -102,8 +100,14 @@ export default function Login() {
                     toast.success(result?.message, {
                         position: "bottom-right",
                     });
-                    Cookies.set("accessToken", result?.data?.tokens?.accessToken);
-                    Cookies.set("refreshToken", result?.data?.tokens?.refreshToken);
+                    Cookies.set(
+                        "accessToken",
+                        result?.data?.tokens?.accessToken,
+                    );
+                    Cookies.set(
+                        "refreshToken",
+                        result?.data?.tokens?.refreshToken,
+                    );
                     Cookies.set("user", result?.data?.user.id, {
                         expires: Date.now() + 30 * 60 * 1000,
                     });
@@ -111,9 +115,8 @@ export default function Login() {
                     //add toast
                     router.push("/");
                 }
-
             } catch (e) {
-                console.error('error', e)
+                console.error("error", e);
             }
         },
         flow: "auth-code",

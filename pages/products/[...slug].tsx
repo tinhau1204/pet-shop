@@ -68,7 +68,6 @@ const customerList = [
 ];
 
 function CardImage({ image, alt }: { image: string; alt: string }) {
-
     return (
         <div className="w-[15.5rem] h-[21.25rem] rounded-xl overflow-hidden">
             <Image
@@ -92,8 +91,8 @@ export default function Page(props: PageProps) {
     const { slug } = router.query;
 
     const petDetailQuery = useQuery({
-        queryKey: ['petProduct', slug?.[0]],
-        queryFn: () => getPetById(parseInt((slug?.[1] as string))),
+        queryKey: ["petProduct", slug?.[0]],
+        queryFn: () => getPetById(parseInt(slug?.[1] as string)),
         onSuccess: (data) => {
             const result = convertData(data.data, petMapping);
             setPetTable(result);
@@ -102,25 +101,29 @@ export default function Page(props: PageProps) {
             console.error(error);
         },
         refetchOnWindowFocus: false,
-    })
+    });
 
     const accessoriesQuery = useQuery({
-        queryKey: ['accessoriesProduct', slug?.[0]],
-        queryFn: () => getAccessoriesById(parseInt((slug?.[1] as string))),
+        queryKey: ["accessoriesProduct", slug?.[0]],
+        queryFn: () => getAccessoriesById(parseInt(slug?.[1] as string)),
         onSuccess: (data) => {
             const result = convertData(data.data, accessMapping);
             setAccessTable(result);
         },
         onError: (error) => {
-            console.error(error)
+            console.error(error);
         },
         refetchOnWindowFocus: false,
-    })
+    });
+
+    const sendInteraction = async () => {
+        await recombee.send(new recombee_api.AddDetailView("1", "1"));
+    };
 
     useEffect(() => {
         if (shouldRefetch) {
             // Trigger a refetch only if the query is not loading
-            if (slug?.[0] === 'pet' && !petDetailQuery.isLoading) {
+            if (slug?.[0] === "pet" && !petDetailQuery.isLoading) {
                 petDetailQuery.refetch();
             }
             // Set shouldRefetch to false to prevent future refetches
@@ -130,7 +133,7 @@ export default function Page(props: PageProps) {
 
     useEffect(() => {
         if (shouldRefetch) {
-            if (slug?.[0] === 'accessory' && !accessoriesQuery.isLoading) {
+            if (slug?.[0] === "accessory" && !accessoriesQuery.isLoading) {
                 accessoriesQuery.refetch();
             }
             setShouldRefetch(false);
@@ -193,29 +196,27 @@ export default function Page(props: PageProps) {
         });
     }
 
-
     const petMapping = {
-        "sku": "SKU",
-        "isMale": "Gender",
-        "age": "Age",
-        "stock_quantity": "stock_quantity",
-        "color": "Color",
-        "weight": "Weight",
-        "birthday": "Birthday",
-        "origin": "Origin",
+        sku: "SKU",
+        isMale: "Gender",
+        age: "Age",
+        stock_quantity: "stock_quantity",
+        color: "Color",
+        weight: "Weight",
+        birthday: "Birthday",
+        origin: "Origin",
         // Add more mappings as needed
     };
 
     const accessMapping = {
-        "sku": "SKU",
-        "origin": "Origin",
-        "stock_quantity": "stock_quantity",
-        "weight": "Weight",
-        "type": "Type",
-        "description": "Description",
+        sku: "SKU",
+        origin: "Origin",
+        stock_quantity: "stock_quantity",
+        weight: "Weight",
+        type: "Type",
+        description: "Description",
         // Add more mappings as needed
     };
-
 
     // const rows = element.map((element: any) => (
     //     <Table.Tr key={element.title}>
@@ -243,10 +244,13 @@ export default function Page(props: PageProps) {
                             value = `${value / 1000} kg`;
                         }
                     } else if (key === "birthday") {
-                        value = dayjs(value).format("DD/MM/YYYY")
+                        value = dayjs(value).format("DD/MM/YYYY");
                     }
 
-                    convertedData.push({ title: mapping[key], content: `: ${value}` });
+                    convertedData.push({
+                        title: mapping[key],
+                        content: `: ${value}`,
+                    });
                 }
             }
         } else if (slug?.[0] === "accessory") {
@@ -255,11 +259,14 @@ export default function Page(props: PageProps) {
                     let value = data[key];
                     if (key === "weight") {
                         value = `${value / 1000} kg`;
-                    } else if (key === 'type') {
+                    } else if (key === "type") {
                         value = value.name;
                     }
 
-                    convertedData.push({ title: mapping[key], content: `: ${value}` })
+                    convertedData.push({
+                        title: mapping[key],
+                        content: `: ${value}`,
+                    });
                 }
             }
         }
@@ -460,6 +467,178 @@ export default function Page(props: PageProps) {
                             </Text>
 
                             <Carousel
+                                withIndicators
+                                height={476}
+                                controlSize={40}
+                                classNames={{ control: "bg-primary/30" }}
+                                loop
+                            >
+                                {images.map((image, index) => (
+                                    <Carousel.Slide key={index}>
+                                        <Image
+                                            src={image.src}
+                                            alt={"image"}
+                                            className="w-full h-full  object-contain object-center rounded-xl"
+                                            width={500}
+                                            height={100}
+                                        />
+                                    </Carousel.Slide>
+                                ))}
+                            </Carousel>
+
+                            <div className="bg-yellow-light flex flex-row items-center justify-around px-3 py-2 my-4 rounded-xl    ">
+                                {guarantee.map((item, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex flex-row items-center justify-between gap-2"
+                                    >
+                                        {item.icon}
+                                        <Text className="text-blue-medium font-bold text-sm">
+                                            {item.title}
+                                        </Text>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="px-2.5 py-1.5 flex flex-row gap-5 items-center">
+                                <Link
+                                    href={`/products/${petDetailQuery.data?.data?.id}`}
+                                    className="flex flex-row gap-2 items-center justify-center w-fit"
+                                >
+                                    <ShareIcon className="w-5 h-5" />
+                                    <Text className="text-black-bold text-sm font-bold mt-0.5">
+                                        Share:
+                                    </Text>
+                                </Link>
+
+                                <div className="flex flex-row items-center justify-center gap-4">
+                                    {socialMedia.map((link, index) => {
+                                        return (
+                                            <Link
+                                                href={link.link}
+                                                key={index}
+                                                target="_blank"
+                                            >
+                                                {link.icon}
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                        {/* infor */}
+                        <div className="right w-full h-full">
+                            <Text className="text-black-light text-sm">
+                                SKU{" "}
+                                {slug?.[0] === "pet"
+                                    ? petDetailQuery.data?.data?.sku
+                                    : accessoriesQuery.data?.data?.sku}
+                            </Text>
+                            <Text
+                                className="text-black-bold text-2xl font-bold mt-0.5"
+                                onClick={() => {
+                                    console.log("send recombee");
+                                    sendInteraction();
+                                }}
+                            >
+                                {slug?.[0] === "pet"
+                                    ? petDetailQuery.data?.data?.name
+                                    : accessoriesQuery.data?.data?.name}
+                            </Text>
+                            <Text className="text-blue-medium text-xl font-bold mt-1.5">
+                                {formatPrice(
+                                    slug?.[0] === "pet"
+                                        ? petDetailQuery.data?.data?.price
+                                        : accessoriesQuery.data?.data?.price,
+                                )}
+                            </Text>
+
+                            <Group gap="lg" className="my-4">
+                                <Button
+                                    px={28}
+                                    py={8}
+                                    variant="filled"
+                                    className="bg-blue-medium rounded-full"
+                                    onClick={() => console.log("click")}
+                                >
+                                    Contact Us
+                                </Button>
+                                <Button
+                                    px={28}
+                                    py={8}
+                                    variant="outline"
+                                    className="text-blue-medium border-blue-medium rounded-full"
+                                    leftSection={
+                                        <ChatIcon className="w-6 h-6" />
+                                    }
+                                    onClick={() => console.log("click")}
+                                >
+                                    Chat with Monito
+                                </Button>
+                            </Group>
+
+                            <Table>
+                                <Table.Tbody>
+                                    {slug?.[0] === "pet" &&
+                                        (petDetailQuery.data &&
+                                            petTable.length > 0 ? (
+                                            petTable?.map((element: any) => (
+                                                <Table.Tr key={element.title}>
+                                                    <Table.Td className="text-black-normal">
+                                                        {element.title}
+                                                    </Table.Td>
+                                                    <Table.Td className="text-black-normal">
+                                                        {element.content}
+                                                    </Table.Td>
+                                                </Table.Tr>
+                                            ))
+                                        ) : (
+                                            <Table.Td>Loading...</Table.Td>
+                                        ))}
+                                    {slug?.[0] === "accessory" &&
+                                        (accessoriesQuery.data &&
+                                            accessTable.length > 0 ? (
+                                            accessTable?.map((element: any) => (
+                                                <Table.Tr key={element.title}>
+                                                    <Table.Td className="text-black-normal">
+                                                        {element.title}
+                                                    </Table.Td>
+                                                    <Table.Td className="text-black-normal">
+                                                        {element.content}
+                                                    </Table.Td>
+                                                </Table.Tr>
+                                            ))
+                                        ) : (
+                                            <Table.Tr>Loading...</Table.Tr>
+                                        ))}
+                                </Table.Tbody>
+                            </Table>
+                            <div className="w-full flex flex-row justify-center">
+                                <Button
+                                    size="lg"
+                                    leftSection={<CartIcon />}
+                                    radius="md"
+                                    className="bg-blue-bold mt-10 w-[20rem]"
+                                    onClick={() =>
+                                        handleAddToCart(
+                                            slug?.[0] === "pet"
+                                                ? petDetailQuery.data?.data
+                                                : accessoriesQuery.data?.data,
+                                        )
+                                    }
+                                >
+                                    Add to Cart
+                                </Button>
+                            </div>
+                        </div>
+
+                        {/* customer  */}
+                        <div className="w-full mt-6 mb-14 mr-4 pl-4">
+                            <Text className="font-bold text-blue-medium text-2xl">
+                                Our lovely customer
+                            </Text>
+
+                            <Carousel
                                 align="start"
                                 slideGap="md"
                                 withControls={false}
@@ -472,7 +651,10 @@ export default function Page(props: PageProps) {
                             >
                                 {customerList.map((image, index) => (
                                     <Carousel.Slide key={index}>
-                                        <CardImage image={image.image} alt={image.alt} />
+                                        <CardImage
+                                            image={image.image}
+                                            alt={image.alt}
+                                        />
                                     </Carousel.Slide>
                                 ))}
                             </Carousel>
@@ -504,10 +686,8 @@ export default function Page(props: PageProps) {
                             </Stack>
                         </div>
                     </>
-                )
-            }
+                )}
         </>
-
     );
 }
 
