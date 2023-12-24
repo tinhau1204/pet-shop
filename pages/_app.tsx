@@ -66,12 +66,10 @@ function MyApp({ Component, pageProps }: AppProps) {
             window.location.pathname == "/auth/verifiedRegister"
         )
             setIsLogin(true);
-
         return () => {
             setIsLogin(false);
         };
     }, [router.asPath]);
-
     return (
         <MantineProvider withCssVariables={false} theme={theme}>
             <Provider store={store}>

@@ -12,23 +12,26 @@ import {
     Table,
     Text,
     TextInput,
+    TextInputProps,
 } from "@mantine/core";
 import { YearPickerInput } from "@mantine/dates";
 import ArrownDown from "@my-images/arrowDown.svg";
 import ArrowLeft from "@my-images/Arrow_Left_SM.svg";
 import Link from "next/link";
-import React, { MouseEventHandler } from "react";
+import React, { ChangeEvent, MouseEventHandler } from "react";
 import ArrowDownIcon from "@my-images/Caret_Down_MD.svg";
 import { useCartStore } from "@/lib/store/cart";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 function ProductInfo({
     src,
     name,
-    color,
+    sku,
 }: {
     src: string;
     name: string;
-    color: string;
+    sku: string;
 }) {
     return (
         <Flex
@@ -47,31 +50,80 @@ function ProductInfo({
                 <Text className="text-sm text-blue-medium font-bold max-w-[150px]">
                     {name}
                 </Text>
-                <Text className="text-xs text-black-light/50">{color}</Text>
+                <Text className="text-xs text-black-light/50">{sku}</Text>
             </Flex>
         </Flex>
     );
 }
 
-function ProductSize({ data }: { data?: string[] }) {
+function QuantityField({
+    element,
+    updateQuantity,
+}: {
+    element: any;
+    updateQuantity: (sku: string, newQuantity: number) => void;
+}) {
+    const [quantity, setQuantity] = React.useState<number>(element?.count);
+
+    const handleQuantityChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const newQuantity = parseInt(event.target.value, 10);
+
+        const validQuantity = newQuantity <= element.stock_quantity;
+        let message = `There ${
+            element.stock_quantity > 1 ? "are" : "is"
+        } only ${element.stock_quantity} product${
+            element.stock_quantity > 1 ? "s" : ""
+        } left`;
+        if (!validQuantity) {
+            setQuantity(element.stock_quantity);
+            const sku = element.sku;
+            toast.warn(message, {
+                position: "top-right",
+                autoClose: 5000,
+                closeOnClick: true,
+            });
+            updateQuantity(sku, element.stock_quantity);
+        } else {
+            setQuantity(newQuantity);
+            const sku = element.sku;
+            updateQuantity(sku, newQuantity);
+        }
+    };
+
     return (
-        <NativeSelect
+        <TextInput
             radius="xl"
-            data={["S", "M", "L", "XL"]}
+            className="max-w-[5rem] font-semibold"
+            // defaultValue={quantity}
+            value={quantity.toString() || String(1)}
+            type="number"
+            max={element.stock_quantity}
+            min={1}
+            onChange={handleQuantityChange}
             classNames={{
-                input: "border-black-light/20 text-blue-medium font-semibold",
+                input: "text-blue-medium",
             }}
-            rightSection={<ArrownDown className="text-blue-medium font-bold" />}
-            className="max-w-[6rem]"
         />
     );
 }
+// function ProductSize({ data }: { data?: string[] }) {
+//     return (
+//         <NativeSelect
+//             radius="xl"
+//             data={["S", "M", "L", "XL"]}
+//             classNames={{
+//                 input: "border-black-light/20 text-blue-medium font-semibold",
+//             }}
+//             rightSection={<ArrownDown className="text-blue-medium font-bold" />}
+//             className="max-w-[6rem]"
+//         />
+//     );
+// }
 
 export default function Cart() {
+    const router = useRouter();
     const [payment, setPayment] = React.useState("Credit Card");
-    const { cart } = useCartStore();
-
-    console.log("cart", cart);
+    const { cart, updateCartProduct, remove } = useCartStore();
 
     const handlePaymentChange: MouseEventHandler<HTMLButtonElement> = (
         event,
@@ -107,41 +159,43 @@ export default function Cart() {
         },
     ];
 
-    const rows = elements.map((element, index) => (
-        <Table.Tr key={index}>
-            <Table.Td>
-                <ProductInfo
-                    src={element.src}
-                    name={element.name}
-                    color={element.color}
-                />
-            </Table.Td>
-            <Table.Td>
-                <ProductSize />
-            </Table.Td>
-            <Table.Td>
-                <TextInput
-                    radius="xl"
-                    className="max-w-[5rem] font-semibold"
-                    defaultValue={1}
-                    type="number"
-                    classNames={{
-                        input: "text-blue-medium",
-                    }}
-                />
-            </Table.Td>
-            <Table.Td className="text-center">
-                <Text className="text-blue-medium font-semibold">
-                    ${element.price}
-                </Text>
-            </Table.Td>
-            <Table.Td className="max-w-[2rem]">
-                <ActionIcon variant="transparent" radius="xl" size="md">
-                    <CloseIcon className="text-black-light font-extrabold" />
-                </ActionIcon>
-            </Table.Td>
-        </Table.Tr>
-    ));
+    const rows =
+        cart &&
+        cart.map((element, index) => (
+            <Table.Tr key={index}>
+                <Table.Td>
+                    <ProductInfo
+                        src={element.thumbnail_image || ""}
+                        name={element.name}
+                        sku={element.sku}
+                    />
+                </Table.Td>
+                <Table.Td>
+                    <QuantityField
+                        key={element.sku}
+                        element={element}
+                        updateQuantity={updateCartProduct}
+                    />
+                </Table.Td>
+                <Table.Td className="text-center">
+                    <Text className="text-blue-medium font-semibold">
+                        {element.price * element.count} VND
+                    </Text>
+                </Table.Td>
+                <Table.Td className="max-w-[2rem]">
+                    <ActionIcon
+                        variant="transparent"
+                        radius="xl"
+                        size="md"
+                        onClick={() => {
+                            remove(element.id, element.sku);
+                        }}
+                    >
+                        <CloseIcon className="text-black-light font-extrabold" />
+                    </ActionIcon>
+                </Table.Td>
+            </Table.Tr>
+        ));
     return (
         <Grid>
             <Grid.Col span={{ base: 12, md: 8 }}>
@@ -167,7 +221,7 @@ export default function Cart() {
                         <Table.Thead className="text-blue-medium text-base font-normal">
                             <Table.Tr>
                                 <Table.Th>Product</Table.Th>
-                                <Table.Th>Size</Table.Th>
+                                {/* <Table.Th>Size</Table.Th> */}
                                 <Table.Th>Quantity</Table.Th>
                                 <Table.Th className="text-center">
                                     Total price
@@ -191,7 +245,8 @@ export default function Cart() {
                             leftSection={
                                 <ArrowLeft className="text-blue-medium font-bold" />
                             }
-                            className="border-blue-medium/70 text-blue-medium font-bold "
+                            className="border-blue-medium/70 text-blue-medium font-bold"
+                            onClick={() => router.push("/")}
                         >
                             Continue Shopping
                         </Button>
@@ -202,7 +257,12 @@ export default function Cart() {
                                     Subtotal:
                                 </Text>
                                 <Text className="text-blue-medium font-semibold text-base">
-                                    $15.49
+                                    {cart.reduce(
+                                        (acc, cur) =>
+                                            acc + cur.price * cur.count,
+                                        0,
+                                    )}{" "}
+                                    VND
                                 </Text>
                             </div>
                             <div className="w-full flex flex-row items-center justify-between">
@@ -210,7 +270,7 @@ export default function Cart() {
                                     Shipping:
                                 </Text>
                                 <Text className="text-blue-medium font-semibold text-base">
-                                    $2.00
+                                    Free
                                 </Text>
                             </div>
 
@@ -220,7 +280,12 @@ export default function Cart() {
                                     Total:
                                 </Text>
                                 <Text className="text-blue-medium font-semibold text-xl">
-                                    $17.49
+                                    {cart.reduce(
+                                        (acc, cur) =>
+                                            acc + cur.price * cur.count,
+                                        0,
+                                    )}{" "}
+                                    VND
                                 </Text>
                             </div>
                         </Stack>
@@ -465,7 +530,7 @@ function CreditCardMethod() {
                 className="text-bold text-xl w-full mt-4"
                 size="lg"
             >
-                Confirm and Pay $ 17.49
+                Confirm and Pay 17.49 VND
             </Button>
         </form>
     );
