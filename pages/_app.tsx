@@ -22,6 +22,7 @@ import React, { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { useRouter } from "next/router";
 
 const myFont = localFont({
     src: [
@@ -54,8 +55,10 @@ const queryClient = new QueryClient({
 
 function MyApp({ Component, pageProps }: AppProps) {
     const [isLogin, setIsLogin] = React.useState(false);
+    const router = useRouter();
 
     useEffect(() => {
+        console.log(" window.location :>> ", window.location);
         if (
             window.location.pathname == "/auth/login" ||
             window.location.pathname == "/auth/register" ||
@@ -67,7 +70,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         return () => {
             setIsLogin(false);
         };
-    }, [setIsLogin]);
+    }, [router.asPath]);
+
     return (
         <MantineProvider withCssVariables={false} theme={theme}>
             <Provider store={store}>
