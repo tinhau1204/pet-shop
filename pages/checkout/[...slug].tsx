@@ -17,7 +17,7 @@ export default function Page(props: PageProps) {
     const router = useRouter();
     console.log('props', props)
     return (
-        props.slug === "success" ? (
+        (props.slug && props.slug === "success") ? (
             <div className="h-screen flex flex-row items-center">
                 <Card
                     padding="lg"
@@ -45,7 +45,7 @@ export default function Page(props: PageProps) {
 
                     <Text className="mt-2 text-base font-normal text-black-normal text-center">
                         Your OrderId: {props.params} has been placed.
-                        <div>Please waiting for our confirmation.</div>
+                        <br/>Please waiting for our confirmation.
                     </Text>
 
                     <Button

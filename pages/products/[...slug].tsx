@@ -280,6 +280,7 @@ export default function Page(props: PageProps) {
             toast.success(`Đã thêm sản phẩm ${data?.name} vào giỏ hàng`, {
                 autoClose: 2000,
             });
+
         } else {
             toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng", {
                 autoClose: 2000,

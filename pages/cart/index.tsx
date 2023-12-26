@@ -339,7 +339,7 @@ export default function Cart() {
                         {payment == "MoMo" ? (
                             <MoMoMethod />
                         ) : payment == "Paypal" ? (
-                            <PaypalMethod cart={cart} />
+                            <PaypalMethod />
                         ) : (
                             <></>
                         )}
@@ -554,7 +554,7 @@ function MoMoMethod() {
     })
 
     useEffect(() => {
-        if (momoUrl) window.open(momoUrl, "_blank");
+        if (momoUrl) window.open(momoUrl, "_self");
     }, [momoUrl])
 
     return (
@@ -571,27 +571,14 @@ function MoMoMethod() {
     );
 }
 
-function PaypalMethod({ cart }: { cart?: any }) {
-
-    const [totalAmount, setTotalAmount] = React.useState(0)
+function PaypalMethod() {
     const clientId = "ATLuxXz6BMwtkXqYwxQCWv-FHEx3EigLmvQhfAOyhJZqtHDiys5hj5OW8IAKuK3B8yzcFg2vNB0MleMA"
+    // const [totalAmount, setTotalAmount] = React.useState(0)
 
 
-    console.log('cart paypal', cart)
+    const { cart } = useCartStore();
 
-
-    useEffect(() => {
-        console.log('cart', cart)
-        const curentTotal = cart.reduce(
-            (acc: any, cur: any) =>
-                acc + cur.price * cur.count,
-            0,
-        );
-        console.log('cureentTotal', curentTotal)
-        setTotalAmount(curentTotal)
-    }, [cart])
-
-    const data = cart.map((item: any) => {
+    const data = cart.map((item) => {
         return item.type.parent.name === "pet" ?
             {
                 pet_id: item.id,
@@ -610,13 +597,15 @@ function PaypalMethod({ cart }: { cart?: any }) {
             ]
         }
     }
-    console.log('totalAmount', totalAmount)
-    // Convert VND to USD and pass into totalAmount
-    // get orderID from API to pass
 
-    return <div>
-        { 
-        ( 
+    const currentTotal = cart.reduce(
+        (acc, cur) =>
+            acc + cur.price * cur.count,
+        0,
+    )
+
+    return  (
+    <div>   
             <PayPalScriptProvider
                 options={{
                     clientId: clientId,
@@ -626,10 +615,9 @@ function PaypalMethod({ cart }: { cart?: any }) {
             >
                 <PaypalButton
                     cartData={dataMapping}
-                    totalAmount={totalAmount.toString()}
+                    totalAmount={currentTotal.toString()}
                     orderID={"#test123"}
                 />
-            </PayPalScriptProvider>
-        ) }
-    </div>;
+            </PayPalScriptProvider> 
+    </div>);
 }

@@ -213,7 +213,7 @@ export default function orderHistory() {
                         </Group>
                     </Card.Section>
 
-                    <Accordion variant="separated" defaultValue="Apples">
+                    <Accordion variant="separated" defaultValue="Apples" className="overflow-y-scroll">
                         {element?.itemList?.map((element, index) => (
                             <Accordion.Item
                                 key={index}

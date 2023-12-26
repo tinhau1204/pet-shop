@@ -34,9 +34,9 @@ export default function Register() {
             email: (value) =>
                 /^\S+@\S+$/.test(value) ? null : "Invalid email",
             password: (value) =>
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-                    value,
-                )
+                        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+                            value,
+                        )
                     ? null
                     : "Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character",
             phone: (value) => /^\d{10}$/.test(value) ? null : "Phone number required 10 digits!",
