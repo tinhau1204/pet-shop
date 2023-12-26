@@ -132,7 +132,7 @@ export default function Page(props: PageProps) {
             }
             setShouldRefetch(false);
         }
-    }, [shouldRefetch, slug, accessoriesQuery])
+    }, [shouldRefetch, slug, accessoriesQuery]);
 
     useEffect(() => {
         // Set shouldRefetch to true whenever the location changes
@@ -275,191 +275,30 @@ export default function Page(props: PageProps) {
                 (data as petsData).isMale !== undefined
                     ? (data as petsData)
                     : (data as accessoriesData),
-            )
-            Cookies.set("cartUser", JSON.stringify(cart))
+            );
+            Cookies.set("cartUser", JSON.stringify(cart));
             toast.success(`Đã thêm sản phẩm ${data?.name} vào giỏ hàng`, {
                 autoClose: 2000,
-            })
+            });
         } else {
             toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng", {
                 autoClose: 2000,
-            })
-            router.push("/auth/login")
+            });
+            router.push("/auth/login");
         }
-    }
+    };
 
     // Render data...
     return (
         <>
-            {
-                petDetailQuery.isLoading ? (
-                    <div>Loading...</div>
-                ) : petDetailQuery.isError ? (
-                    <div>Error: {(petDetailQuery as any).error}</div>
-                ) : (
-                    <>
-                        <div className="flex flex-row items-start justify-center min-h-fit border border-black-light/50 px-5 py-[22px] gap-8 rounded-xl  bg-black-light/5 mb-5">
-                            <div className="left w-full h-full">
-                                <Carousel
-                                    withIndicators
-                                    height={476}
-                                    controlSize={40}
-                                    classNames={{ control: "bg-primary/30" }}
-                                    loop
-                                >
-                                    {(petDetailQuery.data) && petDetailQuery.data?.data?.description_images.map((image: string, index: any) => (
-                                        <Carousel.Slide key={index}>
-                                            <Image
-                                                src={image}
-                                                alt={'image'}
-                                                className="w-full h-full  object-contain object-center rounded-xl"
-                                                width={500}
-                                                height={100}
-                                            />
-                                        </Carousel.Slide>
-                                    ))}
-                                </Carousel>
-
-                                <div className="bg-yellow-light flex flex-row items-center justify-around px-3 py-2 my-4 rounded-xl    ">
-                                    {guarantee.map((item, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex flex-row items-center justify-between gap-2"
-                                        >
-                                            {item.icon}
-                                            <Text className="text-blue-medium font-bold text-sm">
-                                                {item.title}
-                                            </Text>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div className="px-2.5 py-1.5 flex flex-row gap-5 items-center">
-                                    <Link
-                                        href={`/products/${petDetailQuery.data?.data?.id}`}
-                                        className="flex flex-row gap-2 items-center justify-center w-fit"
-                                    >
-                                        <ShareIcon className="w-5 h-5" />
-                                        <Text className="text-black-bold text-sm font-bold mt-0.5">
-                                            Share:
-                                        </Text>
-                                    </Link>
-
-                                    <div className="flex flex-row items-center justify-center gap-4">
-                                        {socialMedia.map((link, index) => {
-                                            return (
-                                                <Link
-                                                    href={link.link}
-                                                    key={index}
-                                                    target="_blank"
-                                                >
-                                                    {link.icon}
-                                                </Link>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-                            {/* infor */}
-                            <div className="right w-full h-full">
-                                <Text className="text-black-light text-sm">
-                                    SKU {
-                                        (slug?.[0] === 'pet' ? (
-                                            petDetailQuery.data?.data?.sku
-                                        ) : (
-                                            accessoriesQuery.data?.data?.sku
-                                        )
-                                        )
-                                    }
-                                </Text>
-                                <Text className="text-black-bold text-2xl font-bold mt-0.5">
-                                    {(slug?.[0] === 'pet' ? (
-                                        petDetailQuery.data?.data?.name
-                                    ) : (
-                                        accessoriesQuery.data?.data?.name
-                                    )
-                                    )}
-                                </Text>
-                                <Text className="text-blue-medium text-xl font-bold mt-1.5">
-                                    {formatPrice(slug?.[0] === 'pet' ? (
-                                        petDetailQuery.data?.data?.price
-                                    ) : (
-                                        accessoriesQuery.data?.data?.price
-                                    ))}
-                                </Text>
-
-                                <Group gap="lg" className="my-4">
-                                    <Button
-                                        px={28}
-                                        py={8}
-                                        variant="filled"
-                                        className="bg-blue-medium rounded-full"
-                                        onClick={() => console.log('click')}
-                                        disabled
-                                    >
-                                        Contact Us
-                                    </Button>
-                                    <Button
-                                        px={28}
-                                        py={8}
-                                        variant="outline"
-                                        className="text-blue-medium border-blue-medium rounded-full"
-                                        leftSection={<ChatIcon className="w-6 h-6" />}
-                                        onClick={() => console.log('click')}
-                                        disabled
-                                    >
-                                        Chat with Monito
-                                    </Button>
-                                </Group>
-
-                                <Table>
-                                    <Table.Tbody>
-                                        {slug?.[0] === "pet" && (
-                                            (petDetailQuery.data && petTable.length > 0) ? (
-                                                petTable?.map((element: any) => (
-                                                    <Table.Tr key={element.title}>
-                                                        <Table.Td className="text-black-normal">{element.title}</Table.Td>
-                                                        <Table.Td className="text-black-normal">{element.content}</Table.Td>
-                                                    </Table.Tr>
-                                                ))
-                                            ) : (
-                                                <Table.Td>Loading...</Table.Td>
-                                            )
-                                        )}
-                                        {slug?.[0] === "accessory" && (
-                                            (accessoriesQuery.data && accessTable.length > 0) ? (
-                                                accessTable?.map((element: any) => (
-                                                    <Table.Tr key={element.title}>
-                                                        <Table.Td className="text-black-normal">{element.title}</Table.Td>
-                                                        <Table.Td className="text-black-normal">{element.content}</Table.Td>
-                                                    </Table.Tr>
-                                                ))
-                                            ) : (
-                                                <Table.Tr>Loading...</Table.Tr>
-                                            )
-                                        )}
-                                    </Table.Tbody>
-                                </Table>
-                                <div className="w-full flex flex-row justify-center">
-                                    <Button
-                                        size="lg"
-                                        leftSection={<CartIcon />}
-                                        radius="md"
-                                        className="bg-blue-bold mt-10 w-[20rem]"
-                                        onClick={() => handleActionClick((slug?.[0] === 'pet') ? petDetailQuery.data?.data : accessoriesQuery.data?.data)}
-                                    >
-                                        Add to Cart
-                                    </Button>
-
-                                </div>
-                            </div>
-                        </div>
-                        {/* customer  */}
-                        <div className="w-full mt-6 mb-14 mr-4 pl-4">
-                            <Text className="font-bold text-blue-medium text-2xl">
-                                Our lovely customer
-                            </Text>
-
+            {petDetailQuery.isLoading ? (
+                <div>Loading...</div>
+            ) : petDetailQuery.isError ? (
+                <div>Error: {(petDetailQuery as any).error}</div>
+            ) : (
+                <>
+                    <div className="flex flex-row items-start justify-center min-h-fit border border-black-light/50 px-5 py-[22px] gap-8 rounded-xl  bg-black-light/5 mb-5">
+                        <div className="left w-full h-full">
                             <Carousel
                                 withIndicators
                                 height={476}
@@ -467,17 +306,20 @@ export default function Page(props: PageProps) {
                                 classNames={{ control: "bg-primary/30" }}
                                 loop
                             >
-                                {images.map((image, index) => (
-                                    <Carousel.Slide key={index}>
-                                        <Image
-                                            src={image.src}
-                                            alt={"image"}
-                                            className="w-full h-full  object-contain object-center rounded-xl"
-                                            width={500}
-                                            height={100}
-                                        />
-                                    </Carousel.Slide>
-                                ))}
+                                {petDetailQuery.data &&
+                                    petDetailQuery.data?.data?.description_images.map(
+                                        (image: string, index: any) => (
+                                            <Carousel.Slide key={index}>
+                                                <Image
+                                                    src={image}
+                                                    alt={"image"}
+                                                    className="w-full h-full  object-contain object-center rounded-xl"
+                                                    width={500}
+                                                    height={100}
+                                                />
+                                            </Carousel.Slide>
+                                        ),
+                                    )}
                             </Carousel>
 
                             <div className="bg-yellow-light flex flex-row items-center justify-around px-3 py-2 my-4 rounded-xl    ">
@@ -528,9 +370,7 @@ export default function Page(props: PageProps) {
                                     ? petDetailQuery.data?.data?.sku
                                     : accessoriesQuery.data?.data?.sku}
                             </Text>
-                            <Text
-                                className="text-black-bold text-2xl font-bold mt-0.5"
-                            >
+                            <Text className="text-black-bold text-2xl font-bold mt-0.5">
                                 {slug?.[0] === "pet"
                                     ? petDetailQuery.data?.data?.name
                                     : accessoriesQuery.data?.data?.name}
@@ -550,6 +390,7 @@ export default function Page(props: PageProps) {
                                     variant="filled"
                                     className="bg-blue-medium rounded-full"
                                     onClick={() => console.log("click")}
+                                    disabled
                                 >
                                     Contact Us
                                 </Button>
@@ -562,6 +403,7 @@ export default function Page(props: PageProps) {
                                         <ChatIcon className="w-6 h-6" />
                                     }
                                     onClick={() => console.log("click")}
+                                    disabled
                                 >
                                     Chat with Monito
                                 </Button>
@@ -571,7 +413,7 @@ export default function Page(props: PageProps) {
                                 <Table.Tbody>
                                     {slug?.[0] === "pet" &&
                                         (petDetailQuery.data &&
-                                            petTable.length > 0 ? (
+                                        petTable.length > 0 ? (
                                             petTable?.map((element: any) => (
                                                 <Table.Tr key={element.title}>
                                                     <Table.Td className="text-black-normal">
@@ -587,7 +429,7 @@ export default function Page(props: PageProps) {
                                         ))}
                                     {slug?.[0] === "accessory" &&
                                         (accessoriesQuery.data &&
-                                            accessTable.length > 0 ? (
+                                        accessTable.length > 0 ? (
                                             accessTable?.map((element: any) => (
                                                 <Table.Tr key={element.title}>
                                                     <Table.Td className="text-black-normal">
@@ -610,7 +452,7 @@ export default function Page(props: PageProps) {
                                     radius="md"
                                     className="bg-blue-bold mt-10 w-[20rem]"
                                     onClick={() =>
-                                        handleAddToCart(
+                                        handleActionClick(
                                             slug?.[0] === "pet"
                                                 ? petDetailQuery.data?.data
                                                 : accessoriesQuery.data?.data,
@@ -621,50 +463,214 @@ export default function Page(props: PageProps) {
                                 </Button>
                             </div>
                         </div>
+                    </div>
+                    {/* customer  */}
+                    <div className="w-full mt-6 mb-14 mr-4 pl-4">
+                        <Text className="font-bold text-blue-medium text-2xl">
+                            Our lovely customer
+                        </Text>
 
-                        {/* customer  */}
-                        <div className="w-full mt-6 mb-14 mr-4 pl-4">
-                            <Text className="font-bold text-blue-medium text-2xl">
-                                Our lovely customer
-                            </Text>
+                        <Carousel
+                            withIndicators
+                            height={476}
+                            controlSize={40}
+                            classNames={{ control: "bg-primary/30" }}
+                            loop
+                        >
+                            {images.map((image, index) => (
+                                <Carousel.Slide key={index}>
+                                    <Image
+                                        src={image.src}
+                                        alt={"image"}
+                                        className="w-full h-full  object-contain object-center rounded-xl"
+                                        width={500}
+                                        height={100}
+                                    />
+                                </Carousel.Slide>
+                            ))}
+                        </Carousel>
 
-                            <Carousel
-                                align="start"
-                                slideGap="md"
-                                withControls={false}
-                                controlSize={30}
-                                loop
-                                dragFree
-                                withIndicators
-                                slideSize="12%"
-                                className="w-full h-full overflow-hidden mt-3"
-                            >
-                                {customerList.map((image, index) => (
-                                    <Carousel.Slide key={index}>
-                                        <CardImage
-                                            image={image.image}
-                                            alt={image.alt}
-                                        />
-                                    </Carousel.Slide>
-                                ))}
-                            </Carousel>
+                        <div className="bg-yellow-light flex flex-row items-center justify-around px-3 py-2 my-4 rounded-xl    ">
+                            {guarantee.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="flex flex-row items-center justify-between gap-2"
+                                >
+                                    {item.icon}
+                                    <Text className="text-blue-medium font-bold text-sm">
+                                        {item.title}
+                                    </Text>
+                                </div>
+                            ))}
                         </div>
 
-                        {/* recommend  */}
-                        <div>
-                            <Stack>
-                                <Text className="font-medium text-base text-black-bold">
-                                    Whats new?
+                        <div className="px-2.5 py-1.5 flex flex-row gap-5 items-center">
+                            <Link
+                                href={`/products/${petDetailQuery.data?.data?.id}`}
+                                className="flex flex-row gap-2 items-center justify-center w-fit"
+                            >
+                                <ShareIcon className="w-5 h-5" />
+                                <Text className="text-black-bold text-sm font-bold mt-0.5">
+                                    Share:
                                 </Text>
-                                <Text className="font-bold text-2xl text-blue-medium">
-                                    See More Puppies
-                                </Text>
+                            </Link>
 
-                                <Grid
-                                    align="center"
-                                    className="max-h-[26rem] w-full overflow-hidden"
-                                >
-                                    {/* {mock.map((item, index) => (
+                            <div className="flex flex-row items-center justify-center gap-4">
+                                {socialMedia.map((link, index) => {
+                                    return (
+                                        <Link
+                                            href={link.link}
+                                            key={index}
+                                            target="_blank"
+                                        >
+                                            {link.icon}
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                    {/* infor */}
+                    <div className="right w-full h-full">
+                        <Text className="text-black-light text-sm">
+                            SKU{" "}
+                            {slug?.[0] === "pet"
+                                ? petDetailQuery.data?.data?.sku
+                                : accessoriesQuery.data?.data?.sku}
+                        </Text>
+                        <Text className="text-black-bold text-2xl font-bold mt-0.5">
+                            {slug?.[0] === "pet"
+                                ? petDetailQuery.data?.data?.name
+                                : accessoriesQuery.data?.data?.name}
+                        </Text>
+                        <Text className="text-blue-medium text-xl font-bold mt-1.5">
+                            {formatPrice(
+                                slug?.[0] === "pet"
+                                    ? petDetailQuery.data?.data?.price
+                                    : accessoriesQuery.data?.data?.price,
+                            )}
+                        </Text>
+
+                        <Group gap="lg" className="my-4">
+                            <Button
+                                px={28}
+                                py={8}
+                                variant="filled"
+                                className="bg-blue-medium rounded-full"
+                                onClick={() => console.log("click")}
+                            >
+                                Contact Us
+                            </Button>
+                            <Button
+                                px={28}
+                                py={8}
+                                variant="outline"
+                                className="text-blue-medium border-blue-medium rounded-full"
+                                leftSection={<ChatIcon className="w-6 h-6" />}
+                                onClick={() => console.log("click")}
+                            >
+                                Chat with Monito
+                            </Button>
+                        </Group>
+
+                        <Table>
+                            <Table.Tbody>
+                                {slug?.[0] === "pet" &&
+                                    (petDetailQuery.data &&
+                                    petTable.length > 0 ? (
+                                        petTable?.map((element: any) => (
+                                            <Table.Tr key={element.title}>
+                                                <Table.Td className="text-black-normal">
+                                                    {element.title}
+                                                </Table.Td>
+                                                <Table.Td className="text-black-normal">
+                                                    {element.content}
+                                                </Table.Td>
+                                            </Table.Tr>
+                                        ))
+                                    ) : (
+                                        <Table.Td>Loading...</Table.Td>
+                                    ))}
+                                {slug?.[0] === "accessory" &&
+                                    (accessoriesQuery.data &&
+                                    accessTable.length > 0 ? (
+                                        accessTable?.map((element: any) => (
+                                            <Table.Tr key={element.title}>
+                                                <Table.Td className="text-black-normal">
+                                                    {element.title}
+                                                </Table.Td>
+                                                <Table.Td className="text-black-normal">
+                                                    {element.content}
+                                                </Table.Td>
+                                            </Table.Tr>
+                                        ))
+                                    ) : (
+                                        <Table.Tr>Loading...</Table.Tr>
+                                    ))}
+                            </Table.Tbody>
+                        </Table>
+                        <div className="w-full flex flex-row justify-center">
+                            <Button
+                                size="lg"
+                                leftSection={<CartIcon />}
+                                radius="md"
+                                className="bg-blue-bold mt-10 w-[20rem]"
+                                onClick={() =>
+                                    handleAddToCart(
+                                        slug?.[0] === "pet"
+                                            ? petDetailQuery.data?.data
+                                            : accessoriesQuery.data?.data,
+                                    )
+                                }
+                            >
+                                Add to Cart
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* customer  */}
+                    <div className="w-full mt-6 mb-14 mr-4 pl-4">
+                        <Text className="font-bold text-blue-medium text-2xl">
+                            Our lovely customer
+                        </Text>
+
+                        <Carousel
+                            align="start"
+                            slideGap="md"
+                            withControls={false}
+                            controlSize={30}
+                            loop
+                            dragFree
+                            withIndicators
+                            slideSize="12%"
+                            className="w-full h-full overflow-hidden mt-3"
+                        >
+                            {customerList.map((image, index) => (
+                                <Carousel.Slide key={index}>
+                                    <CardImage
+                                        image={image.image}
+                                        alt={image.alt}
+                                    />
+                                </Carousel.Slide>
+                            ))}
+                        </Carousel>
+                    </div>
+
+                    {/* recommend  */}
+                    <div>
+                        <Stack>
+                            <Text className="font-medium text-base text-black-bold">
+                                Whats new?
+                            </Text>
+                            <Text className="font-bold text-2xl text-blue-medium">
+                                See More Puppies
+                            </Text>
+
+                            <Grid
+                                align="center"
+                                className="max-h-[26rem] w-full overflow-hidden"
+                            >
+                                {/* {mock.map((item, index) => (
                                         <Grid.Col
                                             key={index}
                                             span={{ base: 6, xs: 6, sm: 4, md: 3 }}
@@ -672,11 +678,11 @@ export default function Page(props: PageProps) {
                                             <ProductCard data={item} />
                                         </Grid.Col>
                                     ))} */}
-                                </Grid>
-                            </Stack>
-                        </div>
-                    </>
-                )}
+                            </Grid>
+                        </Stack>
+                    </div>
+                </>
+            )}
         </>
     );
 }
