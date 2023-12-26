@@ -68,15 +68,16 @@ export default function Profile() {
             return updateUserById(variables?.id, variables?.update);
         },
         onSuccess: (data) => {
-            toast.success(data?.message);
-            console.log("data :>> ", data);
-            store.setAuthUser(data);
+            const { message, data: _data } = data;
+            toast.success(message);
+            console.log("data :>> ", _data);
+            store.setAuthUser(_data);
             form.setValues({
-                name: data?.name || "",
-                gender: data?.gender || "male",
-                email: data?.email || "",
-                phone: data?.phone || "",
-                address: data?.address || "",
+                name: _data?.name || "",
+                gender: _data?.gender || "male",
+                email: _data?.email || "",
+                phone: _data?.phone || "",
+                address: _data?.address || "",
             });
         },
         onError: (err) => {
