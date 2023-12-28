@@ -29,7 +29,6 @@ import PaypalButton from "@/components/shards/Payments/PaypalButton";
 const Cookies = require("js-cookie");
 import Link from "next/link";
 
-
 function ProductInfo({
     src,
     name,
@@ -79,12 +78,15 @@ function QuantityField({
     const [quantity, setQuantity] = React.useState<number>(element?.count);
 
     const handleQuantityChange = (event: ChangeEvent<HTMLInputElement>) => {
+        console.log("check event", event.target.value);
         const newQuantity = parseInt(event.target.value, 10);
 
         const validQuantity = newQuantity <= element.stock_quantity;
-        let message = `There ${element.stock_quantity > 1 ? "are" : "is"
-            } only ${element.stock_quantity} product${element.stock_quantity > 1 ? "s" : ""
-            } left`;
+        let message = `There ${
+            element.stock_quantity > 1 ? "are" : "is"
+        } only ${element.stock_quantity} product${
+            element.stock_quantity > 1 ? "s" : ""
+        } left`;
         if (!validQuantity) {
             setQuantity(element.stock_quantity);
             const sku = element.sku;
@@ -138,9 +140,7 @@ export default function Cart() {
     const handlePaymentChange: MouseEventHandler<HTMLButtonElement> = (
         event,
     ) => {
-        setPayment(
-            event.currentTarget.textContent?.toString() || "",
-        );
+        setPayment(event.currentTarget.textContent?.toString() || "");
     };
 
     const rows =
@@ -321,10 +321,11 @@ export default function Cart() {
                                 Credit Card
                             </Button> */}
                             <Button
-                                className={`w-full col-span-3  ${payment == "MoMo"
-                                    ? "text-primary border-primary"
-                                    : "text-primary/40 border-primary/40"
-                                    }`}
+                                className={`w-full col-span-3  ${
+                                    payment == "MoMo"
+                                        ? "text-primary border-primary"
+                                        : "text-primary/40 border-primary/40"
+                                }`}
                                 variant="outline"
                                 radius="xl"
                                 onClick={handlePaymentChange}
@@ -332,10 +333,11 @@ export default function Cart() {
                                 MoMo
                             </Button>
                             <Button
-                                className={`w-full col-span-3  ${payment == "Paypal"
-                                    ? "text-primary border-primary"
-                                    : "text-primary/40 border-primary/40"
-                                    }`}
+                                className={`w-full col-span-3  ${
+                                    payment == "Paypal"
+                                        ? "text-primary border-primary"
+                                        : "text-primary/40 border-primary/40"
+                                }`}
                                 variant="outline"
                                 radius="xl"
                                 onClick={handlePaymentChange}
@@ -519,35 +521,32 @@ export default function Cart() {
 // );
 
 function MoMoMethod() {
-
     const { cart } = useCartStore();
     const [momoUrl, setMomoUrl] = React.useState("");
 
     const data = cart.map((item) => {
-        return item.type.parent.name === "pet" ?
-            {
-                pet_id: item.id,
-                quantity: item.count,
-            } :
-            {
-                accessory_id: item.id,
-                quantity: item.count,
-            };
+        return item.type.parent.name === "pet"
+            ? {
+                  pet_id: item.id,
+                  quantity: item.count,
+              }
+            : {
+                  accessory_id: item.id,
+                  quantity: item.count,
+              };
     });
 
     const dataMapping = {
         checkout: {
-            items: [
-                ...data
-            ]
-        }
-    }
+            items: [...data],
+        },
+    };
 
     const usePaymentMutation = useMutation({
         mutationKey: ["payment"],
         mutationFn: () => paymentMomo(dataMapping),
         onSuccess: (data: any) => {
-            setMomoUrl(data.data)
+            setMomoUrl(data.data);
         },
         onError: (error) => {
             toast.error("Payment failed", {
@@ -555,65 +554,102 @@ function MoMoMethod() {
                 autoClose: 3000,
                 closeOnClick: true,
             });
-        }
-    })
+        },
+    });
 
     useEffect(() => {
         if (momoUrl) window.open(momoUrl, "_self");
-    }, [momoUrl])
+    }, [momoUrl]);
 
     return (
-        <Button className="rounded-lg w-full bg-pink-normal" size="xl"
+        <Button
+            className="rounded-lg w-full bg-pink-normal"
+            size="xl"
             classNames={{
                 inner: "justify-around w-full",
-                label: "flex flex-row justify-center w-full gap-4"
+                label: "flex flex-row justify-center w-full gap-4",
             }}
             onClick={() => usePaymentMutation.mutate()}
         >
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 48 48"><circle cx="34.571" cy="13.429" r="7.929" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" /><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M5.5 21.357V9.466c0-1.985 1.851-3.964 3.965-3.964c2.119 0 3.965 1.978 3.965 3.964v11.891" /><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M13.429 9.465c0-1.985 1.85-3.964 3.964-3.964c2.119 0 3.965 1.978 3.965 3.964v11.891M5.5 42.5V30.608c0-1.985 1.85-3.965 3.964-3.965c2.119 0 3.965 1.979 3.965 3.965V42.5m0-11.892c0-1.985 1.85-3.965 3.964-3.965c2.119 0 3.965 1.979 3.965 3.965V42.5" /><circle cx="34.571" cy="34.571" r="7.929" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                viewBox="0 0 48 48"
+            >
+                <circle
+                    cx="34.571"
+                    cy="13.429"
+                    r="7.929"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+                <path
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M5.5 21.357V9.466c0-1.985 1.851-3.964 3.965-3.964c2.119 0 3.965 1.978 3.965 3.964v11.891"
+                />
+                <path
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M13.429 9.465c0-1.985 1.85-3.964 3.964-3.964c2.119 0 3.965 1.978 3.965 3.964v11.891M5.5 42.5V30.608c0-1.985 1.85-3.965 3.964-3.965c2.119 0 3.965 1.979 3.965 3.965V42.5m0-11.892c0-1.985 1.85-3.965 3.964-3.965c2.119 0 3.965 1.979 3.965 3.965V42.5"
+                />
+                <circle
+                    cx="34.571"
+                    cy="34.571"
+                    r="7.929"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+            </svg>
             PAY WITH MOMO
         </Button>
     );
 }
 
 function PaypalMethod() {
-    const clientId = "ATLuxXz6BMwtkXqYwxQCWv-FHEx3EigLmvQhfAOyhJZqtHDiys5hj5OW8IAKuK3B8yzcFg2vNB0MleMA"
+    const clientId =
+        "ATLuxXz6BMwtkXqYwxQCWv-FHEx3EigLmvQhfAOyhJZqtHDiys5hj5OW8IAKuK3B8yzcFg2vNB0MleMA";
     // const [totalAmount, setTotalAmount] = React.useState(0)
-
 
     const { cart } = useCartStore();
 
     const data = cart.map((item) => {
-        return item.type.parent.name === "pet" ?
-            {
-                pet_id: item.id,
-                quantity: item.count,
-            } :
-            {
-                accessory_id: item.id,
-                quantity: item.count,
-            };
+        return item.type.parent.name === "pet"
+            ? {
+                  pet_id: item.id,
+                  quantity: item.count,
+              }
+            : {
+                  accessory_id: item.id,
+                  quantity: item.count,
+              };
     });
 
     const dataMapping = {
         checkout: {
-            items: [
-                ...data
-            ]
-        }
-    }
+            items: [...data],
+        },
+    };
 
     const currentTotal = cart.reduce(
-        (acc, cur) =>
-            acc + cur.price * cur.count,
+        (acc, cur) => acc + cur.price * cur.count,
         0,
-    )
+    );
 
     return (
         <div>
             <PayPalScriptProvider
                 options={{
-                    clientId: (process.env.NEXT_PUBLIC_CLIENT_ID as string),
+                    clientId: process.env.NEXT_PUBLIC_CLIENT_ID as string,
                     components: "buttons",
                     currency: "USD",
                 }}
@@ -623,5 +659,6 @@ function PaypalMethod() {
                     totalAmount={currentTotal.toString()}
                 />
             </PayPalScriptProvider>
-        </div>);
+        </div>
+    );
 }
