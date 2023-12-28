@@ -15,13 +15,32 @@ import ArrowRightIcon from "@my-images/Arrow_Right_SM.svg";
 import { usePagination } from "@mantine/hooks";
 import { accessoriesData, petsData } from "@/lib/api/types";
 import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 export type CateContentProps = {
     data: petsData[] | accessoriesData[] | undefined;
     slug?: string;
 };
 
 export default function CateContent({ data, slug }: CateContentProps) {
-    const pagination = usePagination({ total: 28, initialPage: 1 });
+    const [acitivePage, setPage] = React.useState(1);
+    const [pageTotal, setPageTotal] = React.useState(1);
+    // const pagination = usePagination({ total: 28, initialPage: 1 });
+
+    useEffect(() => {
+        function handlePageTotal() {
+            if (slug === "pets") {
+                // const total = Math.ceil((data as petsData[])?.length / 12);
+                setPageTotal(Math.ceil((data as petsData[])?.length / 12));
+            } else {
+                // const total = Math.ceil((data as accessoriesData[])?.length / 12);
+                setPageTotal(
+                    Math.ceil((data as accessoriesData[])?.length / 12),
+                );
+            }
+        }
+
+        handlePageTotal();
+    });
 
     return (
         <section id="cate-content" className="w-full h-full mt-8 ">
@@ -105,21 +124,39 @@ export default function CateContent({ data, slug }: CateContentProps) {
                 )}
             </SimpleGrid>
 
-            {Array.isArray(data) && data?.length > 0 && (
+            {Array.isArray(data) && data?.length > 0 && slug === "pets" && (
                 <Flex justify="center" className="mt-10">
                     <Pagination
-                        total={28}
+                        total={pageTotal}
                         nextIcon={ArrowRightIcon}
                         previousIcon={ArrowLeftIcon}
                         size="lg"
                         color="#003459"
                         fw={700}
                         classNames={{
-                            control: "border-0",
+                            control: "border-0 hover:bg-[#003459]/20",
                         }}
                     />
                 </Flex>
             )}
+
+            {Array.isArray(data) &&
+                data?.length > 0 &&
+                slug === "accessories" && (
+                    <Flex justify="center" className="mt-10">
+                        <Pagination
+                            total={pageTotal}
+                            nextIcon={ArrowRightIcon}
+                            previousIcon={ArrowLeftIcon}
+                            size="lg"
+                            color="#003459"
+                            fw={700}
+                            classNames={{
+                                control: "border-0 hover:bg-[#003459]/20",
+                            }}
+                        />
+                    </Flex>
+                )}
         </section>
     );
 }

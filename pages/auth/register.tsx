@@ -39,8 +39,12 @@ export default function Register() {
                 )
                     ? null
                     : "Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character",
-            phone: (value) => /^\d{10}$/.test(value) ? null : "Phone number required 10 digits!",
-            address: (value) => value.length > 0 ? null : "Address can't be empty!",
+            phone: (value) =>
+                /^\d{10}$/.test(value)
+                    ? null
+                    : "Phone number required 10 digits!",
+            address: (value) =>
+                value.length > 0 ? null : "Address can't be empty!",
         },
     });
 
@@ -51,14 +55,25 @@ export default function Register() {
         },
         onSuccess: (data) => {
             reset();
-            toast.success(`${data?.message + ". " + "Hãy đăng nhập vào gmail cá nhân để xác thực!"} `);
-            router.push("/auth/login")
+            toast.success(
+                `${
+                    data?.message +
+                    ". " +
+                    "Hãy đăng nhập vào gmail cá nhân để xác thực!"
+                } `,
+                {
+                    position: "bottom-right",
+                    autoClose: 2000,
+                },
+            );
+            router.push("/auth/login");
         },
         onError: (e) => {
             store.setRequestLoading(false);
             if (e instanceof AxiosError) {
                 toast.error(e?.response?.data?.message, {
-                    position: "top-right",
+                    position: "bottom-right",
+                    autoClose: 2000,
                 });
             }
         },

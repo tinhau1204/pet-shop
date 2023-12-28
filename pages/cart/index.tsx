@@ -17,7 +17,6 @@ import {
 import { YearPickerInput } from "@mantine/dates";
 import ArrownDown from "@my-images/arrowDown.svg";
 import ArrowLeft from "@my-images/Arrow_Left_SM.svg";
-import Link from "next/link";
 import React, { ChangeEvent, MouseEventHandler, useEffect } from "react";
 import ArrowDownIcon from "@my-images/Caret_Down_MD.svg";
 import { useCartStore } from "@/lib/store/cart";
@@ -27,15 +26,21 @@ import { useMutation, useQuery } from "react-query";
 import { paymentMomo } from "@/lib/api/payment";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import PaypalButton from "@/components/shards/Payments/PaypalButton";
+const Cookies = require("js-cookie");
+import Link from "next/link";
 
 function ProductInfo({
     src,
     name,
     sku,
+    id,
+    slug,
 }: {
     src: string;
     name: string;
     sku: string;
+    id: number;
+    slug: string;
 }) {
     return (
         <Flex
@@ -51,10 +56,13 @@ function ProductInfo({
                 align="flex-start"
                 className="w-full gap-0.5"
             >
-                <Text className="text-sm text-blue-medium font-bold max-w-[150px]">
+                <Link
+                    className="text-sm text-blue-medium font-bold max-w-[150px] hover:underline"
+                    href={`/products/${slug}/${id}`}
+                >
                     {name}
-                </Text>
-                <Text className="text-xs text-black-light/50">{sku}</Text>
+                </Link>
+                <Text className="text-xs text-black-light">{sku}</Text>
             </Flex>
         </Flex>
     );
@@ -73,15 +81,17 @@ function QuantityField({
         const newQuantity = parseInt(event.target.value, 10);
 
         const validQuantity = newQuantity <= element.stock_quantity;
-        let message = `There ${element.stock_quantity > 1 ? "are" : "is"
-            } only ${element.stock_quantity} product${element.stock_quantity > 1 ? "s" : ""
-            } left`;
+        let message = `There ${
+            element.stock_quantity > 1 ? "are" : "is"
+        } only ${element.stock_quantity} product${
+            element.stock_quantity > 1 ? "s" : ""
+        } left`;
         if (!validQuantity) {
             setQuantity(element.stock_quantity);
             const sku = element.sku;
             toast.warn(message, {
-                position: "top-right",
-                autoClose: 5000,
+                position: "bottom-right",
+                autoClose: 3000,
                 closeOnClick: true,
             });
             updateQuantity(sku, element.stock_quantity);
@@ -126,13 +136,10 @@ export default function Cart() {
     const router = useRouter();
     const [payment, setPayment] = React.useState("");
     const { cart, updateCartProduct, remove } = useCartStore();
-
     const handlePaymentChange: MouseEventHandler<HTMLButtonElement> = (
         event,
     ) => {
-        setPayment(
-            event.currentTarget.textContent?.toString() || "",
-        );
+        setPayment(event.currentTarget.textContent?.toString() || "");
     };
 
     const rows =
@@ -144,6 +151,8 @@ export default function Cart() {
                         src={element.thumbnail_image || ""}
                         name={element.name}
                         sku={element.sku}
+                        id={element.id}
+                        slug={element.type.parent.name}
                     />
                 </Table.Td>
                 <Table.Td>
@@ -311,10 +320,11 @@ export default function Cart() {
                                 Credit Card
                             </Button> */}
                             <Button
-                                className={`w-full col-span-3  ${payment == "MoMo"
-                                    ? "text-primary border-primary"
-                                    : "text-primary/40 border-primary/40"
-                                    }`}
+                                className={`w-full col-span-3  ${
+                                    payment == "MoMo"
+                                        ? "text-primary border-primary"
+                                        : "text-primary/40 border-primary/40"
+                                }`}
                                 variant="outline"
                                 radius="xl"
                                 onClick={handlePaymentChange}
@@ -322,10 +332,11 @@ export default function Cart() {
                                 MoMo
                             </Button>
                             <Button
-                                className={`w-full col-span-3  ${payment == "Paypal"
-                                    ? "text-primary border-primary"
-                                    : "text-primary/40 border-primary/40"
-                                    }`}
+                                className={`w-full col-span-3  ${
+                                    payment == "Paypal"
+                                        ? "text-primary border-primary"
+                                        : "text-primary/40 border-primary/40"
+                                }`}
                                 variant="outline"
                                 radius="xl"
                                 onClick={handlePaymentChange}
@@ -339,7 +350,7 @@ export default function Cart() {
                         {payment == "MoMo" ? (
                             <MoMoMethod />
                         ) : payment == "Paypal" ? (
-                            <PaypalMethod cart={cart} />
+                            <PaypalMethod />
                         ) : (
                             <></>
                         )}
@@ -509,127 +520,144 @@ export default function Cart() {
 // );
 
 function MoMoMethod() {
-
     const { cart } = useCartStore();
     const [momoUrl, setMomoUrl] = React.useState("");
 
     const data = cart.map((item) => {
-        return item.type.parent.name === "pet" ?
-            {
-                pet_id: item.id,
-                quantity: item.count,
-            } :
-            {
-                accessory_id: item.id,
-                quantity: item.count,
-            };
+        return item.type.parent.name === "pet"
+            ? {
+                  pet_id: item.id,
+                  quantity: item.count,
+              }
+            : {
+                  accessory_id: item.id,
+                  quantity: item.count,
+              };
     });
 
     const dataMapping = {
         checkout: {
-            items: [
-                ...data
-            ]
-        }
-    }
-
-    console.log(cart);
-    console.log('dataMapping', dataMapping)
+            items: [...data],
+        },
+    };
 
     const usePaymentMutation = useMutation({
         mutationKey: ["payment"],
         mutationFn: () => paymentMomo(dataMapping),
         onSuccess: (data: any) => {
-            console.log(data),
-            setMomoUrl(data.data)
+            setMomoUrl(data.data);
         },
         onError: (error) => {
-            console.log(error),
-                toast.error("Payment failed", {
-                    position: "top-right",
-                    autoClose: 5000,
-                    closeOnClick: true,
-                });
-        }
-    })
+            toast.error("Payment failed", {
+                position: "bottom-right",
+                autoClose: 3000,
+                closeOnClick: true,
+            });
+        },
+    });
 
     useEffect(() => {
-        if (momoUrl) window.open(momoUrl, "_blank");
-    }, [momoUrl])
+        if (momoUrl) window.open(momoUrl, "_self");
+    }, [momoUrl]);
 
     return (
-        <Button className="rounded-lg w-full bg-pink-normal" size="xl"
+        <Button
+            className="rounded-lg w-full bg-pink-normal"
+            size="xl"
             classNames={{
                 inner: "justify-around w-full",
-                label: "flex flex-row justify-center w-full gap-4"
+                label: "flex flex-row justify-center w-full gap-4",
             }}
             onClick={() => usePaymentMutation.mutate()}
         >
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 48 48"><circle cx="34.571" cy="13.429" r="7.929" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" /><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M5.5 21.357V9.466c0-1.985 1.851-3.964 3.965-3.964c2.119 0 3.965 1.978 3.965 3.964v11.891" /><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M13.429 9.465c0-1.985 1.85-3.964 3.964-3.964c2.119 0 3.965 1.978 3.965 3.964v11.891M5.5 42.5V30.608c0-1.985 1.85-3.965 3.964-3.965c2.119 0 3.965 1.979 3.965 3.965V42.5m0-11.892c0-1.985 1.85-3.965 3.964-3.965c2.119 0 3.965 1.979 3.965 3.965V42.5" /><circle cx="34.571" cy="34.571" r="7.929" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                viewBox="0 0 48 48"
+            >
+                <circle
+                    cx="34.571"
+                    cy="13.429"
+                    r="7.929"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+                <path
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M5.5 21.357V9.466c0-1.985 1.851-3.964 3.965-3.964c2.119 0 3.965 1.978 3.965 3.964v11.891"
+                />
+                <path
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M13.429 9.465c0-1.985 1.85-3.964 3.964-3.964c2.119 0 3.965 1.978 3.965 3.964v11.891M5.5 42.5V30.608c0-1.985 1.85-3.965 3.964-3.965c2.119 0 3.965 1.979 3.965 3.965V42.5m0-11.892c0-1.985 1.85-3.965 3.964-3.965c2.119 0 3.965 1.979 3.965 3.965V42.5"
+                />
+                <circle
+                    cx="34.571"
+                    cy="34.571"
+                    r="7.929"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+            </svg>
             PAY WITH MOMO
         </Button>
     );
 }
 
-function PaypalMethod({ cart }: { cart?: any }) {
+function PaypalMethod() {
+    const clientId =
+        "ATLuxXz6BMwtkXqYwxQCWv-FHEx3EigLmvQhfAOyhJZqtHDiys5hj5OW8IAKuK3B8yzcFg2vNB0MleMA";
+    // const [totalAmount, setTotalAmount] = React.useState(0)
 
-    const [totalAmount, setTotalAmount] = React.useState(0)
-    const clientId = "ATLuxXz6BMwtkXqYwxQCWv-FHEx3EigLmvQhfAOyhJZqtHDiys5hj5OW8IAKuK3B8yzcFg2vNB0MleMA"
+    const { cart } = useCartStore();
 
-
-    console.log('cart paypal', cart)
-
-
-    useEffect(() => {
-        console.log('cart', cart)
-        const curentTotal = cart.reduce(
-            (acc: any, cur: any) =>
-                acc + cur.price * cur.count,
-            0,
-        );
-        console.log('cureentTotal', curentTotal)
-        setTotalAmount(curentTotal)
-    }, [cart])
-
-    const data = cart.map((item: any) => {
-        return item.type.parent.name === "pet" ?
-            {
-                pet_id: item.id,
-                quantity: item.count,
-            } :
-            {
-                accessory_id: item.id,
-                quantity: item.count,
-            };
+    const data = cart.map((item) => {
+        return item.type.parent.name === "pet"
+            ? {
+                  pet_id: item.id,
+                  quantity: item.count,
+              }
+            : {
+                  accessory_id: item.id,
+                  quantity: item.count,
+              };
     });
 
     const dataMapping = {
         checkout: {
-            items: [
-                ...data
-            ]
-        }
-    }
-    console.log('totalAmount', totalAmount)
-    // Convert VND to USD and pass into totalAmount
-    // get orderID from API to pass
+            items: [...data],
+        },
+    };
 
-    return <div>
-        { 
-        ( 
+    const currentTotal = cart.reduce(
+        (acc, cur) => acc + cur.price * cur.count,
+        0,
+    );
+
+    return (
+        <div>
             <PayPalScriptProvider
                 options={{
-                    clientId: clientId,
+                    clientId: process.env.NEXT_PUBLIC_CLIENT_ID as string,
                     components: "buttons",
                     currency: "USD",
                 }}
             >
                 <PaypalButton
                     cartData={dataMapping}
-                    totalAmount={totalAmount.toString()}
-                    orderID={"#test123"}
+                    totalAmount={currentTotal.toString()}
                 />
             </PayPalScriptProvider>
-        ) }
-    </div>;
+        </div>
+    );
 }

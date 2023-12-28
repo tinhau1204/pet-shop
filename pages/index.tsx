@@ -16,8 +16,8 @@ type PageProps = {
 
 export default function Page(props: PageProps) {
     const { cart } = useCartStore();
-    // console.log("check cart", cart);
-    // console.log("check cookie cart", Cookies.get("cartUser"));
+    console.log("check cart", cart);
+    // console.log('check cookie cart', Cookies.get("cartUser"))
     return (
         <Stack gap={"60px"}>
             <Banner />

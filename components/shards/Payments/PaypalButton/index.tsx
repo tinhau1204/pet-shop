@@ -4,17 +4,56 @@ import {
     PayPalButtons,
     usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
+import { useMutation, useQuery } from "react-query";
+import { paymentPaypal, returnPaymentPaypal } from "@/lib/api/payment";
+import { useRouter } from "next/router";
+import { Loader } from "@mantine/core";
+import { toast } from "react-toastify";
+import { useCartStore } from "@/lib/store/cart";
+const Cookies = require("js-cookie");
 
 interface PaypalProps {
     cartData: any;
     totalAmount?: string;
-    orderID: string;
 }
 
 //Paypal button
-const PaypalButton = ({ cartData, totalAmount, orderID }: PaypalProps) => {
+const PaypalButton = ({ cartData, totalAmount }: PaypalProps) => {
     const [{ options }, dispatch] = usePayPalScriptReducer();
     const [{ isPending }] = usePayPalScriptReducer();
+    const [orderId, setOrderId] = useState<string>("");
+    const router = useRouter();
+    const { removeAll } = useCartStore();
+
+    const paypalCheckoutMutation = useMutation({
+        mutationKey: "paypalCheckout",
+        mutationFn: () =>
+            paymentPaypal({
+                checkout: cartData.checkout,
+            }),
+        onSuccess: (data) => {
+            setOrderId(data.data?.orderId);
+        },
+        onError: (error) => {},
+    });
+    const paypalReturnMutation = useMutation({
+        mutationKey: ["paypalReturn"],
+        mutationFn: () =>
+            returnPaymentPaypal({
+                status: "COMPLETED",
+                orderId: orderId,
+            }),
+        onSuccess: (data) => {
+            router.push(
+                `/checkout/${data?.data?.status}?orderId=${data?.data?.orderId}`,
+            );
+            removeAll();
+            Cookies.set("cartUser", []);
+        },
+        onError: (error) => {
+            console.log("error", error);
+        },
+    });
 
     // Add function to save order data to database
     const createOrderWithPaypal = async (values: any) => {
@@ -23,32 +62,54 @@ const PaypalButton = ({ cartData, totalAmount, orderID }: PaypalProps) => {
             values?.details?.payer?.name?.surname;
 
         let order_info = {
-            orderID: orderID,
+            orderID: orderId,
             name: buyerName,
-            totalAmount: totalAmount,
-            checkout: cartData,
+            totalAmount:
+                totalAmount &&
+                (parseFloat(totalAmount) / 24000).toFixed(2).toString(),
+            checkout: cartData.checkout,
         };
 
         //Insert API here//
-
         console.log("Order created", order_info);
+        paypalReturnMutation.mutate();
     };
+
+    useEffect(() => {
+        console.log(
+            "Inside paypal",
+            totalAmount && (parseInt(totalAmount) / 24000).toFixed(2),
+        );
+    }, [totalAmount]);
 
     return (
         <>
-            {/* {isPending ? <div className="spinner" /> : null} */}
+            {isPending ? (
+                <Loader color="cyan" type="dots" className="text-center" />
+            ) : null}
             <PayPalButtons
+                forceReRender={[totalAmount]}
                 disabled={
                     totalAmount && parseInt(totalAmount) !== 0 ? false : true
                 }
                 createOrder={(data, actions) => {
+                    paypalCheckoutMutation.mutate();
+                    // console.log("totalAmount", (totalAmount && ((parseInt(totalAmount) / 24000).toFixed(2)).toString()))
                     return actions.order
                         .create({
                             purchase_units: [
                                 {
                                     amount: {
                                         currency_code: "USD",
-                                        value: totalAmount || "1",
+                                        value:
+                                            (totalAmount &&
+                                                (
+                                                    parseFloat(totalAmount) /
+                                                    24000
+                                                )
+                                                    .toFixed(2)
+                                                    .toString()) ||
+                                            "10",
                                     },
                                 },
                             ],
@@ -74,7 +135,10 @@ const PaypalButton = ({ cartData, totalAmount, orderID }: PaypalProps) => {
                     }
                 }}
                 onCancel={(data) => {
-                    console.log("Cancel", data);
+                    toast.warn("Payment cancelled try again", {
+                        position: "bottom-right",
+                        autoClose: 2000,
+                    });
                 }}
                 onError={(data) => {
                     console.log("Error", data);

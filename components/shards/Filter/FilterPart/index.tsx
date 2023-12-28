@@ -4,11 +4,13 @@ import { set } from "react-hook-form";
 
 export type FilterPartProps = {
     title?: string;
-    items?: {
-        name: string | false;
-        type: string;
-        items: { label: string; value: string }[];
-    }[] | undefined;
+    items?:
+        | {
+              name: string | false;
+              type: string;
+              items: { label: string; value: string }[];
+          }[]
+        | undefined;
     selectedItems?: string[];
     onClick?: (item: string) => void;
     onClickCheckbox?: (item: string[]) => void;
@@ -71,7 +73,12 @@ export function FilterCheckBox({
     );
 }
 
-export function FilterRadioBox({ name, type, items, onClick }: FilterRadioItemProps) {
+export function FilterRadioBox({
+    name,
+    type,
+    items,
+    onClick,
+}: FilterRadioItemProps) {
     const [value, setValue] = React.useState<string>("");
     return (
         <div className="mb-4 border-b pb-4 border-black-light/20">
@@ -83,34 +90,36 @@ export function FilterRadioBox({ name, type, items, onClick }: FilterRadioItemPr
                         name={name.toString()}
                         value={value}
                         onChange={() => {
-                            setValue(element.value) 
-                            onClick?.(element.value)
-                         }}
+                            setValue(element.value);
+                            onClick?.(element.value);
+                            console.log("check value radio", element.value);
+                        }}
                     >
                         <Radio
                             classNames={{
                                 labelWrapper: "w-fit",
                                 body: "items-center",
                             }}
-                            label={
-                                element.label
-                            }
-                            value={element.value}
+                            label={element?.label}
+                            value={element?.value}
                         />
                     </Radio.Group>
                 ))}
             </div>
         </div>
     );
-
 }
 
-export default function FilterPart({ items, onClickCheckbox, onClickRadiobox, onClick }: FilterPartProps) {
+export default function FilterPart({
+    items,
+    onClickCheckbox,
+    onClickRadiobox,
+    onClick,
+}: FilterPartProps) {
     const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
     const [value, setValue] = React.useState<string>("");
 
     const handleCheckboxChange = (value: string) => {
-        
         setSelectedItems((prevSelectedItems) => {
             if (prevSelectedItems.includes(value)) {
                 // If the item is already selected, remove it
@@ -120,8 +129,7 @@ export default function FilterPart({ items, onClickCheckbox, onClickRadiobox, on
                 return [...prevSelectedItems, value];
             }
         });
-        
-    }
+    };
 
     return (
         <form>
@@ -137,8 +145,8 @@ export default function FilterPart({ items, onClickCheckbox, onClickRadiobox, on
                         </>
                     ) : (
                         item?.type === "radio" && (
-                            <FilterRadioBox 
-                                name={item.name} 
+                            <FilterRadioBox
+                                name={item.name}
                                 items={item.items}
                                 onClick={(item) => setValue(item)}
                             />
@@ -151,13 +159,13 @@ export default function FilterPart({ items, onClickCheckbox, onClickRadiobox, on
                 variant="outline"
                 onClick={() => {
                     if (selectedItems.length > 0) {
-                        onClickCheckbox?.(selectedItems)
-                    } else {
-                        onClickRadiobox?.(value)
+                        onClickCheckbox?.(selectedItems);
+                    } else if (value) {
+                        onClickRadiobox?.(value);
                     }
-                
                 }}
-                radius="md">
+                radius="md"
+            >
                 Filter
             </Button>
         </form>

@@ -44,12 +44,15 @@ export default function Page(props: PageProps) {
             function handleFilterData(data: petsData[] | accessoriesData[]) {
                 if (props.slug === "pets") {
                     if (filter.length > 0) {
+                        console.log("data before filter", data);
                         return data.filter((pet: any) => {
                             const typeName = pet.type.name.toLowerCase();
                             const isMale = pet.isMale;
+
                             const filterType = filter[0]?.toLowerCase() || null;
                             const filterGender =
                                 filter[1]?.toLowerCase() || null;
+
                             const typeMatches = filterType
                                 ? typeName.includes(filterType)
                                 : true;
@@ -57,20 +60,21 @@ export default function Page(props: PageProps) {
                                 filterGender !== null
                                     ? isMale ===
                                       (filterGender === "male" ||
-                                          filterGender === "true")
+                                          filterGender === "female")
                                     : true;
-
+                            // Apply the type filter first
                             if (
-                                filterType == "male" ||
-                                filterType == "female"
+                                filterType &&
+                                (filterType == "male" || filterType == "female")
                             ) {
-                                const filteredData = data.filter((pet: any) => {
-                                    const isMale = pet.isMale;
-                                    return filterGender === "male"
-                                        ? isMale
-                                        : !isMale;
-                                });
-                                return filteredData;
+                                // const filteredData = data.filter((pet: any) => {
+                                //     const isMale = pet.isMale;
+                                //     return filterGender === "male"
+                                //         ? isMale
+                                //         : !isMale;
+                                // });
+                                // return filteredData;
+                                return isMale === (filterType === "male");
                             }
                             return typeMatches && genderMatches;
                         });
@@ -100,6 +104,7 @@ export default function Page(props: PageProps) {
                 ),
             );
         } else {
+            console.log("move here");
             setFilterData(
                 props.slug === "pets"
                     ? getPetQuery.data
@@ -125,9 +130,10 @@ export default function Page(props: PageProps) {
                     <>
                         <Filter
                             slug={props?.slug}
-                            onClickFilter={(item: string[]) =>
-                                setFilter([...item])
-                            }
+                            onClickFilter={(item: string[]) => {
+                                console.log("item", item);
+                                setFilter([...item]);
+                            }}
                         />
                         <CateContent data={filterData} slug={props.slug} />
                     </>

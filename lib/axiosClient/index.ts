@@ -1,13 +1,9 @@
 import axios, { AxiosError } from "axios";
 import axiosConfig from "./config";
-// import { useMutation } from "react-query";
-// import { refreshToken } from "../api";
-// import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 const Cookies = require("js-cookie");
 
 const client = axios.create(axiosConfig);
-
-//xu ly data truoc khi xuong server
 
 client.interceptors.request.use(
     async (config) => {
@@ -16,7 +12,11 @@ client.interceptors.request.use(
                 config.url.includes("/user") ||
                 config.url.includes("/order") ||
                 config.url.includes("/auth/logout") ||
-                config.url.includes("/payment/checkout/momo")
+                config.url.includes("/payment/checkout/momo") ||
+                config.url.includes("/payment/checkout/paypal") ||
+                config.url.includes("/payment/return/paypal") ||
+                config.url.includes("/order-detail/search") ||
+                config.url.includes("/order/search")
             ) {
                 config.headers.set(
                     "Authorization",
@@ -38,8 +38,12 @@ client.interceptors.request.use(
                             );
                         }
                     })
-                    .catch((err) => {});
-                console.log("config :>> ", config);
+                    .catch((err) => {
+                        toast.error(err.response.data.message, {
+                            position: "bottom-right",
+                            autoClose: 3000,
+                        });
+                    });
             } else {
                 if (config.url.includes("/auth/refresh-token")) {
                     config.headers.set(
