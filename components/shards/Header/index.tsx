@@ -78,11 +78,17 @@ function Header(props: HeaderProps) {
         mutationKey: "logout",
         mutationFn: accountLogout,
         onSuccess: (data) => {
-            toast.success(data?.message);
+            toast.success(data?.message, {
+                position: "bottom-right",
+                autoClose: 3000,
+            });
             handleLogout();
         },
         onError: (err) => {
-            toast.error("Something went wrong");
+            toast.error("Something went wrong", {
+                position: "bottom-right",
+                autoClose: 3000,
+            });
         },
     });
 

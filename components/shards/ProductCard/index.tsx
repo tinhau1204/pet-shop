@@ -83,14 +83,22 @@ function ProductCard(props: ProductCardProps) {
                     ? (data as petsData)
                     : (data as accessoriesData),
             );
-            Cookies.set("cartUser", JSON.stringify(cart));
+            const cartData = cart.map((item) => {
+                return {
+                    id: item.id,
+                    quantity: item.count,
+                };
+            });
+            Cookies.set("cartUser", JSON.stringify(cartData));
             toast.success(`Đã thêm sản phẩm ${data?.name} vào giỏ hàng`, {
                 autoClose: 2000,
+                position: "bottom-right",
             });
-            console.log("here", Cookies.get("cartUser"));
+            console.log("here", JSON.parse(Cookies.get("cartUser")));
         } else {
             toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng", {
                 autoClose: 2000,
+                position: "bottom-right",
             });
             router.push("/auth/login");
         }

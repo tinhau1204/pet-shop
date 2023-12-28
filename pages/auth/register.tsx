@@ -51,14 +51,18 @@ export default function Register() {
         },
         onSuccess: (data) => {
             reset();
-            toast.success(`${data?.message + ". " + "Hãy đăng nhập vào gmail cá nhân để xác thực!"} `);
+            toast.success(`${data?.message + ". " + "Hãy đăng nhập vào gmail cá nhân để xác thực!"} `, {
+                position: "bottom-right",
+                autoClose: 2000,
+            });
             router.push("/auth/login")
         },
         onError: (e) => {
             store.setRequestLoading(false);
             if (e instanceof AxiosError) {
                 toast.error(e?.response?.data?.message, {
-                    position: "top-right",
+                    position: "bottom-right",
+                    autoClose: 2000,
                 });
             }
         },

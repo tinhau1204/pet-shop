@@ -15,7 +15,6 @@ type PageProps = {
 
 export default function Page(props: PageProps) {
     const router = useRouter();
-    console.log('props', props)
     return (
         (props.slug && props.slug === "success") ? (
             <div className="h-screen flex flex-row items-center">
@@ -44,7 +43,7 @@ export default function Page(props: PageProps) {
                     </Text>
 
                     <Text className="mt-2 text-base font-normal text-black-normal text-center">
-                        Your OrderId: {props.params} has been placed.
+                        Your OrderId: <span className="font-bold">{props.params}</span> has been placed.
                         <br/>Please waiting for our confirmation.
                     </Text>
 
@@ -103,11 +102,6 @@ export default function Page(props: PageProps) {
 // This gets called on every request
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const queryParams = context.query;
-
-    console.log('queryParams', queryParams)
-
-    console.log('slug', (queryParams?.slug && queryParams?.slug?.length > 0) && queryParams.slug[0])
-    console.log('orderId', queryParams?.orderId)
     // Pass data to the page via props
     return { props: { page: "checkout", slug: (queryParams?.slug && queryParams?.slug?.length > 0) && queryParams.slug[0] || "", params: queryParams?.orderId, message: queryParams?.message || '' } };
 }

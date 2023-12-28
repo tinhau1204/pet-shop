@@ -25,9 +25,7 @@ function MyCarousel(props: MyCarouselProps) {
     const getPetsQuery = useQuery({
         queryKey: "getPet",
         queryFn: () => getPet(),
-        onSuccess: (data: petsData[]) => {
-            setPets(data);
-        },
+        onSuccess: (data: petsData[]) => {},
         onError: (err) => {
             console.error("error ", err);
         },
@@ -38,7 +36,7 @@ function MyCarousel(props: MyCarouselProps) {
         queryKey: "getAccessories",
         queryFn: () => getAccessories(),
         onSuccess: (data: accessoriesData[]) => {
-            setAccessories(data);
+            // setAccessories(data);
         },
         onError: (err) => {
             console.error("error ", err);
@@ -84,7 +82,7 @@ function MyCarousel(props: MyCarouselProps) {
             </Group>
             <Grid>
                 {carouselType == "pets" && getPetsQuery.data
-                    ? getPetsQuery?.data?.map((item) => (
+                    ? getPetsQuery?.data?.slice(0, 8).map((item) => (
                           <Grid.Col
                               span={{ base: 6, xs: 6, sm: 4, md: 3 }}
                               key={item.id}
@@ -92,7 +90,7 @@ function MyCarousel(props: MyCarouselProps) {
                               <ProductCard data={item} />
                           </Grid.Col>
                       ))
-                    : getAccessoriesQuery?.data?.map((item) => (
+                    : getAccessoriesQuery?.data?.slice(0, 8).map((item) => (
                           <Grid.Col
                               span={{ base: 6, xs: 6, sm: 4, md: 3 }}
                               key={item.id}
