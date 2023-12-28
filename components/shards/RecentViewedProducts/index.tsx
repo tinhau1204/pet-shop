@@ -28,6 +28,7 @@ function RecentViewedProducts({
 }: {
     list: RecentViewedProductsPropsType;
 }) {
+    const Cookies = require("js-cookie");
     const getProductsQuery = useQuery({
         queryKey: "getProductsById",
         queryFn: async () => {
@@ -55,34 +56,38 @@ function RecentViewedProducts({
 
     return (
         <Stack>
-            <Stack>
-                <Text className="font-medium text-base text-black-bold">
-                    Whats new?
-                </Text>
-                <Text className="font-bold text-2xl text-blue-medium">
-                    Your recently viewed products
-                </Text>
-            </Stack>
-            {getProductsQuery.isSuccess ? (
-                <Group className="flex-wrap gap-0">
-                    {(getProductsQuery.data || []).map(
-                        (item: any, index: number) => (
-                            <ProductMiniCard
-                                name={item.name}
-                                description={item.description}
-                                thumbnail_image={item.thumbnail_image}
-                                link={""}
-                                key={index}
-                                className="w-[50%] sm:w-[25%] px-[15px]"
-                            />
-                        ),
+            {Cookies.get("user") && (
+                <>
+                    <Stack>
+                        <Text className="font-medium text-base text-black-bold">
+                            Whats new?
+                        </Text>
+                        <Text className="font-bold text-2xl text-blue-medium">
+                            Your recently viewed products
+                        </Text>
+                    </Stack>
+                    {getProductsQuery.isSuccess ? (
+                        <Group className="flex-wrap gap-0">
+                            {(getProductsQuery.data || []).map(
+                                (item: any, index: number) => (
+                                    <ProductMiniCard
+                                        name={item.name}
+                                        description={item.description}
+                                        thumbnail_image={item.thumbnail_image}
+                                        link={""}
+                                        key={index}
+                                        className="w-[50%] sm:w-[25%] px-[15px]"
+                                    />
+                                ),
+                            )}
+                        </Group>
+                    ) : (
+                        <Skeleton
+                            visible={getProductsQuery.isFetching}
+                            className="h-[427px] bg-secondary"
+                        ></Skeleton>
                     )}
-                </Group>
-            ) : (
-                <Skeleton
-                    visible={getProductsQuery.isFetching}
-                    className="h-[427px] bg-secondary"
-                ></Skeleton>
+                </>
             )}
         </Stack>
     );

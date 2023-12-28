@@ -563,32 +563,6 @@ export default function Page(props: PageProps) {
                             ))}
                         </Carousel>
                     </div>
-
-                    {/* recommend  */}
-                    {/* <div>
-                        <Stack>
-                            <Text className="font-medium text-base text-black-bold">
-                                Whats new?
-                            </Text>
-                            <Text className="font-bold text-2xl text-blue-medium">
-                                See More Puppies
-                            </Text>
-
-                            <Grid
-                                align="center"
-                                className="max-h-[26rem] w-full overflow-hidden"
-                            >
-                                {mock.map((item, index) => (
-                                        <Grid.Col
-                                            key={index}
-                                            span={{ base: 6, xs: 6, sm: 4, md: 3 }}
-                                        >
-                                            <ProductCard data={item} />
-                                        </Grid.Col>
-                                    ))}
-                            </Grid>
-                        </Stack>
-                    </div> */}
                     <RecentViewedProducts list={recentViewProducts} />
                 </>
             )}
