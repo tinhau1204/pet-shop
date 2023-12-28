@@ -30,7 +30,7 @@ import { useCartStore } from "@/lib/store/cart";
 import { toast } from "react-toastify";
 import recombeeClient from "../../lib/recombee";
 import useStore from "@/lib/store";
-import RecombeeRecommendProducts from "@/components/shards/RecommendProducts";
+import RecentViewedProducts from "@/components/shards/RecentViewedProducts";
 const Cookies = require("js-cookie");
 
 type PageProps = {
@@ -537,7 +537,7 @@ export default function Page(props: PageProps) {
                     </div>
 
                     {/* recommend  */}
-                    <div>
+                    {/* <div>
                         <Stack>
                             <Text className="font-medium text-base text-black-bold">
                                 Whats new?
@@ -550,20 +550,20 @@ export default function Page(props: PageProps) {
                                 align="center"
                                 className="max-h-[26rem] w-full overflow-hidden"
                             >
-                                {/* {mock.map((item, index) => (
+                                {mock.map((item, index) => (
                                         <Grid.Col
                                             key={index}
                                             span={{ base: 6, xs: 6, sm: 4, md: 3 }}
                                         >
                                             <ProductCard data={item} />
                                         </Grid.Col>
-                                    ))} */}
+                                    ))}
                             </Grid>
                         </Stack>
-                    </div>
+                    </div> */}
+                    <RecentViewedProducts list={recentViewProducts} />
                 </>
             )}
-            <RecombeeRecommendProducts list={recentViewProducts} />
         </>
     );
 }

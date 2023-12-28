@@ -1,12 +1,10 @@
 import recombee_api from "recombee-js-api-client";
 
-const { RECOMBEE_DB, RECOMBEE_PUBLIC_TOKEN, RECOMBEE_REGION } = process.env;
-
 var client = new recombee_api.ApiClient(
-    "ohyeah-dev",
-    "kpw7l7RxbmC9UDJqjLBaszl4ely5KDGBTYwClZpLyGjPHLeGlM17FD9YHYdyGVS5",
+    process.env.NEXT_PUBLIC_RECOMBEE_DB!,
+    process.env.NEXT_PUBLIC_RECOMBEE_PUBLIC_TOKEN!,
     {
-        region: "eu-west",
+        region: process.env.NEXT_PUBLIC_RECOMBEE_REGION!,
     },
 );
 

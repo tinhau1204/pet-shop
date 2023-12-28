@@ -27,7 +27,7 @@ const useStore = create<Store>((set) => ({
             .send(
                 new recombeeClient.recombee_api.RecommendItemsToUser(
                     userId,
-                    10,
+                    4,
                     {
                         // optional parameters:
                         scenario: "popular-products",
