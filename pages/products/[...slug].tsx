@@ -23,7 +23,7 @@ import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import { getAccessoriesById, getPetById } from "@/lib/api";
 import { accessoriesData, petsData } from "@/lib/api/types";
-import React, { use, useEffect } from "react";
+import React, { useEffect } from "react";
 import dayjs from "dayjs";
 import CartIcon from "@my-images/Cart.svg";
 import { useCartStore } from "@/lib/store/cart";
@@ -159,13 +159,20 @@ export default function Page(props: PageProps) {
     };
     useEffect(() => {
         if (slug?.[0] === "pet") {
-            handleSendInteraction(slug?.[1] as string);
             petDetailQuery.refetch();
         } else if (slug?.[0] === "accessory") {
-            handleSendInteraction(slug?.[1] as string);
             accessoriesQuery.refetch();
         }
     }, []);
+
+    useEffect(() => {
+        if (slug?.[0] === "pet" && petDetailQuery.isSuccess) {
+            handleSendInteraction(petDetailQuery.data?.data?.sku);
+        } else if (slug?.[0] === "accessory" && accessoriesQuery.isSuccess) {
+            handleSendInteraction(accessoriesQuery.data?.data?.sku);
+        }
+    }, [petDetailQuery.isSuccess, accessoriesQuery.isSuccess]);
+
     const guarantee = [
         { icon: <HeathGIcon />, title: "100% health guarantee for pets" },
         {
@@ -334,7 +341,8 @@ export default function Page(props: PageProps) {
                 <>
                     <div className="flex flex-row items-start justify-center min-h-fit border border-black-light/50 px-5 py-[22px] gap-8 rounded-xl  bg-black-light/5 mb-5">
                         <div className="left w-full h-full">
-                            {!petDetailQuery.data?.data?.description_images ? (
+                            {!petDetailQuery.data?.data?.description_images &&
+                            !accessoriesQuery.data?.data?.description_images ? (
                                 <Skeleton height={476} width="100%" />
                             ) : (
                                 <Carousel
@@ -359,6 +367,26 @@ export default function Page(props: PageProps) {
                                                     />
                                                 </Carousel.Slide>
                                             ),
+                                        )}
+                                    {accessoriesQuery.data &&
+                                        accessoriesQuery.data?.data?.description_images.map(
+                                            (image: string, index: any) => {
+                                                console.log(
+                                                    "image :>> ",
+                                                    image,
+                                                );
+                                                return (
+                                                    <Carousel.Slide key={index}>
+                                                        <Image
+                                                            src={image}
+                                                            alt={"image"}
+                                                            className="w-full h-full  object-contain object-center rounded-xl"
+                                                            width={500}
+                                                            height={100}
+                                                        />
+                                                    </Carousel.Slide>
+                                                );
+                                            },
                                         )}
                                 </Carousel>
                             )}

@@ -32,7 +32,10 @@ function RecentViewedProducts({
         queryKey: "getProductsById",
         queryFn: async () => {
             return await getProductsByIds(
-                (list || []).map((item) => parseInt(item.id)),
+                (list || []).map((item) => ({
+                    id: item.id,
+                    type: item.values.type,
+                })),
             );
         },
         onSuccess: () => {},
@@ -100,7 +103,7 @@ function ProductMiniCard({
 }) {
     return (
         <Box className={className}>
-            <Card shadow="sm" radius="md" withBorder>
+            <Card shadow="sm" radius="md" withBorder className="pt-0">
                 <Link href={link}>
                     <Card.Section>
                         <Image

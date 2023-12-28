@@ -60,12 +60,30 @@ export async function searchAccessories(data: AccessorySearchType) {
         .then((res) => res.data.data);
 }
 
-export async function getProductsByIds(data: number[]) {
-    return await client
+export async function getProductsByIds(
+    data: { id: string; type: "pet" | "accessory" }[],
+) {
+    const pets = await client
         .post("/pet/search", {
             search: {
-                inIds: data,
+                inSkus: data
+                    .filter((item) => item.type === "pet")
+                    .map((item) => item.id),
             },
         })
         .then((res) => res.data.data);
+    const accessories = await client
+        .post("/accessory/search", {
+            search: {
+                inSkus: data
+                    .filter((item) => item.type === "accessory")
+                    .map((item) => item.id),
+            },
+        })
+        .then((res) => res.data.data);
+
+    console.log("pets :>> ", pets);
+    console.log("accessories :>> ", accessories);
+
+    return [...accessories, ...pets];
 }
