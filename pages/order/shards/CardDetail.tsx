@@ -18,21 +18,19 @@ import dayjs from "dayjs";
 
 export type CardDetailProps = {
     id: number;
-}
+};
 
 export default function CardDetail({ id }: CardDetailProps) {
-
     const orderDetailQuery = useQuery({
         queryKey: ["orderDetail", id],
-        queryFn: () => searchOrderDetailByOrderId(
-            {
+        queryFn: () =>
+            searchOrderDetailByOrderId({
                 search: {
                     order: {
-                        id: id
-                    }
-                }
-            }
-        ),
+                        id: id,
+                    },
+                },
+            }),
         onSuccess: (data) => {
             console.log("check data", data);
         },
@@ -49,64 +47,83 @@ export default function CardDetail({ id }: CardDetailProps) {
         });
     }
 
-
-
     return (
-
-        < Card
-            shadow="sm"
-            padding="lg"
-            radius="md"
-            mah={280}
-            withBorder
-        >
-            {
-                (orderDetailQuery.data) ? (
-                    <>
-                        <Card.Section mt={1} ml={1}>
-                            <Group justify="space-between" mt={1} mb="xs">
-                                <Stack align="flex-start" gap={0}>
-                                    <Text fw={500}><span className="font-bold text-blue-medium">Order: </span>{orderDetailQuery.data?.data.order.code}</Text>
-                                    <Group gap="md">
-                                        <Text size="sm" c="dimmed" fw={500}>
-                                            Date:
-                                            {" " +
-                                                dayjs(orderDetailQuery.data?.data.order.created_at).format("DD/MM/YYYY")
-                                            }
-                                        </Text>
-                                        <Badge color={`${orderDetailQuery.data?.data.order?.order_status === "COMPLETED" ? "green" : "yellow"}`} size="lg" radius="sm">
-                                            {orderDetailQuery.data?.data.order?.order_status}
-                                        </Badge>
-                                        <Badge
-                                            w="fit-content"
-                                            h="fit-content"
-                                            variant="outline"
-                                            color={
-                                                orderDetailQuery.data?.data.order?.payment == "momo"
-                                                    ? "pink"
-                                                    : "blue"
-                                            }
-                                            radius="sm"
-                                        >
-                                            {orderDetailQuery.data?.data.order?.payment == "momo" ? (
-                                                <MomoIcon />
-                                            ) : (
-                                                <PaypalIcon />
-                                            )}
-                                        </Badge>
-                                    </Group>
-                                </Stack>
-
-                                <Group mr="lg">
-                                    <Text size="xl" fw={700} c="#003459">
-                                        {formatPrice(orderDetailQuery.data?.data.order?.total)}
+        <Card shadow="sm" padding="lg" radius="md" mah={280} withBorder>
+            {orderDetailQuery.data ? (
+                <>
+                    <Card.Section mt={1} ml={1}>
+                        <Group justify="space-between" mt={1} mb="xs">
+                            <Stack align="flex-start" gap={0}>
+                                <Text fw={500}>
+                                    <span className="font-bold text-blue-medium">
+                                        Order:{" "}
+                                    </span>
+                                    {orderDetailQuery.data?.data.order.code}
+                                </Text>
+                                <Group gap="md">
+                                    <Text size="sm" c="dimmed" fw={500}>
+                                        Date:
+                                        {" " +
+                                            dayjs(
+                                                orderDetailQuery.data?.data
+                                                    .order.created_at,
+                                            ).format("DD/MM/YYYY")}
                                     </Text>
+                                    <Badge
+                                        color={`${
+                                            orderDetailQuery.data?.data.order
+                                                ?.order_status === "COMPLETED"
+                                                ? "green"
+                                                : "yellow"
+                                        }`}
+                                        size="lg"
+                                        radius="sm"
+                                    >
+                                        {
+                                            orderDetailQuery.data?.data.order
+                                                ?.order_status
+                                        }
+                                    </Badge>
+                                    <Badge
+                                        w="fit-content"
+                                        h="fit-content"
+                                        variant="outline"
+                                        color={
+                                            orderDetailQuery.data?.data.order
+                                                ?.payment == "momo"
+                                                ? "pink"
+                                                : "blue"
+                                        }
+                                        radius="sm"
+                                    >
+                                        {orderDetailQuery.data?.data.order
+                                            ?.payment == "momo" ? (
+                                            <MomoIcon />
+                                        ) : (
+                                            <PaypalIcon />
+                                        )}
+                                    </Badge>
                                 </Group>
-                            </Group>
-                        </Card.Section>
+                            </Stack>
 
-                        <Accordion variant="separated" defaultValue="Apples" className="overflow-y-scroll">
-                            {orderDetailQuery.data?.data.items.map((element: any) => (
+                            <Group mr="lg">
+                                <Text size="xl" fw={700} c="#003459">
+                                    {formatPrice(
+                                        orderDetailQuery.data?.data.order
+                                            ?.total,
+                                    )}
+                                </Text>
+                            </Group>
+                        </Group>
+                    </Card.Section>
+
+                    <Accordion
+                        variant="separated"
+                        defaultValue="Apples"
+                        className="overflow-y-scroll"
+                    >
+                        {orderDetailQuery.data?.data.items.map(
+                            (element: any) => (
                                 <Accordion.Item
                                     key={element.id}
                                     value={element.id.toString()}
@@ -118,10 +135,16 @@ export default function CardDetail({ id }: CardDetailProps) {
                                                     maw="50px"
                                                     mah="50px"
                                                     radius="xl"
-                                                    src={element?.pet?.thumbnail_image}
+                                                    src={
+                                                        element?.pet
+                                                            ?.thumbnail_image
+                                                    }
                                                     alt="picture"
                                                 />
-                                                <Stack justify="flex-start" gap={0}>
+                                                <Stack
+                                                    justify="flex-start"
+                                                    gap={0}
+                                                >
                                                     <Text fw={600}>
                                                         {element?.pet?.name}
                                                     </Text>
@@ -138,7 +161,9 @@ export default function CardDetail({ id }: CardDetailProps) {
                                                             size="sm"
                                                             fw={500}
                                                         >
-                                                            {formatPrice(element?.price)}
+                                                            {formatPrice(
+                                                                element?.price,
+                                                            )}
                                                         </Text>
                                                     </Group>
                                                 </Stack>
@@ -147,18 +172,13 @@ export default function CardDetail({ id }: CardDetailProps) {
                                     </Accordion.Control>
                                     <Accordion.Panel></Accordion.Panel>
                                 </Accordion.Item>
-                            ))}
-                        </Accordion>
-                    </>
-                ) : (
-
-                    <div>loading</div>
-                )
-
-            }
-        </Card >
-
-
-
-    )
+                            ),
+                        )}
+                    </Accordion>
+                </>
+            ) : (
+                <div>loading</div>
+            )}
+        </Card>
+    );
 }

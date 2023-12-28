@@ -1,6 +1,14 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { Carousel } from "@mantine/carousel";
-import { Button, Grid, Group, Skeleton, Stack, Table, Text } from "@mantine/core";
+import {
+    Button,
+    Grid,
+    Group,
+    Skeleton,
+    Stack,
+    Table,
+    Text,
+} from "@mantine/core";
 import ChatIcon from "@my-images/Chat_Dots.svg";
 import FacebookIcon from "@my-images/facebook.svg";
 import TwitterIcon from "@my-images/twitter.svg";
@@ -20,7 +28,11 @@ import dayjs from "dayjs";
 import CartIcon from "@my-images/Cart.svg";
 import { useCartStore } from "@/lib/store/cart";
 import { toast } from "react-toastify";
+import recombeeClient from "../../lib/recombee";
+import useStore from "@/lib/store";
+import RecentViewedProducts from "@/components/shards/RecentViewedProducts";
 const Cookies = require("js-cookie");
+
 type PageProps = {
     [name: string]: any;
 };
@@ -80,11 +92,13 @@ function CardImage({ image, alt }: { image: string; alt: string }) {
 }
 
 export default function Page(props: PageProps) {
+    const store = useStore();
     const router = useRouter();
     const [petTable, setPetTable] = React.useState<any>([]);
     const [accessTable, setAccessTable] = React.useState<any>([]);
     const { add: handleAddToCart, cart } = useCartStore();
     const [shouldRefetch, setShouldRefetch] = React.useState<boolean>(false);
+    const [recentViewProducts, setRecentViewProducts] = React.useState<any>([]);
 
     const { slug } = router.query;
 
@@ -98,8 +112,8 @@ export default function Page(props: PageProps) {
         onError: (error) => {
             console.error(error);
         },
-        refetchOnWindowFocus: false,
         enabled: false,
+        refetchOnWindowFocus: false,
     });
 
     const accessoriesQuery = useQuery({
@@ -112,19 +126,53 @@ export default function Page(props: PageProps) {
         onError: (error) => {
             console.error(error);
         },
-        refetchOnWindowFocus: false,
         enabled: false,
+        refetchOnWindowFocus: false,
     });
 
+    const handleSendInteraction = async (itemId: string) => {
+        const userId = Cookies.get("user");
+        if (!!userId) {
+            const { recommId, items } = await store.setRecommid(userId);
+
+            console.log("recommId :>> ", recommId);
+            console.log("items :>> ", items);
+
+            setRecentViewProducts(items);
+            recombeeClient.client
+                .send(
+                    new recombeeClient.recombee_api.AddDetailView(
+                        userId,
+                        itemId,
+                        {
+                            // optional parameters:
+                            duration: 0,
+                            cascadeCreate: true,
+                            recommId,
+                        },
+                    ),
+                )
+                .then(function (res) {
+                    console.log("res :>> ", res);
+                });
+        }
+    };
     useEffect(() => {
         if (slug?.[0] === "pet") {
-            // handleSendInteraction(slug?.[1] as string);
             petDetailQuery.refetch();
         } else if (slug?.[0] === "accessory") {
-            // handleSendInteraction(slug?.[1] as string);
             accessoriesQuery.refetch();
         }
     }, []);
+
+    useEffect(() => {
+        if (slug?.[0] === "pet" && petDetailQuery.isSuccess) {
+            handleSendInteraction(petDetailQuery.data?.data?.sku);
+        } else if (slug?.[0] === "accessory" && accessoriesQuery.isSuccess) {
+            handleSendInteraction(accessoriesQuery.data?.data?.sku);
+        }
+    }, [petDetailQuery.isSuccess, accessoriesQuery.isSuccess]);
+
     const guarantee = [
         { icon: <HeathGIcon />, title: "100% health guarantee for pets" },
         {
@@ -293,20 +341,41 @@ export default function Page(props: PageProps) {
                 <>
                     <div className="flex flex-row items-start justify-center min-h-fit border border-black-light/50 px-5 py-[22px] gap-8 rounded-xl  bg-black-light/5 mb-5">
                         <div className="left w-full h-full">
-                            {
-                                !petDetailQuery.data?.data?.description_images ? (
-                                    <Skeleton height={476} width="100%" />
-                                ) : (
-                                    <Carousel
-                                        withIndicators
-                                        height={476}
-                                        controlSize={40}
-                                        classNames={{ control: "bg-primary/30" }}
-                                        loop
-                                    >
-                                        {petDetailQuery.data && (
-                                            petDetailQuery.data?.data?.description_images.map(
-                                                (image: string, index: any) => (
+                            {!petDetailQuery.data?.data?.description_images &&
+                            !accessoriesQuery.data?.data?.description_images ? (
+                                <Skeleton height={476} width="100%" />
+                            ) : (
+                                <Carousel
+                                    withIndicators
+                                    height={476}
+                                    controlSize={40}
+                                    classNames={{
+                                        control: "bg-primary/30",
+                                    }}
+                                    loop
+                                >
+                                    {petDetailQuery.data &&
+                                        petDetailQuery.data?.data?.description_images.map(
+                                            (image: string, index: any) => (
+                                                <Carousel.Slide key={index}>
+                                                    <Image
+                                                        src={image}
+                                                        alt={"image"}
+                                                        className="w-full h-full  object-contain object-center rounded-xl"
+                                                        width={500}
+                                                        height={100}
+                                                    />
+                                                </Carousel.Slide>
+                                            ),
+                                        )}
+                                    {accessoriesQuery.data &&
+                                        accessoriesQuery.data?.data?.description_images.map(
+                                            (image: string, index: any) => {
+                                                console.log(
+                                                    "image :>> ",
+                                                    image,
+                                                );
+                                                return (
                                                     <Carousel.Slide key={index}>
                                                         <Image
                                                             src={image}
@@ -316,13 +385,11 @@ export default function Page(props: PageProps) {
                                                             height={100}
                                                         />
                                                     </Carousel.Slide>
-                                                ),
-                                            )
-                                        )
-                                        }
-                                    </Carousel>
-                                )
-                            }
+                                                );
+                                            },
+                                        )}
+                                </Carousel>
+                            )}
 
                             <div className="bg-yellow-light flex flex-row items-center justify-around px-3 py-2 my-4 rounded-xl    ">
                                 {guarantee.map((item, index) => (
@@ -410,12 +477,11 @@ export default function Page(props: PageProps) {
                                     Chat with Monito
                                 </Button>
                             </Group>
-
                             <Table>
                                 <Table.Tbody>
                                     {slug?.[0] === "pet" &&
                                         (petDetailQuery.data &&
-                                            petTable.length > 0 ? (
+                                        petTable.length > 0 ? (
                                             petTable?.map((element: any) => (
                                                 <Table.Tr key={element.title}>
                                                     <Table.Td className="text-black-normal">
@@ -428,14 +494,12 @@ export default function Page(props: PageProps) {
                                             ))
                                         ) : (
                                             <Table.Tr>
-                                                <Table.Td>
-                                                    Loading...
-                                                </Table.Td>
+                                                <Table.Td>Loading...</Table.Td>
                                             </Table.Tr>
                                         ))}
                                     {slug?.[0] === "accessory" &&
                                         (accessoriesQuery.data &&
-                                            accessTable.length > 0 ? (
+                                        accessTable.length > 0 ? (
                                             accessTable?.map((element: any) => (
                                                 <Table.Tr key={element.title}>
                                                     <Table.Td className="text-black-normal">
@@ -448,9 +512,7 @@ export default function Page(props: PageProps) {
                                             ))
                                         ) : (
                                             <Table.Tr>
-                                                <Table.Td>
-                                                    Loading...
-                                                </Table.Td>
+                                                <Table.Td>Loading...</Table.Td>
                                             </Table.Tr>
                                         ))}
                                 </Table.Tbody>
@@ -501,32 +563,7 @@ export default function Page(props: PageProps) {
                             ))}
                         </Carousel>
                     </div>
-
-                    {/* recommend  */}
-                    <div>
-                        <Stack>
-                            <Text className="font-medium text-base text-black-bold">
-                                Whats new?
-                            </Text>
-                            <Text className="font-bold text-2xl text-blue-medium">
-                                See More Puppies
-                            </Text>
-
-                            <Grid
-                                align="center"
-                                className="max-h-[26rem] w-full overflow-hidden"
-                            >
-                                {/* {mock.map((item, index) => (
-                                        <Grid.Col
-                                            key={index}
-                                            span={{ base: 6, xs: 6, sm: 4, md: 3 }}
-                                        >
-                                            <ProductCard data={item} />
-                                        </Grid.Col>
-                                    ))} */}
-                            </Grid>
-                        </Stack>
-                    </div>
+                    <RecentViewedProducts list={recentViewProducts} />
                 </>
             )}
         </>
