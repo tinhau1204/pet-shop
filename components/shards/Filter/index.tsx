@@ -13,95 +13,103 @@ export type FilterProps = {
     onClickFilter?: (item: string[]) => void;
 };
 
-type FilterObject = {
-    name: string | false;
-    type: string;
-    items: { label: string; value: string }[];
-} | undefined;
+type FilterObject =
+    | {
+          name: string | false;
+          type: string;
+          items: { label: string; value: string }[];
+      }
+    | undefined;
 
 const transformNameData = (data: accessoriesTypesData[] | petTypesData[]) => {
     return {
-        name: ((data?.[0] as petTypesData)?.pets !== undefined) ? "Seeds" : "Supplies" || data?.[0] === undefined && false,
-        type: 'checkbox',
-        items: data.map((item: any) => ({
-            value: item.name?.toLowerCase(),
-            label: item.name,
-        }))
-    }
-}
+        name:
+            (data?.[0] as petTypesData)?.pets !== undefined
+                ? "Seeds"
+                : "Supplies" || (data?.[0] === undefined && false),
+        type: "checkbox",
+        items: data
+            .filter((item: any) => {
+                return item.parent_id !== null;
+            })
+            .map((item) => ({
+                value: item.name?.toLowerCase(),
+                label: item.name,
+            })),
+    };
+};
 
 const transformGenderData = (data: petTypesData[]) => {
-    if (Array.isArray(data) && data.length > 0 && 'pets' in data[0]) {
+    if (Array.isArray(data) && data.length > 0 && "pets" in data[0]) {
         return {
-            name: 'Gender',
-            type: 'checkbox',
+            name: "Gender",
+            type: "radio",
             items: [
-                { value: 'male', label: 'Male' },
-                { value: 'female', label: "Female" }
-            ]
-        }
+                { value: "male", label: "Male" },
+                { value: "female", label: "Female" },
+            ],
+        };
     } else {
         return undefined;
     }
-}
+};
 
-const transformOriginData = (data: petTypesData[] | accessoriesTypesData[]) => {
-    let itemsOrigin: { value: string; label: string }[] = [];
-    const uniqueOrigin = new Set<string>();
-    if (Array.isArray(data) && data.length > 0) {
-        if ((data as accessoriesTypesData[])[0]?.accessories) {
-            itemsOrigin = (data as accessoriesTypesData[]).flatMap((item: accessoriesTypesData) =>
-                item.accessories
-                    ? item.accessories.map((access: any) => ({
-                        value: access.origin?.toLowerCase(),
-                        label: access.origin,
-                    }))
-                    : []
-            );
-        } else if ((data as petTypesData[])[0]?.pets) {
-            itemsOrigin = (data as petTypesData[]).flatMap((item: petTypesData) =>
-                item.pets
-                    ? item.pets.map((pet: any) => ({
-                        value: pet.origin?.toLowerCase(),
-                        label: pet.origin,
-                    }))
-                    : []
-            );
-        }
-    }
-    const filterOrigin = itemsOrigin.filter((item) => {
-        if (!uniqueOrigin.has(item.value)) {
-            uniqueOrigin.add(item.value);
+// const transformOriginData = (data: petTypesData[] | accessoriesTypesData[]) => {
+//     let itemsOrigin: { value: string; label: string }[] = [];
+//     const uniqueOrigin = new Set<string>();
+//     if (Array.isArray(data) && data.length > 0) {
+//         if ((data as accessoriesTypesData[])[0]?.accessories) {
+//             itemsOrigin = (data as accessoriesTypesData[]).flatMap((item: accessoriesTypesData) =>
+//                 item.accessories
+//                     ? item.accessories.map((access: any) => ({
+//                         value: access.origin?.toLowerCase(),
+//                         label: access.origin,
+//                     }))
+//                     : []
+//             );
+//         } else if ((data as petTypesData[])[0]?.pets) {
+//             itemsOrigin = (data as petTypesData[]).flatMap((item: petTypesData) =>
+//                 item.pets
+//                     ? item.pets.map((pet: any) => ({
+//                         value: pet.origin?.toLowerCase(),
+//                         label: pet.origin,
+//                     }))
+//                     : []
+//             );
+//         }
+//     }
+//     const filterOrigin = itemsOrigin.filter((item) => {
+//         if (!uniqueOrigin.has(item.value)) {
+//             uniqueOrigin.add(item.value);
 
-        }
-        return uniqueOrigin
-    })
+//         }
+//         return uniqueOrigin
+//     })
 
-    return {
-        name: ((data[0] as petTypesData) && (data[0] as petTypesData))?.pets?.[0]?.origin !== undefined && "Origin" ||
-            (data[0] as accessoriesTypesData)?.accessories?.[0]?.origin !== undefined && "Origin",
-        type: 'checkbox',
-        items: filterOrigin,
-    }
-}
+//     return {
+//         name: ((data[0] as petTypesData) && (data[0] as petTypesData))?.pets?.[0]?.origin !== undefined && "Origin" ||
+//             (data[0] as accessoriesTypesData)?.accessories?.[0]?.origin !== undefined && "Origin",
+//         type: 'checkbox',
+//         items: filterOrigin,
+//     }
+// }
+
 const transformAllFilter = (data: any) => {
-    const nameData = transformNameData(data)
-    const genderData = transformGenderData(data)
+    const nameData = transformNameData(data);
+    const genderData = transformGenderData(data);
     // const origin = transformOriginData(data)
-    return data = [
+    return (data = [
         nameData,
         genderData,
         // origin
-    ]
-}
-
-
+    ]);
+};
 
 export default function Filter({ slug, onClickFilter }: FilterProps) {
     const [isMobile, setIsMobile] = React.useState(false);
     const [opened, { open, close }] = useDisclosure();
-    const [petFilter, setPetFilter] = useState<any>([])
-    const [accessoriesFilter, setAccessoriesFilter] = useState<any>([])
+    const [petFilter, setPetFilter] = useState<any>([]);
+    const [accessoriesFilter, setAccessoriesFilter] = useState<any>([]);
     const [filter, setFilter] = useState<string[] | string>([]);
     const router = useRouter();
 
@@ -112,50 +120,47 @@ export default function Filter({ slug, onClickFilter }: FilterProps) {
             items: [
                 { value: "pets", label: "Pets" },
                 { value: "accessories", label: "Accessories" },
-            ]
-        }
-    ]
-
+            ],
+        },
+    ];
 
     const handleFilter = (slug: string) => {
-        if (slug === 'pets') {
-            return petFilter
-        } else if (slug === 'accessories') {
-            return accessoriesFilter
+        if (slug === "pets") {
+            return petFilter;
+        } else if (slug === "accessories") {
+            return accessoriesFilter;
         } else {
-            return cateRootFilter
+            return cateRootFilter;
         }
-    }
-
-
+    };
 
     const filterPetsQuery = useQuery({
         queryKey: "filterPets",
         queryFn: () => getPetType(),
         onSuccess: (data: petTypesData[]) => {
-            const dataPet = transformAllFilter(data)
-            setPetFilter(dataPet)
+            const dataPet = transformAllFilter(data);
+            setPetFilter(dataPet);
         },
         onError: (error) => {
-            console.error('error', error)
+            console.error("error", error);
         },
         refetchOnWindowFocus: false,
         refetchOnMount: true,
-    })
+    });
 
     const filterAccessoriesQuery = useQuery({
         queryKey: "filterAccessories",
         queryFn: () => getAccessoriesType(),
         onSuccess: (data: accessoriesTypesData[]) => {
-            const dataAccess = transformAllFilter(data)
-            setAccessoriesFilter(dataAccess)
+            const dataAccess = transformAllFilter(data);
+            setAccessoriesFilter(dataAccess);
         },
         onError: (error) => {
-            console.error('error', error)
+            console.error("error", error);
         },
         refetchOnWindowFocus: false,
         refetchOnMount: true,
-    })
+    });
 
     React.useEffect(() => {
         const intervalId = setInterval(() => {
@@ -170,32 +175,34 @@ export default function Filter({ slug, onClickFilter }: FilterProps) {
 
     React.useEffect(() => {
         if (filterPetsQuery.data) {
-            setPetFilter(transformAllFilter(filterPetsQuery.data))
+            setPetFilter(transformAllFilter(filterPetsQuery.data));
         }
-       
-    }, [setPetFilter, filterPetsQuery.data])
+    }, [setPetFilter, filterPetsQuery.data]);
 
     React.useEffect(() => {
-
         if (filterAccessoriesQuery.data) {
-            setAccessoriesFilter(transformAllFilter(filterAccessoriesQuery.data))
+            setAccessoriesFilter(
+                transformAllFilter(filterAccessoriesQuery.data),
+            );
         }
-    }, [setAccessoriesFilter, filterAccessoriesQuery.data])
+    }, [setAccessoriesFilter, filterAccessoriesQuery.data]);
 
     function handleRadioFilter(item: string) {
-        setFilter(item)
-        if (item === 'pets') {
-            router.push('/categories/pets')
-            filterPetsQuery.refetch()
-        } else if (item === 'accessories') {
-            router.push('/categories/accessories')
-            filterAccessoriesQuery.refetch()
+        setFilter(item);
+        if (item === "pets") {
+            router.push("/categories/pets");
+            filterPetsQuery.refetch();
+        } else if (item === "accessories") {
+            router.push("/categories/accessories");
+            filterAccessoriesQuery.refetch();
+        } else {
+            setFilter((prev) => [...prev, item]);
         }
     }
 
     function handleCheckboxFilter(item: string[]) {
-        setFilter([...item])
-        onClickFilter?.([...item])
+        setFilter([...item]);
+        onClickFilter?.([...item]);
     }
 
     return (
@@ -230,20 +237,26 @@ export default function Filter({ slug, onClickFilter }: FilterProps) {
                             title: "text-blue-medium font-bold text-lg",
                         }}
                     >
-                        <FilterPart items={handleFilter(slug as string)} onClickCheckbox={(item: string[]) => {
-                            handleCheckboxFilter([...item])
-                            close()
-                        }} />
+                        <FilterPart
+                            items={handleFilter(slug as string)}
+                            onClickCheckbox={(item: string[]) => {
+                                handleCheckboxFilter([...item]);
+                                close();
+                            }}
+                        />
                     </Modal>
                 ) : (
                     <FilterPart
                         items={handleFilter(slug as string)}
-                        onClickCheckbox={(item: string[]) => handleCheckboxFilter([...item])}
-                        onClickRadiobox={(item: string) => handleRadioFilter(item)}
+                        onClickCheckbox={(item: string[]) =>
+                            handleCheckboxFilter([...item])
+                        }
+                        onClickRadiobox={(item: string) =>
+                            handleRadioFilter(item)
+                        }
                     />
                 )}
             </section>
         </>
     );
 }
-
