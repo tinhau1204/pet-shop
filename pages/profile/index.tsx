@@ -10,7 +10,7 @@ import {
     Radio,
     Skeleton,
 } from "@mantine/core";
-import React from "react";
+import React, { useEffect } from "react";
 import EditIcon from "@my-images/icon/Edit_Pencil_Line_01.svg";
 import SaveIcon from "@my-images/Cloud_Check.svg";
 import BackGround from "@my-images/background.png";
@@ -47,11 +47,11 @@ export default function Profile() {
         onSuccess: (data: IUser) => {
             store.setAuthUser(data);
             form.setValues({
-                name: data.name,
-                gender: data.gender || "male",
-                email: data.email,
-                phone: data.phone,
-                address: data.address || "",
+                name: data?.name,
+                gender: data?.gender || "male",
+                email: data?.email,
+                phone: data?.phone,
+                address: data?.address || "",
             });
         },
         onError: (err) => {
@@ -70,7 +70,6 @@ export default function Profile() {
         onSuccess: (data) => {
             const { message, data: _data } = data;
             toast.success(message);
-            console.log("data :>> ", _data);
             store.setAuthUser(_data);
             form.setValues({
                 name: _data?.name || "",

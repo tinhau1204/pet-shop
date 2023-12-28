@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 const Cookies = require("js-cookie");
 import { API } from "@/lib/config/env";
 import { useGoogleLogin } from "@react-oauth/google";
+import recombeeClient from "../../lib/recombee";
 
 export default function Login() {
     const router = useRouter();
@@ -60,6 +61,9 @@ export default function Login() {
             Cookies.set("user", data?.data?.user.id, {
                 expires: Date.now() + 30 * 60 * 1000,
             });
+
+            // Get recommendation products for usser
+            store.setRecommid(data?.data?.user.id);
             store.setAuthUser(data?.data?.user);
             //add toast
             router.push("/");

@@ -59,3 +59,13 @@ export async function searchAccessories(data: AccessorySearchType) {
         })
         .then((res) => res.data.data);
 }
+
+export async function getProductsByIds(data: number[]) {
+    return await client
+        .post("/pet/search", {
+            search: {
+                inIds: data,
+            },
+        })
+        .then((res) => res.data.data);
+}
