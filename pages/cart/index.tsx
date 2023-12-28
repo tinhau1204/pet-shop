@@ -17,7 +17,6 @@ import {
 import { YearPickerInput } from "@mantine/dates";
 import ArrownDown from "@my-images/arrowDown.svg";
 import ArrowLeft from "@my-images/Arrow_Left_SM.svg";
-import Link from "next/link";
 import React, { ChangeEvent, MouseEventHandler, useEffect } from "react";
 import ArrowDownIcon from "@my-images/Caret_Down_MD.svg";
 import { useCartStore } from "@/lib/store/cart";
@@ -27,15 +26,22 @@ import { useMutation, useQuery } from "react-query";
 import { paymentMomo } from "@/lib/api/payment";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import PaypalButton from "@/components/shards/Payments/PaypalButton";
+const Cookies = require("js-cookie");
+import Link from "next/link";
+
 
 function ProductInfo({
     src,
     name,
     sku,
+    id,
+    slug,
 }: {
     src: string;
     name: string;
     sku: string;
+    id: number;
+    slug: string;
 }) {
     return (
         <Flex
@@ -51,10 +57,13 @@ function ProductInfo({
                 align="flex-start"
                 className="w-full gap-0.5"
             >
-                <Text className="text-sm text-blue-medium font-bold max-w-[150px]">
+                <Link
+                    className="text-sm text-blue-medium font-bold max-w-[150px] hover:underline"
+                    href={`/products/${slug}/${id}`}
+                >
                     {name}
-                </Text>
-                <Text className="text-xs text-black-light/50">{sku}</Text>
+                </Link>
+                <Text className="text-xs text-black-light">{sku}</Text>
             </Flex>
         </Flex>
     );
@@ -80,8 +89,8 @@ function QuantityField({
             setQuantity(element.stock_quantity);
             const sku = element.sku;
             toast.warn(message, {
-                position: "top-right",
-                autoClose: 5000,
+                position: "bottom-right",
+                autoClose: 3000,
                 closeOnClick: true,
             });
             updateQuantity(sku, element.stock_quantity);
@@ -126,7 +135,6 @@ export default function Cart() {
     const router = useRouter();
     const [payment, setPayment] = React.useState("");
     const { cart, updateCartProduct, remove } = useCartStore();
-
     const handlePaymentChange: MouseEventHandler<HTMLButtonElement> = (
         event,
     ) => {
@@ -144,6 +152,8 @@ export default function Cart() {
                         src={element.thumbnail_image || ""}
                         name={element.name}
                         sku={element.sku}
+                        id={element.id}
+                        slug={element.type.parent.name}
                     />
                 </Table.Td>
                 <Table.Td>
@@ -533,23 +543,18 @@ function MoMoMethod() {
         }
     }
 
-    console.log(cart);
-    console.log('dataMapping', dataMapping)
-
     const usePaymentMutation = useMutation({
         mutationKey: ["payment"],
         mutationFn: () => paymentMomo(dataMapping),
         onSuccess: (data: any) => {
-            console.log(data),
             setMomoUrl(data.data)
         },
         onError: (error) => {
-            console.log(error),
-                toast.error("Payment failed", {
-                    position: "top-right",
-                    autoClose: 5000,
-                    closeOnClick: true,
-                });
+            toast.error("Payment failed", {
+                position: "bottom-right",
+                autoClose: 3000,
+                closeOnClick: true,
+            });
         }
     })
 
@@ -604,11 +609,11 @@ function PaypalMethod() {
         0,
     )
 
-    return  (
-    <div>   
+    return (
+        <div>
             <PayPalScriptProvider
                 options={{
-                    clientId: clientId,
+                    clientId: (process.env.NEXT_PUBLIC_CLIENT_ID as string),
                     components: "buttons",
                     currency: "USD",
                 }}
@@ -616,8 +621,7 @@ function PaypalMethod() {
                 <PaypalButton
                     cartData={dataMapping}
                     totalAmount={currentTotal.toString()}
-                    orderID={"#test123"}
                 />
-            </PayPalScriptProvider> 
-    </div>);
+            </PayPalScriptProvider>
+        </div>);
 }

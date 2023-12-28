@@ -54,6 +54,7 @@ export default function Login() {
             reset();
             toast.success(data?.message, {
                 position: "bottom-right",
+                autoClose: 2000,
             });
             Cookies.set("accessToken", data?.data?.tokens?.accessToken);
             Cookies.set("refreshToken", data?.data?.tokens?.refreshToken);
@@ -69,6 +70,7 @@ export default function Login() {
                 console.error("error", e);
                 toast.error(e?.response?.data?.message, {
                     position: "bottom-right",
+                    autoClose: 2000,
                 });
                 //add toast
             }
@@ -99,6 +101,7 @@ export default function Login() {
                 if (result) {
                     toast.success(result?.message, {
                         position: "bottom-right",
+                        autoClose: 2000,
                     });
                     Cookies.set(
                         "accessToken",

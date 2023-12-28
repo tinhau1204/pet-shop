@@ -56,7 +56,10 @@ export default function Profile() {
         },
         onError: (err) => {
             if (err instanceof AxiosError) {
-                toast.error(err.response?.data.message);
+                toast.error(err.response?.data.message, {
+                    position: "bottom-right",
+                    autoClose: 2000,
+                });
             }
             router.push("/");
         },
@@ -69,8 +72,10 @@ export default function Profile() {
         },
         onSuccess: (data) => {
             const { message, data: _data } = data;
-            toast.success(message);
-            console.log("data :>> ", _data);
+            toast.success(message, {
+                position: "bottom-right",
+                autoClose: 2000,
+            });
             store.setAuthUser(_data);
             form.setValues({
                 name: _data?.name || "",
@@ -81,7 +86,10 @@ export default function Profile() {
             });
         },
         onError: (err) => {
-            toast.error("Something went wrong");
+            toast.error("Something went wrong", {
+                position: "bottom-right",
+                autoClose: 2000,
+            });
         },
     });
 
