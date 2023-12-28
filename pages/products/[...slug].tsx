@@ -163,7 +163,7 @@ export default function Page(props: PageProps) {
         } else if (slug?.[0] === "accessory") {
             accessoriesQuery.refetch();
         }
-    }, []);
+    }, [slug]);
 
     useEffect(() => {
         if (slug?.[0] === "pet" && petDetailQuery.isSuccess) {
