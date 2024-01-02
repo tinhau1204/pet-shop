@@ -1,11 +1,11 @@
 import recombee_api from "recombee-js-api-client";
 
-const { RECOMBEE_DB, RECOMBEE_PUBLIC_TOKEN } = process.env;
-
-const recombee = new recombee_api.ApiClient(
-    RECOMBEE_DB || "",
-    RECOMBEE_PUBLIC_TOKEN || "",
-    { region: "us-west" },
+var client = new recombee_api.ApiClient(
+    process.env.NEXT_PUBLIC_RECOMBEE_DB!,
+    process.env.NEXT_PUBLIC_RECOMBEE_PUBLIC_TOKEN!,
+    {
+        region: process.env.NEXT_PUBLIC_RECOMBEE_REGION!,
+    },
 );
 
-export default recombee;
+export default { client, recombee_api };

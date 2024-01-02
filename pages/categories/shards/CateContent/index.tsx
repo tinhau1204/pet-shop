@@ -21,7 +21,6 @@ export type CateContentProps = {
     slug?: string;
 };
 
-
 export default function CateContent({ data, slug }: CateContentProps) {
     const [acitivePage, setPage] = React.useState(1);
     const [pageTotal, setPageTotal] = React.useState(1);
@@ -31,15 +30,17 @@ export default function CateContent({ data, slug }: CateContentProps) {
         function handlePageTotal() {
             if (slug === "pets") {
                 // const total = Math.ceil((data as petsData[])?.length / 12);
-                setPageTotal(Math.ceil((data as petsData[])?.length / 12))
+                setPageTotal(Math.ceil((data as petsData[])?.length / 12));
             } else {
                 // const total = Math.ceil((data as accessoriesData[])?.length / 12);
-                setPageTotal(Math.ceil((data as accessoriesData[])?.length / 12))
+                setPageTotal(
+                    Math.ceil((data as accessoriesData[])?.length / 12),
+                );
             }
         }
 
-        handlePageTotal()
-    })
+        handlePageTotal();
+    });
 
     return (
         <section id="cate-content" className="w-full h-full mt-8 ">
@@ -65,8 +66,8 @@ export default function CateContent({ data, slug }: CateContentProps) {
                                 ? " pets found"
                                 : " pet found"
                             : (data as accessoriesData[])?.length > 1
-                                ? " accessories found"
-                                : " accessory found"}
+                            ? " accessories found"
+                            : " accessory found"}
                     </Text>
                 </div>
                 {/* filter card value */}
@@ -123,10 +124,9 @@ export default function CateContent({ data, slug }: CateContentProps) {
                 )}
             </SimpleGrid>
 
-            {(Array.isArray(data) && data?.length > 0 && slug === "pets") && (
+            {Array.isArray(data) && data?.length > 0 && slug === "pets" && (
                 <Flex justify="center" className="mt-10">
                     <Pagination
-                    
                         total={pageTotal}
                         nextIcon={ArrowRightIcon}
                         previousIcon={ArrowLeftIcon}
@@ -140,8 +140,9 @@ export default function CateContent({ data, slug }: CateContentProps) {
                 </Flex>
             )}
 
-            {
-                (Array.isArray(data) && data?.length > 0 && slug === "accessories") && (
+            {Array.isArray(data) &&
+                data?.length > 0 &&
+                slug === "accessories" && (
                     <Flex justify="center" className="mt-10">
                         <Pagination
                             total={pageTotal}
@@ -155,8 +156,7 @@ export default function CateContent({ data, slug }: CateContentProps) {
                             }}
                         />
                     </Flex>
-                )
-            }
+                )}
         </section>
     );
 }

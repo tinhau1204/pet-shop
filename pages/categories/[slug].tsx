@@ -24,9 +24,9 @@ export default function Page(props: PageProps) {
     const getPetQuery = useQuery({
         queryKey: ["pets"],
         queryFn: getPet,
-        onSuccess: (data) => { },
+        onSuccess: (data) => {},
         onError: (error) => {
-            console.log(error);
+            console.error('err', error);
         },
         refetchOnWindowFocus: false,
     });
@@ -34,8 +34,8 @@ export default function Page(props: PageProps) {
     const getAccessoriesQuery = useQuery({
         queryKey: ["accessories"],
         queryFn: getAccessories,
-        onSuccess: (data) => { },
-        onError: (error) => { },
+        onSuccess: (data) => {},
+        onError: (error) => {},
         refetchOnWindowFocus: false,
     });
 
@@ -44,26 +44,28 @@ export default function Page(props: PageProps) {
             function handleFilterData(data: petsData[] | accessoriesData[]) {
                 if (props.slug === "pets") {
                     if (filter.length > 0) {
-                        console.log('data before filter', data)
+                        console.log("data before filter", data);
                         return data.filter((pet: any) => {
-
                             const typeName = pet.type.name.toLowerCase();
                             const isMale = pet.isMale;
 
                             const filterType = filter[0]?.toLowerCase() || null;
-                            const filterGender = filter[1]?.toLowerCase() || null;
+                            const filterGender =
+                                filter[1]?.toLowerCase() || null;
 
-                            const typeMatches = filterType ? typeName.includes(filterType) : true;
-                            const genderMatches = filterGender !== null
-                                ? isMale ===
-                                (filterGender === "male" ||
-                                    filterGender === "female")
+                            const typeMatches = filterType
+                                ? typeName.includes(filterType)
                                 : true;
+                            const genderMatches =
+                                filterGender !== null
+                                    ? isMale ===
+                                      (filterGender === "male" ||
+                                          filterGender === "female")
+                                    : true;
                             // Apply the type filter first
-                            if (filterType && (
-                                filterType == "male" ||
-                                filterType == "female"
-                            )
+                            if (
+                                filterType &&
+                                (filterType == "male" || filterType == "female")
                             ) {
                                 // const filteredData = data.filter((pet: any) => {
                                 //     const isMale = pet.isMale;
@@ -102,7 +104,6 @@ export default function Page(props: PageProps) {
                 ),
             );
         } else {
-            console.log('move here')
             setFilterData(
                 props.slug === "pets"
                     ? getPetQuery.data
@@ -124,15 +125,14 @@ export default function Page(props: PageProps) {
                 direction={{ base: "row-reverse", sm: "row" }}
             >
                 {props.slug &&
-                    (getPetQuery.data || getAccessoriesQuery.data) ? (
+                (getPetQuery.data || getAccessoriesQuery.data) ? (
                     <>
                         <Filter
                             slug={props?.slug}
                             onClickFilter={(item: string[]) => {
-                                console.log('item', item)
-                                setFilter([...item])
-                            }
-                            }
+                                console.log("item", item);
+                                setFilter([...item]);
+                            }}
                         />
                         <CateContent data={filterData} slug={props.slug} />
                     </>
