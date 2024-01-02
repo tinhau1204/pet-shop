@@ -28,6 +28,7 @@ export default function Register() {
             password: "",
             phone: "",
             address: "",
+            username: "",
         },
 
         validate: {
@@ -45,6 +46,8 @@ export default function Register() {
                     : "Phone number required 10 digits!",
             address: (value) =>
                 value.length > 0 ? null : "Address can't be empty!",
+            username: (value) =>
+                value.length > 0 ? null : "Username can't be empty!",
         },
     });
 
@@ -87,6 +90,7 @@ export default function Register() {
         password: string;
         phone: string;
         address: string;
+        username: string;
     };
 
     const onSubmitHandler = (values: registerFormType) => {
@@ -96,6 +100,7 @@ export default function Register() {
                 password: values.password,
                 phone: values.phone,
                 address: values.address,
+                username: values.username,
             },
         };
         registerMutation.mutate(register);
@@ -112,7 +117,7 @@ export default function Register() {
             >
                 <section>
                     <Text className="text-black-bold text-center font-bold text-3xl">
-                        Register
+                        Sign Up
                     </Text>
                     <Box className="text-center " mt="xs">
                         <Text>
@@ -160,6 +165,17 @@ export default function Register() {
                             </div>
 
                             <div className="space-y-2 mt-2">
+                                <label htmlFor="username">Username: </label>
+                                <TextInput
+                                    placeholder="Nguyen Van A"
+                                    required
+                                    type="text"
+                                    withAsterisk
+                                    {...registerForm.getInputProps("username")}
+                                />
+                            </div>
+
+                            <div className="space-y-2 mt-2">
                                 <label htmlFor="phone">Phone: </label>
                                 <TextInput
                                     placeholder="0988xxxxxx"
@@ -182,7 +198,11 @@ export default function Register() {
                             </div>
 
                             <div className="space-y-2 mt-4 w-full">
-                                <Button type="submit" className="w-full">
+                                <Button
+                                    color="#003459"
+                                    type="submit"
+                                    className="w-full"
+                                >
                                     Sign Up
                                 </Button>
                             </div>

@@ -1,6 +1,7 @@
 import { AspectRatio, Box, Card, Group, Stack, Text } from "@mantine/core";
 import Image from "next/image";
 import MyText from "../MyText";
+import BlogImage from "@my-images/blog/blog_1.png";
 
 export type BlogProps = {
     tags?: string[];
@@ -12,7 +13,7 @@ export type BlogProps = {
 function Blog(props: BlogProps) {
     const {
         tags = ["Pet knowledge", "Pet Care", "Pet Training"],
-        imageUrl = "http:/localhost:3000/images/blog/blog_1.png",
+        imageUrl = BlogImage.src,
         title = "What is a Pomeranian? How to Identify Pomeranian Dogs",
         description = "The Pomeranian, also known as the Pomeranian (Pom dog), is always in the top of the cutest pets. Not only that, the small, lovely, smart, friendly, and skillful circus ",
     } = props;

@@ -10,7 +10,8 @@ export default function VerifiedRegister() {
     const router = useRouter();
 
     function handleLogin() {
-        router.push("/login");
+        // router.push("/auth/login");
+        window.close();
     }
 
     return (

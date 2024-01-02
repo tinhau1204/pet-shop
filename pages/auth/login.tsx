@@ -10,6 +10,7 @@ import {
     TextInput,
     Stack,
     Paper,
+    ActionIcon,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { AxiosError } from "axios";
@@ -20,6 +21,7 @@ import { toast } from "react-toastify";
 const Cookies = require("js-cookie");
 import { API } from "@/lib/config/env";
 import { useGoogleLogin } from "@react-oauth/google";
+import ArrowLeftIcon from "@my-images/Arrow_Left_SM.svg";
 import recombeeClient from "../../lib/recombee";
 
 export default function Login() {
@@ -138,8 +140,19 @@ export default function Login() {
                 className="min-w-[48rem] group rounded-lg shadow-lg bg-white space-y-6 border-gray-200 dark:border-gray-700 "
             >
                 <section className="h-full w-full">
+                    <Button
+                        onClick={() => router.push("/")}
+                        leftSection={<ArrowLeftIcon />}
+                        className="font-bold"
+                        variant="outline"
+                        color="#003459"
+                        size="md"
+                        radius="xl"
+                    >
+                        Back
+                    </Button>
                     <Text className="text-black-bold text-center font-bold text-3xl">
-                        Login
+                        Sign In
                     </Text>
                     <Box className="text-center" mt="xs">
                         <Text>
@@ -198,7 +211,11 @@ export default function Login() {
                                 </Link>
                             </div>
                             <div className="space-y-2 mt-4 w-full">
-                                <Button type="submit" className="w-full">
+                                <Button
+                                    type="submit"
+                                    color="#003459"
+                                    className="w-full"
+                                >
                                     Sign In
                                 </Button>
                             </div>
@@ -219,9 +236,11 @@ export default function Login() {
                         </div>
 
                         <Stack>
-                            <button
-                                className="w-full text-white "
+                            <Button
+                                variant="outline"
+                                className="w-full text-white"
                                 onClick={login}
+                                color="#003459"
                             >
                                 <div className="flex items-center justify-center">
                                     <svg
@@ -259,8 +278,8 @@ export default function Login() {
                                     </svg>
                                     Continue with Google
                                 </div>
-                            </button>
-                            <Button
+                            </Button>
+                            {/* <Button
                                 className="w-full  hover:bg-blue-light/75"
                                 variant="filled"
                                 disabled
@@ -280,7 +299,7 @@ export default function Login() {
                                     </svg>
                                     Continue with Facebook
                                 </div>
-                            </Button>
+                            </Button> */}
                         </Stack>
                     </Flex>
                 </section>
