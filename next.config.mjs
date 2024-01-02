@@ -49,6 +49,26 @@ const config = {
 
         return config;
     },
+    redirects: async () => {
+        return [
+            {
+                source: "/products",
+                destination: "/categories",
+                permanent: true,
+            },
+            {
+                source: "/products/accessory",
+                destination: "/categories/accessories",
+                permanent: true,
+            },
+            {
+                source: "/products/pet",
+                destination: "/categories/pets",
+                permanent: true,
+            },
+
+        ];
+    }
 };
 
 export default config;
