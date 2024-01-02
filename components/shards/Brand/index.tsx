@@ -1,6 +1,13 @@
 import { AspectRatio, Box, Button, Group, Stack } from "@mantine/core";
 import MyText from "../MyText";
 import Image from "next/image";
+import Brand1 from "@my-images/brand/brand_1.png";
+import Brand2 from "@my-images/brand/brand_2.png";
+import Brand3 from "@my-images/brand/brand_3.png";
+import Brand4 from "@my-images/brand/brand_4.png";
+import Brand5 from "@my-images/brand/brand_5.png";
+import Brand6 from "@my-images/brand/brand_6.png";
+import Brand7 from "@my-images/brand/brand_7.png";
 
 export type BrandProps = {
     heading?: string;
@@ -12,13 +19,13 @@ function Brand(props: BrandProps) {
     const {
         heading = "Proud to be part of Pet Sellers",
         data = [
-            "http:/localhost:3000/images/brand/brand_1.png",
-            "http:/localhost:3000/images/brand/brand_2.png",
-            "http:/localhost:3000/images/brand/brand_3.png",
-            "http:/localhost:3000/images/brand/brand_4.png",
-            "http:/localhost:3000/images/brand/brand_5.png",
-            "http:/localhost:3000/images/brand/brand_6.png",
-            "http:/localhost:3000/images/brand/brand_7.png",
+            Brand1.src,
+            Brand2.src,
+            Brand3.src,
+            Brand4.src,
+            Brand5.src,
+            Brand6.src,
+            Brand7.src,
         ],
         button = (
             <Button

@@ -135,9 +135,6 @@ export default function Page(props: PageProps) {
         if (!!userId) {
             const { recommId, items } = await store.setRecommid(userId);
 
-            console.log("recommId :>> ", recommId);
-            console.log("items :>> ", items);
-
             setRecentViewProducts(items);
             recombeeClient.client
                 .send(
@@ -309,18 +306,17 @@ export default function Page(props: PageProps) {
                     ? (data as petsData)
                     : (data as accessoriesData),
             );
-            const cartData = cart.map((item) => {
-                return {
-                    id: item.id,
-                    quantity: item.count,
-                };
-            });
-            Cookies.set("cartUser", JSON.stringify(cartData));
+            // const cartData = cart.map((item) => {
+            //     return {
+            //         id: item.id,
+            //         quantity: item.count,
+            //     };
+            // });
+            // Cookies.set("cartUser", JSON.stringify(cartData));
             toast.success(`Đã thêm sản phẩm ${data?.name} vào giỏ hàng`, {
                 autoClose: 2000,
                 position: "bottom-right",
             });
-            console.log("here", JSON.parse(Cookies.get("cartUser")));
         } else {
             toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng", {
                 autoClose: 2000,
@@ -371,10 +367,6 @@ export default function Page(props: PageProps) {
                                     {accessoriesQuery.data &&
                                         accessoriesQuery.data?.data?.description_images.map(
                                             (image: string, index: any) => {
-                                                console.log(
-                                                    "image :>> ",
-                                                    image,
-                                                );
                                                 return (
                                                     <Carousel.Slide key={index}>
                                                         <Image

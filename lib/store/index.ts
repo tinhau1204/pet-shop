@@ -39,8 +39,6 @@ const useStore = create<Store>((set) => ({
             )
             .then(function (res) {
                 // handle response
-                console.log("res :>> ", res);
-                console.log("recommId :>> ", res.recommId);
                 return { recommId: res.recommId, items: res.recomms };
             });
     },

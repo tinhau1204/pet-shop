@@ -25,7 +25,7 @@ export default function OrderHistory() {
             console.log("check data", data);
         },
         onError: (error) => {
-            console.log("check error", error);
+            console.error("check error", error);
         },
     });
 

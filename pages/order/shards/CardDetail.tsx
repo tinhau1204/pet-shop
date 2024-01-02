@@ -35,7 +35,7 @@ export default function CardDetail({ id }: CardDetailProps) {
             console.log("check data", data);
         },
         onError: (error) => {
-            console.log("check error", error);
+            console.error("check error", error);
         },
         enabled: !!id,
     });
@@ -137,7 +137,7 @@ export default function CardDetail({ id }: CardDetailProps) {
                                                     radius="xl"
                                                     src={
                                                         element?.pet
-                                                            ?.thumbnail_image
+                                                            ?.thumbnail_image || element?.accessory?.thumbnail_image
                                                     }
                                                     alt="picture"
                                                 />
@@ -146,7 +146,7 @@ export default function CardDetail({ id }: CardDetailProps) {
                                                     gap={0}
                                                 >
                                                     <Text fw={600}>
-                                                        {element?.pet?.name}
+                                                        {element?.pet?.name || element?.accessory?.name}
                                                     </Text>
                                                     <Group justify="space-between">
                                                         <Text
@@ -154,7 +154,7 @@ export default function CardDetail({ id }: CardDetailProps) {
                                                             size="sm"
                                                             fw={500}
                                                         >
-                                                            x{element?.quantity}
+                                                            x{element?.quantity }
                                                         </Text>
                                                         <Text
                                                             c="dimmed"
@@ -170,7 +170,7 @@ export default function CardDetail({ id }: CardDetailProps) {
                                             </Group>
                                         </Group>
                                     </Accordion.Control>
-                                    <Accordion.Panel></Accordion.Panel>
+                                    {/* <Accordion.Panel></Accordion.Panel> */}
                                 </Accordion.Item>
                             ),
                         )}

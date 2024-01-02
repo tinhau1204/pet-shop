@@ -26,7 +26,7 @@ export default function Page(props: PageProps) {
         queryFn: getPet,
         onSuccess: (data) => {},
         onError: (error) => {
-            console.log(error);
+            console.error('err', error);
         },
         refetchOnWindowFocus: false,
     });
@@ -104,7 +104,6 @@ export default function Page(props: PageProps) {
                 ),
             );
         } else {
-            console.log("move here");
             setFilterData(
                 props.slug === "pets"
                     ? getPetQuery.data

@@ -81,9 +81,5 @@ export async function getProductsByIds(
             },
         })
         .then((res) => res.data.data);
-
-    console.log("pets :>> ", pets);
-    console.log("accessories :>> ", accessories);
-
     return [...accessories, ...pets];
 }

@@ -14,11 +14,8 @@ import {
     TextInput,
     TextInputProps,
 } from "@mantine/core";
-import { YearPickerInput } from "@mantine/dates";
-import ArrownDown from "@my-images/arrowDown.svg";
 import ArrowLeft from "@my-images/Arrow_Left_SM.svg";
 import React, { ChangeEvent, MouseEventHandler, useEffect } from "react";
-import ArrowDownIcon from "@my-images/Caret_Down_MD.svg";
 import { useCartStore } from "@/lib/store/cart";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
@@ -79,27 +76,31 @@ function QuantityField({
 
     const handleQuantityChange = (event: ChangeEvent<HTMLInputElement>) => {
         console.log("check event", event.target.value);
-        const newQuantity = parseInt(event.target.value, 10);
+        if (event.target.value !== "") {
+            const newQuantity = parseInt(event.target.value, 10);
 
-        const validQuantity = newQuantity <= element.stock_quantity;
-        let message = `There ${
-            element.stock_quantity > 1 ? "are" : "is"
-        } only ${element.stock_quantity} product${
-            element.stock_quantity > 1 ? "s" : ""
-        } left`;
-        if (!validQuantity) {
-            setQuantity(element.stock_quantity);
-            const sku = element.sku;
-            toast.warn(message, {
-                position: "bottom-right",
-                autoClose: 3000,
-                closeOnClick: true,
-            });
-            updateQuantity(sku, element.stock_quantity);
+            const validQuantity = newQuantity <= element.stock_quantity;
+            let message = `There ${element.stock_quantity > 1 ? "are" : "is"
+                } only ${element.stock_quantity} product${element.stock_quantity > 1 ? "s" : ""
+                } left`;
+            if (!validQuantity) {
+                setQuantity(element.stock_quantity);
+                const sku = element.sku;
+                toast.warn(message, {
+                    position: "bottom-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                });
+                updateQuantity(sku, element.stock_quantity);
+            } else {
+                setQuantity(newQuantity);
+                const sku = element.sku;
+                updateQuantity(sku, newQuantity);
+            }
         } else {
-            setQuantity(newQuantity);
+            setQuantity(1);
             const sku = element.sku;
-            updateQuantity(sku, newQuantity);
+            updateQuantity(sku, 1);
         }
     };
 
@@ -107,7 +108,6 @@ function QuantityField({
         <TextInput
             radius="xl"
             className="max-w-[5rem] font-semibold"
-            // defaultValue={quantity}
             value={quantity.toString() || String(1)}
             type="number"
             max={element.stock_quantity}
@@ -119,19 +119,6 @@ function QuantityField({
         />
     );
 }
-// function ProductSize({ data }: { data?: string[] }) {
-//     return (
-//         <NativeSelect
-//             radius="xl"
-//             data={["S", "M", "L", "XL"]}
-//             classNames={{
-//                 input: "border-black-light/20 text-blue-medium font-semibold",
-//             }}
-//             rightSection={<ArrownDown className="text-blue-medium font-bold" />}
-//             className="max-w-[6rem]"
-//         />
-//     );
-// }
 
 export default function Cart() {
     const router = useRouter();
@@ -165,7 +152,7 @@ export default function Cart() {
                 </Table.Td>
                 <Table.Td className="text-center">
                     <Text className="text-blue-medium font-semibold">
-                        {element.price * element.count} VND
+                        {formatPrice(element.price * element.count)}
                     </Text>
                 </Table.Td>
                 <Table.Td className="max-w-[2rem]">
@@ -182,6 +169,14 @@ export default function Cart() {
                 </Table.Td>
             </Table.Tr>
         ));
+
+    function formatPrice(price: string | number | undefined) {
+        return price?.toLocaleString("it-IT", {
+            style: "currency",
+            currency: "VND",
+        });
+    }
+
     return (
         <Grid>
             <Grid.Col span={{ base: 12, md: 8 }}>
@@ -243,12 +238,11 @@ export default function Cart() {
                                     Subtotal:
                                 </Text>
                                 <Text className="text-blue-medium font-semibold text-base">
-                                    {cart.reduce(
+                                    {formatPrice(cart.reduce(
                                         (acc, cur) =>
                                             acc + cur.price * cur.count,
                                         0,
-                                    )}{" "}
-                                    VND
+                                    ))}
                                 </Text>
                             </div>
                             <div className="w-full flex flex-row items-center justify-between">
@@ -266,12 +260,11 @@ export default function Cart() {
                                     Total:
                                 </Text>
                                 <Text className="text-blue-medium font-semibold text-xl">
-                                    {cart.reduce(
+                                    {formatPrice(cart.reduce(
                                         (acc, cur) =>
                                             acc + cur.price * cur.count,
                                         0,
-                                    )}{" "}
-                                    VND
+                                    ))}
                                 </Text>
                             </div>
                         </Stack>
@@ -309,8 +302,8 @@ export default function Cart() {
                         </Text>
 
                         <div className="grid grid-cols-6 justify-around place-items-center gap-y-2 gap-x-6 mt-4">
-                            {/* <Button
-                                className={`w-full col-span-3  ${payment == "Credit Card"
+                            <Button
+                                className={`w-full col-span-3  ${payment == "MoMo"
                                     ? "text-primary border-primary"
                                     : "text-primary/40 border-primary/40"
                                     }`}
@@ -318,26 +311,13 @@ export default function Cart() {
                                 radius="xl"
                                 onClick={handlePaymentChange}
                             >
-                                Credit Card
-                            </Button> */}
-                            <Button
-                                className={`w-full col-span-3  ${
-                                    payment == "MoMo"
-                                        ? "text-primary border-primary"
-                                        : "text-primary/40 border-primary/40"
-                                }`}
-                                variant="outline"
-                                radius="xl"
-                                onClick={handlePaymentChange}
-                            >
                                 MoMo
                             </Button>
                             <Button
-                                className={`w-full col-span-3  ${
-                                    payment == "Paypal"
-                                        ? "text-primary border-primary"
-                                        : "text-primary/40 border-primary/40"
-                                }`}
+                                className={`w-full col-span-3  ${payment == "Paypal"
+                                    ? "text-primary border-primary"
+                                    : "text-primary/40 border-primary/40"
+                                    }`}
                                 variant="outline"
                                 radius="xl"
                                 onClick={handlePaymentChange}
@@ -362,164 +342,6 @@ export default function Cart() {
     );
 }
 
-// type CreditCard = {
-//     cardHolderName: String;
-//     cardNumber: Number;
-//     expirationDate?: Date | null;
-//     cvv: Number;
-// };
-
-// function CreditCardMethod() {
-//     const [value, setValue] = React.useState<CreditCard | undefined>({
-//         cardHolderName: "",
-//         cardNumber: 0,
-//         expirationDate: new Date(),
-//         cvv: 0,
-//     });
-
-//     const handleExpirationDateChange = (newDate: Date | null) => {
-//         setValue((prev) => ({ ...prev!, expirationDate: newDate }));
-//     };
-
-// return (
-//     <form className="h-full flex flex-col justify-center w-full items-start gap-4">
-//         <div className="flex flex-row justify-center w-full items-center gap-3">
-//             <svg
-//                 xmlns="http://www.w3.org/2000/svg"
-//                 width="24"
-//                 height="24"
-//                 viewBox="0 0 36 36"
-//             >
-//                 <path
-//                     fill="#FFAC33"
-//                     d="M4 5a4 4 0 0 0-4 4v18a4 4 0 0 0 4 4h28a4 4 0 0 0 4-4V9s0-4-4-4z"
-//                 />
-//                 <path fill="#292F33" d="M0 10h36v5H0z" />
-//                 <path fill="#F4F7F9" d="M4 19h28v6H4z" />
-//                 <path
-//                     fill="#8899A6"
-//                     d="M19 24c-1.703 0-2.341-1.21-2.469-1.801c-.547.041-1.08.303-1.805.764C13.961 23.449 13.094 24 12 24c-1.197 0-1.924-.675-2-2c-.003-.056.038-.188.021-.188c-1.858 0-3.202 1.761-3.215 1.779a.997.997 0 0 1-1.397.215a1 1 0 0 1-.215-1.398C5.271 22.303 7.11 20 10 20c1.937 0 2.048 1.375 2.078 1.888l.007.109c.486-.034.991-.354 1.57-.723c.961-.61 2.153-1.371 3.75-.962c.871.223 1.007 1.031 1.059 1.336c.013.076.032.19.049.226c.007 0 .146.091.577.13c.82.075 1.721-.279 2.675-.653c.988-.388 2.01-.788 3.111-.788c3.389 0 4.767 1.635 4.913 1.821a1 1 0 1 1-1.575 1.232c-.024-.027-.93-1.054-3.337-1.054c-.723 0-1.528.315-2.381.649c-1.009.396-2.434.789-3.496.789"
-//                 />
-//             </svg>
-//             <Text className="text-2xl font-bold text-primary">
-//                 Credit Card
-//             </Text>
-//         </div>
-
-//         <TextInput
-//             label="Cardholder Name"
-//             placeholder="Anton Juan"
-//             name="cardholderName"
-//             variant="unstyled"
-//             radius={0}
-//             size="lg"
-//             classNames={{
-//                 input: "border-0 border-b border-primary text-primary ",
-//                 label: "text-primary font-semibold text-sm mb-2",
-//             }}
-//             className="w-full"
-//         />
-
-//         <TextInput
-//             label="Card Number"
-//             placeholder="4433123456789876"
-//             name="cardNumber"
-//             variant="unstyled"
-//             type="number"
-//             radius={0}
-//             size="lg"
-//             classNames={{
-//                 input: "border-0 border-b border-primary text-primary ",
-//                 label: "text-primary font-semibold text-sm mb-2",
-//             }}
-//             className="w-full"
-//         />
-
-//         <div className="w-full flex flex-row justify-start items-center gap-4">
-//             <div className="w-full basis-full">
-//                 <Text className="text-primary font-semibold text-sm">
-//                     Expiration Date:
-//                 </Text>
-
-//                 <div className="w-full flex flex-row justify-start items-center gap-4">
-//                     <NativeSelect
-//                         placeholder="MM"
-//                         variant="unstyled"
-//                         rightSection={
-//                             <ArrowDownIcon className="text-primary font-bold" />
-//                         }
-//                         radius={0}
-//                         size="lg"
-//                         classNames={{
-//                             input: "border-0 border-b border-primary text-primary [&>*]:text-black-bold [&>*]:overflow-auto",
-//                             section: "justify-end",
-//                         }}
-//                         className="w-full lg:max-w-[5.5rem]"
-//                         data={[
-//                             "01",
-//                             "02",
-//                             "03",
-//                             "04",
-//                             "05",
-//                             "06",
-//                             "07",
-//                             "08",
-//                             "09",
-//                             "10",
-//                             "11",
-//                             "12",
-//                         ]}
-//                     />
-
-//                     <YearPickerInput
-//                         placeholder="YYYY"
-//                         variant="unstyled"
-//                         size="lg"
-//                         rightSection={
-//                             <ArrowDownIcon className="text-primary font-bold" />
-//                         }
-//                         radius={0}
-//                         classNames={{
-//                             input: "border-0 border-b border-primary text-primary [&>*]:text-black-bold [&>*]:overflow-auto",
-//                             section: "justify-end",
-//                         }}
-//                         className="w-full lg:max-w-[6.5rem]"
-//                         value={value?.expirationDate}
-//                         onChange={handleExpirationDateChange}
-//                     />
-//                 </div>
-//             </div>
-//             <div className="max-w-[5.5rem]">
-//                 <Text className="text-primary font-semibold text-sm">
-//                     CVV:
-//                 </Text>
-//                 <TextInput
-//                     placeholder="XXX"
-//                     name="cardNumber"
-//                     variant="unstyled"
-//                     type="number"
-//                     max="9999"
-//                     radius={0}
-//                     size="lg"
-//                     classNames={{
-//                         input: "border-0 border-b border-primary text-primary ",
-//                         label: "text-primary font-semibold text-sm mb-2",
-//                     }}
-//                     className="w-full"
-//                 />
-//             </div>
-//         </div>
-
-//         <Button
-//             radius="xl"
-//             className="text-bold text-xl w-full mt-4"
-//             size="lg"
-//         >
-//             Confirm and Pay 17.49 VND
-//         </Button>
-//     </form>
-// );
-
 function MoMoMethod() {
     const { cart } = useCartStore();
     const [momoUrl, setMomoUrl] = React.useState("");
@@ -527,13 +349,13 @@ function MoMoMethod() {
     const data = cart.map((item) => {
         return item.type.parent.name === "pet"
             ? {
-                  pet_id: item.id,
-                  quantity: item.count,
-              }
+                pet_id: item.id,
+                quantity: item.count,
+            }
             : {
-                  accessory_id: item.id,
-                  quantity: item.count,
-              };
+                accessory_id: item.id,
+                quantity: item.count,
+            };
     });
 
     const dataMapping = {
@@ -583,21 +405,21 @@ function MoMoMethod() {
                     r="7.929"
                     fill="none"
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                 />
                 <path
                     fill="none"
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M5.5 21.357V9.466c0-1.985 1.851-3.964 3.965-3.964c2.119 0 3.965 1.978 3.965 3.964v11.891"
                 />
                 <path
                     fill="none"
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M13.429 9.465c0-1.985 1.85-3.964 3.964-3.964c2.119 0 3.965 1.978 3.965 3.964v11.891M5.5 42.5V30.608c0-1.985 1.85-3.965 3.964-3.965c2.119 0 3.965 1.979 3.965 3.965V42.5m0-11.892c0-1.985 1.85-3.965 3.964-3.965c2.119 0 3.965 1.979 3.965 3.965V42.5"
                 />
                 <circle
@@ -606,8 +428,8 @@ function MoMoMethod() {
                     r="7.929"
                     fill="none"
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                 />
             </svg>
             PAY WITH MOMO
@@ -616,22 +438,19 @@ function MoMoMethod() {
 }
 
 function PaypalMethod() {
-    const clientId =
-        "ATLuxXz6BMwtkXqYwxQCWv-FHEx3EigLmvQhfAOyhJZqtHDiys5hj5OW8IAKuK3B8yzcFg2vNB0MleMA";
-    // const [totalAmount, setTotalAmount] = React.useState(0)
 
     const { cart } = useCartStore();
 
     const data = cart.map((item) => {
         return item.type.parent.name === "pet"
             ? {
-                  pet_id: item.id,
-                  quantity: item.count,
-              }
+                pet_id: item.id,
+                quantity: item.count,
+            }
             : {
-                  accessory_id: item.id,
-                  quantity: item.count,
-              };
+                accessory_id: item.id,
+                quantity: item.count,
+            };
     });
 
     const dataMapping = {
