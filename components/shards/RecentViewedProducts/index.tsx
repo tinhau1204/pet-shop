@@ -69,16 +69,23 @@ function RecentViewedProducts({
                     {getProductsQuery.isSuccess ? (
                         <Group className="flex-wrap gap-0">
                             {(getProductsQuery.data || []).map(
-                                (item: any, index: number) => (
-                                    <ProductMiniCard
-                                        name={item.name}
-                                        description={item.description}
-                                        thumbnail_image={item.thumbnail_image}
-                                        link={""}
-                                        key={index}
-                                        className="w-[50%] sm:w-[25%] px-[15px]"
-                                    />
-                                ),
+                                (item: any, index: number) => {
+                                    const link = item.sku.includes("PET")
+                                        ? `/products/pet/${item.id}`
+                                        : `/products/accessory/${item.id}`;
+                                    return (
+                                        <ProductMiniCard
+                                            name={item.name}
+                                            description={item.description}
+                                            thumbnail_image={
+                                                item.thumbnail_image
+                                            }
+                                            link={link}
+                                            key={index}
+                                            className="w-[50%] sm:w-[25%] px-[15px]"
+                                        />
+                                    );
+                                },
                             )}
                         </Group>
                     ) : (
