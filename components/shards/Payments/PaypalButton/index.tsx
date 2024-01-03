@@ -34,7 +34,7 @@ const PaypalButton = ({ cartData, totalAmount }: PaypalProps) => {
         onSuccess: (data) => {
             setOrderId(data.data?.orderId);
         },
-        onError: (error) => { },
+        onError: (error) => {},
     });
     const paypalReturnMutation = useMutation({
         mutationKey: ["paypalReturn"],
@@ -90,8 +90,10 @@ const PaypalButton = ({ cartData, totalAmount }: PaypalProps) => {
                 <PayPalButtons
                     forceReRender={[totalAmount]}
                     disabled={
-                        totalAmount && parseInt(totalAmount) !== 0 ? false : true
-                    }   
+                        totalAmount && parseInt(totalAmount) !== 0
+                            ? false
+                            : true
+                    }
                     createOrder={(data, actions) => {
                         paypalCheckoutMutation.mutate();
                         return actions.order
@@ -103,8 +105,9 @@ const PaypalButton = ({ cartData, totalAmount }: PaypalProps) => {
                                             value:
                                                 (totalAmount &&
                                                     (
-                                                        parseFloat(totalAmount) /
-                                                        24000
+                                                        parseFloat(
+                                                            totalAmount,
+                                                        ) / 24000
                                                     )
                                                         .toFixed(2)
                                                         .toString()) ||
@@ -144,7 +147,6 @@ const PaypalButton = ({ cartData, totalAmount }: PaypalProps) => {
                     }}
                 />
             )}
-
         </>
     );
 };

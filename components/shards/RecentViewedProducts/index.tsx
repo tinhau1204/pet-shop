@@ -56,7 +56,7 @@ function RecentViewedProducts({
 
     return (
         <Stack>
-            {Cookies.get("user") && (
+            {
                 <>
                     <Stack>
                         <Text className="font-medium text-base text-black-bold">
@@ -95,7 +95,7 @@ function RecentViewedProducts({
                         ></Skeleton>
                     )}
                 </>
-            )}
+            }
         </Stack>
     );
 }

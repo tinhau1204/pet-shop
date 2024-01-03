@@ -9,8 +9,9 @@ type Store = {
     setAuthUser: (user: IUser | null) => void;
     setRequestLoading: (isLoading: boolean) => void;
     setCart: (cart: any) => void;
-    setRecommid: (
+    getProductByRecombee: (
         userId: string,
+        scenario: "recently-viewed",
     ) => Promise<{ recommId: string; items: any[] }>;
 };
 
@@ -22,7 +23,7 @@ const useStore = create<Store>((set) => ({
     setRequestLoading: (isLoading) =>
         set((state) => ({ ...state, requestLoading: isLoading })),
     setCart: (cart) => set((state) => ({ ...state, cart: cart })),
-    setRecommid: async (userId: string) => {
+    getProductByRecombee: async (userId, scenario) => {
         return await recombeeClient.client
             .send(
                 new recombeeClient.recombee_api.RecommendItemsToUser(
@@ -30,7 +31,8 @@ const useStore = create<Store>((set) => ({
                     4,
                     {
                         // optional parameters:
-                        scenario: "popular-products",
+                        rotationRate: 1,
+                        scenario: scenario,
                         cascadeCreate: true,
                         returnProperties: true,
                         includedProperties: ["name", "type"],

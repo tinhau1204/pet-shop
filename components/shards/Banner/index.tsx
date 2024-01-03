@@ -11,7 +11,7 @@ import Image from "next/image";
 import React from "react";
 import MyText from "../MyText";
 import PlayCircleSVG from "@my-images/button/play_circle.svg";
-import BannerImage from "@my-images/banner/banner_1.png"
+import BannerImage from "@my-images/banner/banner_1.png";
 
 export type BannerProps = {
     mainHeading?: string;

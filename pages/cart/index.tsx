@@ -80,9 +80,11 @@ function QuantityField({
             const newQuantity = parseInt(event.target.value, 10);
 
             const validQuantity = newQuantity <= element.stock_quantity;
-            let message = `There ${element.stock_quantity > 1 ? "are" : "is"
-                } only ${element.stock_quantity} product${element.stock_quantity > 1 ? "s" : ""
-                } left`;
+            let message = `There ${
+                element.stock_quantity > 1 ? "are" : "is"
+            } only ${element.stock_quantity} product${
+                element.stock_quantity > 1 ? "s" : ""
+            } left`;
             if (!validQuantity) {
                 setQuantity(element.stock_quantity);
                 const sku = element.sku;
@@ -238,11 +240,13 @@ export default function Cart() {
                                     Subtotal:
                                 </Text>
                                 <Text className="text-blue-medium font-semibold text-base">
-                                    {formatPrice(cart.reduce(
-                                        (acc, cur) =>
-                                            acc + cur.price * cur.count,
-                                        0,
-                                    ))}
+                                    {formatPrice(
+                                        cart.reduce(
+                                            (acc, cur) =>
+                                                acc + cur.price * cur.count,
+                                            0,
+                                        ),
+                                    )}
                                 </Text>
                             </div>
                             <div className="w-full flex flex-row items-center justify-between">
@@ -260,11 +264,13 @@ export default function Cart() {
                                     Total:
                                 </Text>
                                 <Text className="text-blue-medium font-semibold text-xl">
-                                    {formatPrice(cart.reduce(
-                                        (acc, cur) =>
-                                            acc + cur.price * cur.count,
-                                        0,
-                                    ))}
+                                    {formatPrice(
+                                        cart.reduce(
+                                            (acc, cur) =>
+                                                acc + cur.price * cur.count,
+                                            0,
+                                        ),
+                                    )}
                                 </Text>
                             </div>
                         </Stack>
@@ -303,10 +309,11 @@ export default function Cart() {
 
                         <div className="grid grid-cols-6 justify-around place-items-center gap-y-2 gap-x-6 mt-4">
                             <Button
-                                className={`w-full col-span-3  ${payment == "MoMo"
-                                    ? "text-primary border-primary"
-                                    : "text-primary/40 border-primary/40"
-                                    }`}
+                                className={`w-full col-span-3  ${
+                                    payment == "MoMo"
+                                        ? "text-primary border-primary"
+                                        : "text-primary/40 border-primary/40"
+                                }`}
                                 variant="outline"
                                 radius="xl"
                                 onClick={handlePaymentChange}
@@ -314,10 +321,11 @@ export default function Cart() {
                                 MoMo
                             </Button>
                             <Button
-                                className={`w-full col-span-3  ${payment == "Paypal"
-                                    ? "text-primary border-primary"
-                                    : "text-primary/40 border-primary/40"
-                                    }`}
+                                className={`w-full col-span-3  ${
+                                    payment == "Paypal"
+                                        ? "text-primary border-primary"
+                                        : "text-primary/40 border-primary/40"
+                                }`}
                                 variant="outline"
                                 radius="xl"
                                 onClick={handlePaymentChange}
@@ -349,13 +357,13 @@ function MoMoMethod() {
     const data = cart.map((item) => {
         return item.type.parent.name === "pet"
             ? {
-                pet_id: item.id,
-                quantity: item.count,
-            }
+                  pet_id: item.id,
+                  quantity: item.count,
+              }
             : {
-                accessory_id: item.id,
-                quantity: item.count,
-            };
+                  accessory_id: item.id,
+                  quantity: item.count,
+              };
     });
 
     const dataMapping = {
@@ -438,19 +446,18 @@ function MoMoMethod() {
 }
 
 function PaypalMethod() {
-
     const { cart } = useCartStore();
 
     const data = cart.map((item) => {
         return item.type.parent.name === "pet"
             ? {
-                pet_id: item.id,
-                quantity: item.count,
-            }
+                  pet_id: item.id,
+                  quantity: item.count,
+              }
             : {
-                accessory_id: item.id,
-                quantity: item.count,
-            };
+                  accessory_id: item.id,
+                  quantity: item.count,
+              };
     });
 
     const dataMapping = {
