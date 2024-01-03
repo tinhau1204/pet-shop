@@ -30,7 +30,7 @@ const useStore = create<Store>((set) => ({
                     4,
                     {
                         // optional parameters:
-                        scenario: "popular-products",
+                        scenario: "recently-viewed",
                         cascadeCreate: true,
                         returnProperties: true,
                         includedProperties: ["name", "type"],

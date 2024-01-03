@@ -107,13 +107,13 @@ function ProductCard(props: ProductCardProps) {
     return (
         <Box
             className={`relative px-[10px] ${classContainer} max-w-[280px] w-full group z-10 `}
-            // w={{
-            //     base: "100%",
-            //     xs: "50%",
-            //     md: "33.33%",
-            //     lg: "25%",
-            //     xl: "25%",
-            // }}
+        // w={{
+        //     base: "100%",
+        //     xs: "50%",
+        //     md: "33.33%",
+        //     lg: "25%",
+        //     xl: "25%",
+        // }}
         >
             <ActionIcon
                 size="lg"
@@ -149,7 +149,7 @@ function ProductCard(props: ProductCardProps) {
                             onClick={() => {
                                 const productType =
                                     (data as petsData).type.parent.name ===
-                                    "pet"
+                                        "pet"
                                         ? "pet"
                                         : "accessory";
                                 router.push(
@@ -162,46 +162,53 @@ function ProductCard(props: ProductCardProps) {
                     )}
                     <Group fz={"12px"}>
                         {((data as petsData) || (data as accessoriesData)) && (
-                            <Group gap={"6px"}>
-                                <Text inherit>
-                                    {(data as petsData)?.type?.name
-                                        ? "Gene:"
-                                        : "Product:"}
-                                </Text>
+                            <>
+                                <Group gap={"6px"}>
+                                    <Text inherit>
+                                        {(data?.type.parent.name === "pet")
+                                            ? "Gene:"
+                                            : "Product:"}
+                                    </Text>
 
-                                <Text inherit c={"dimmed"} fw={700}>
-                                    {checkGene(
-                                        (data as petsData).isMale,
-                                    ).toString() ||
-                                        ((data as accessoriesData).type &&
-                                            (data as accessoriesData).type
-                                                .name)}
-                                </Text>
-                            </Group>
+                                    <Text inherit c={"dimmed"} fw={700}>
+
+                                        {
+                                            (data?.type.parent.name === "pet") ? (
+                                                checkGene(
+                                                    (data as petsData).isMale,
+                                                ).toString()
+                                            ) : (
+                                                (data as accessoriesData).type
+                                                    .name)
+
+                                        }
+                                    </Text>
+                                </Group>
+                            </>
                         )}
 
                         {((data as petsData).birthday ||
                             (data as accessoriesData).weight) && (
-                            <Group gap={"6px"}>
-                                <Text inherit>
-                                    {(data as petsData).age ? "Age:" : "Size:"}
-                                </Text>
-                                <Text inherit c={"dimmed"} fw={700}>
-                                    {(data as petsData)?.birthday
-                                        ? Age((data as petsData)?.birthday)
-                                        : formatWeight(
-                                              (data as accessoriesData)?.weight,
-                                          )}
-                                </Text>
-                            </Group>
-                        )}
+                                <Group gap={"6px"}>
+                                    <Text inherit>
+                                        {(data as petsData).age ? "Age:" : "Size:"}
+                                    </Text>
+                                    <Text inherit c={"dimmed"} fw={700}>
+                                        {(data as petsData)?.birthday
+                                            ? Age((data as petsData)?.birthday)
+                                            : formatWeight(
+                                                (data as accessoriesData)?.weight,
+                                            )}
+                                    </Text>
+                                </Group>
+                            )}
                     </Group>
                     {((data as petsData) || (data as accessoriesData))
                         .price && (
-                        <Text fw={700} fz={"14px"}>
-                            {formatPrice(data?.price)}
-                        </Text>
-                    )}
+                            <Text fw={700} fz={"14px"}>
+                                {formatPrice(data?.price)}
+                            </Text>
+                        )}
 
                     {/* add this later */}
                     {/* {(data as AccessoryType).promotion ? (

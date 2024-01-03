@@ -8,4 +8,9 @@ var client = new recombee_api.ApiClient(
     },
 );
 
-export default { client, recombee_api };
+const exportedObject = {
+    client,
+    recombee_api,
+};
+
+export default exportedObject;

@@ -1,9 +1,4 @@
 import Monitosvg from "@my-images/monito.svg";
-import VNFlagIcon from "@my-images/vnflag.svg";
-import CHNFlagIcon from "@my-images/chnflag.svg";
-import UKFlagIcon from "@my-images/UKflag.svg";
-import USFlagIcon from "@my-images/usflag.svg";
-import EURFlagIcon from "@my-images/eurflag.svg";
 import SearchIcon from "@my-images/search.svg";
 import React, { useEffect } from "react";
 import {
@@ -12,24 +7,18 @@ import {
     Flex,
     Text,
     Drawer,
-    Input,
-    CloseButton,
     ActionIcon,
     Tooltip,
     Image,
     Menu,
-    CloseIcon,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Search from "../Search";
-import Dropdown from "../Dropdown";
-import type { DropdownDataProps } from "../Dropdown";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ProfileIcon from "@my-images/profile.svg";
 import CartIcon from "@my-images/Cart.svg";
 import CartCheckedIcon from "@my-images/Cart_Checked.svg";
-import SettingIcon from "@my-images/Settings.svg";
 import SignOutIcon from "@my-images/Sign_out.svg";
 import useStore from "@/lib/store";
 import { IUser } from "@/lib/api/types";
@@ -45,17 +34,8 @@ type HeaderProps = {
 const HeaderLink = [
     { name: "Home", link: "/" },
     { name: "Category", link: "/categories" },
-    // { name: "About", link: "/about" },
-    // { name: "Contact", link: "/contact" },
+    { name: "About", link: "/about" },
 ];
-
-// const selectData: DropdownDataProps[] = [
-//     { value: "VND", prefix: <VNFlagIcon /> },
-//     { value: "CHN", prefix: <CHNFlagIcon width="20" height="20" /> },
-//     { value: "GBP", prefix: <UKFlagIcon width="20" height="20" /> },
-//     { value: "USD", prefix: <USFlagIcon width="20" height="20" /> },
-//     { value: "EUR", prefix: <EURFlagIcon width="20" height="20" /> },
-// ];
 
 function Header(props: HeaderProps) {
     const [opened, { open, close }] = useDisclosure();
@@ -300,13 +280,6 @@ function Header(props: HeaderProps) {
                         Join our community
                     </Button>
                 )}
-                {/* 
-                <Dropdown
-                    data={selectData}
-                    leftSection={<VNFlagIcon />}
-                    className=" hidden sm:block "
-                    classNames={{ input: "!border-0 min-w-[100px]" }}
-                /> */}
             </Flex>
         </header>
     );
