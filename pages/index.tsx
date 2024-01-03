@@ -1,6 +1,4 @@
 import Banner from "@/components/shards/Banner";
-import Blog from "@/components/shards/Blog";
-import Brand from "@/components/shards/Brand";
 import MyCarousel from "@/components/shards/MyCarousel";
 import { Group, Stack } from "@mantine/core";
 import BannerImage from "@my-images/banner/banner_2.png";
@@ -25,13 +23,6 @@ export default function Page(props: PageProps) {
                 heading="Our Products"
                 carouselType="accessories"
             />
-            <Brand />
-
-            <Group gap="0">
-                <Blog />
-                <Blog />
-                <Blog />
-            </Group>
         </Stack>
     );
 }

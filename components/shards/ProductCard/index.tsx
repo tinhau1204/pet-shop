@@ -8,12 +8,12 @@ import {
     Text,
 } from "@mantine/core";
 import mock from "./mock.json";
-import GiftImage from "@my-images/product/gift.png";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import CartIcon from "@my-images/Cart.svg";
 import { petsData, accessoriesData } from "@/lib/api/types";
 import { useCartStore } from "@/lib/store/cart";
+import useStore from "@/lib/store";
 import { toast } from "react-toastify";
 const Cookies = require("js-cookie");
 
@@ -25,6 +25,7 @@ export type ProductCardProps = {
 function ProductCard(props: ProductCardProps) {
     const { data, classContainer } = props;
     const router = useRouter();
+    const store = useStore();
     const { add: handleAddToCart, cart } = useCartStore();
 
     function checkGene(gene: boolean) {
@@ -91,6 +92,7 @@ function ProductCard(props: ProductCardProps) {
             //     };
             // });
             // Cookies.set("cartUser", JSON.stringify(cartData));
+
             toast.success(`Đã thêm sản phẩm ${data?.name} vào giỏ hàng`, {
                 autoClose: 2000,
                 position: "bottom-right",

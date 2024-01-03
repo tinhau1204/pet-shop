@@ -1,5 +1,5 @@
 import React from "react";
-import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { GetServerSidePropsContext } from "next";
 //http://localhost:3000/checkout/success?orderId=INV-1703398510869
 import { useRouter } from "next/router";
 import { Button, Card, Text, Transition } from "@mantine/core";
@@ -14,6 +14,7 @@ type PageProps = {
 
 export default function Page(props: PageProps) {
     const router = useRouter();
+
     return props.slug && props.slug === "success" ? (
         <div className="h-screen flex flex-row items-center">
             <Card
