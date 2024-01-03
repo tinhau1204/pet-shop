@@ -14,7 +14,7 @@ const HeaderLink = [
     { name: "Home", link: "/home" },
     { name: "Category", link: "/categories" },
     { name: "About", link: "/about" },
-    { name: "Contact", link: "/contact" },
+    // { name: "Contact", link: "/contact" },
 ];
 
 const socialMedia = [

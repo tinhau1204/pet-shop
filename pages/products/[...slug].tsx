@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 import recombeeClient from "../../lib/recombee";
 import useStore from "@/lib/store";
 import RecentViewedProducts from "@/components/shards/RecentViewedProducts";
+import Guarantee from "@/components/shards/Guarantee";
 const Cookies = require("js-cookie");
 
 type PageProps = {
@@ -89,7 +90,6 @@ export default function Page(props: PageProps) {
     const [petTable, setPetTable] = React.useState<any>([]);
     const [accessTable, setAccessTable] = React.useState<any>([]);
     const { add: handleAddToCart, cart } = useCartStore();
-    const [shouldRefetch, setShouldRefetch] = React.useState<boolean>(false);
     const [recentViewProducts, setRecentViewProducts] = React.useState<any>([]);
 
     const { slug } = router.query;
@@ -176,41 +176,6 @@ export default function Page(props: PageProps) {
         },
     ];
 
-    const images = [
-        {
-            src: "https://www.thesprucepets.com/thmb/LEJXClitrdomUpi2OhbubOad2ac=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/portrait-if-a-spitz-pomeranian_t20_v3o29E-5ae9bbdca18d9e0037d95983.jpg",
-            alt: "Shiba Inu Sepia",
-        },
-        {
-            src: "https://www.thesprucepets.com/thmb/beGIs4BTQkN9HDR_34fM2vzEPaU=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/yorkshire-terrier-583788122-581630e85f9b581c0b018a00.jpg",
-            alt: "Shiba Inu Sepia 1",
-        },
-        {
-            src: "https://www.thesprucepets.com/thmb/CvI8Zzy6b81_HGQxE4uhddUqnKQ=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/breed_profile_dachshund_1117959_recirc_2815-c1c8808983a5441cb940995c983ea7f7.jpg",
-            alt: "Shiba Inu Sepia 2",
-        },
-        {
-            src: "https://www.thesprucepets.com/thmb/3NFfIkrUMzXd22T5aIgo6Wz8PTA=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/poodle-159757033-581632be5f9b581c0b01a3e4.jpg",
-            alt: "Shiba Inu Sepia 3",
-        },
-        {
-            src: "https://www.thesprucepets.com/thmb/eE3AqCYGNq5sNnEFOwKyC9wg938=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/breed_profile_shihtzu_1117999_recirc_1123-ceff2a1a86794a7f877587230817615d.jpg",
-            alt: "Shiba Inu Sepia 4",
-        },
-        {
-            src: "https://www.thesprucepets.com/thmb/0Gsr5EYtgDy5OTNDadZFsIzmc5k=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/portrait-of-schnauzer-against-wall-568528767-581634ad5f9b581c0b01bd99.jpg",
-            alt: "Shiba Inu Sepia 5",
-        },
-        {
-            src: "https://www.thesprucepets.com/thmb/0Gsr5EYtgDy5OTNDadZFsIzmc5k=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/portrait-of-schnauzer-against-wall-568528767-581634ad5f9b581c0b01bd99.jpg",
-            alt: "Shiba Inu Sepia 6",
-        },
-        {
-            src: "https://www.thesprucepets.com/thmb/9NL-1lSfjoVzBEJRab9dvW-9pw4=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/pug-lying-in-meadow-with-dandelions-sweden-europe-533734486-5816357a3df78cc2e891d21f.jpg",
-            alt: "Shiba Inu Sepia 7",
-        },
-    ];
-
     function formatPrice(price: string | number | undefined) {
         return price?.toLocaleString("it-IT", {
             style: "currency",
@@ -222,7 +187,7 @@ export default function Page(props: PageProps) {
         sku: "SKU",
         isMale: "Gender",
         age: "Age",
-        stock_quantity: "stock_quantity",
+        stock_quantity: "Stock",
         color: "Color",
         weight: "Weight",
         birthday: "Birthday",
@@ -233,7 +198,7 @@ export default function Page(props: PageProps) {
     const accessMapping = {
         sku: "SKU",
         origin: "Origin",
-        stock_quantity: "stock_quantity",
+        stock_quantity: "Stock",
         weight: "Weight",
         type: "Type",
         description: "Description",
@@ -280,7 +245,11 @@ export default function Page(props: PageProps) {
                 if (data.hasOwnProperty(key)) {
                     let value = data[key];
                     if (key === "weight") {
-                        value = `${value / 1000} kg`;
+                        if (value < 1000) {
+                            value = `${value} g`;
+                        } else {
+                            value = `${value / 1000} kg`;
+                        }
                     } else if (key === "type") {
                         value = value.name;
                     }
@@ -336,7 +305,7 @@ export default function Page(props: PageProps) {
                     <div className="flex flex-row items-start justify-center min-h-fit border border-black-light/50 px-5 py-[22px] gap-8 rounded-xl  bg-black-light/5 mb-5">
                         <div className="left w-full h-full">
                             {!petDetailQuery.data?.data?.description_images &&
-                            !accessoriesQuery.data?.data?.description_images ? (
+                                !accessoriesQuery.data?.data?.description_images ? (
                                 <Skeleton height={476} width="100%" />
                             ) : (
                                 <Carousel
@@ -380,7 +349,7 @@ export default function Page(props: PageProps) {
                                         )}
                                 </Carousel>
                             )}
-
+                        
                             <div className="bg-yellow-light flex flex-row items-center justify-around px-3 py-2 my-4 rounded-xl    ">
                                 {guarantee.map((item, index) => (
                                     <div
@@ -395,7 +364,7 @@ export default function Page(props: PageProps) {
                                 ))}
                             </div>
 
-                            <div className="px-2.5 py-1.5 flex flex-row gap-5 items-center">
+                            <div className="px-2.5 py-4 flex flex-row gap-5 items-center">
                                 <Link
                                     href={`/products/${petDetailQuery.data?.data?.id}`}
                                     className="flex flex-row gap-2 items-center justify-center w-fit"
@@ -471,7 +440,7 @@ export default function Page(props: PageProps) {
                                 <Table.Tbody>
                                     {slug?.[0] === "pet" &&
                                         (petDetailQuery.data &&
-                                        petTable.length > 0 ? (
+                                            petTable.length > 0 ? (
                                             petTable?.map((element: any) => (
                                                 <Table.Tr key={element.title}>
                                                     <Table.Td className="text-black-normal">
@@ -489,7 +458,7 @@ export default function Page(props: PageProps) {
                                         ))}
                                     {slug?.[0] === "accessory" &&
                                         (accessoriesQuery.data &&
-                                        accessTable.length > 0 ? (
+                                            accessTable.length > 0 ? (
                                             accessTable?.map((element: any) => (
                                                 <Table.Tr key={element.title}>
                                                     <Table.Td className="text-black-normal">
@@ -526,33 +495,13 @@ export default function Page(props: PageProps) {
                             </div>
                         </div>
                     </div>
-                    {/* customer  */}
-                    <div className="w-full mt-6 mb-14 mr-4 pl-4">
-                        <Text className="font-bold text-blue-medium text-2xl">
-                            Our lovely customer
-                        </Text>
+                    {/* Guarantee */}
+                    {
+                        petDetailQuery.data?.data && petDetailQuery.data?.data?.type.parent.name === "pet" && (
+                            <Guarantee />
+                        )
+                    }
 
-                        <Carousel
-                            align="start"
-                            slideGap="md"
-                            withControls={false}
-                            controlSize={30}
-                            loop
-                            dragFree
-                            withIndicators
-                            slideSize="12%"
-                            className="w-full h-full overflow-hidden mt-3"
-                        >
-                            {customerList.map((image, index) => (
-                                <Carousel.Slide key={index}>
-                                    <CardImage
-                                        image={image.image}
-                                        alt={image.alt}
-                                    />
-                                </Carousel.Slide>
-                            ))}
-                        </Carousel>
-                    </div>
                     <RecentViewedProducts list={recentViewProducts} />
                 </>
             )}
