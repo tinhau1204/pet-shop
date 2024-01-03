@@ -65,8 +65,6 @@ export default function Login() {
                 expires: Date.now() + 30 * 60 * 1000,
             });
 
-            // Get recommendation products for usser
-            store.setRecommid(data?.data?.user.id);
             store.setAuthUser(data?.data?.user);
             //add toast
             router.push("/");

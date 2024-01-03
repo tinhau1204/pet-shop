@@ -1,14 +1,6 @@
-import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { GetServerSidePropsContext } from "next";
 import { Carousel } from "@mantine/carousel";
-import {
-    Button,
-    Grid,
-    Group,
-    Skeleton,
-    Stack,
-    Table,
-    Text,
-} from "@mantine/core";
+import { Button, Group, Skeleton, Table, Text } from "@mantine/core";
 import ChatIcon from "@my-images/Chat_Dots.svg";
 import FacebookIcon from "@my-images/facebook.svg";
 import TwitterIcon from "@my-images/twitter.svg";
@@ -104,6 +96,7 @@ export default function Page(props: PageProps) {
 
     const petDetailQuery = useQuery({
         queryKey: ["petProduct", slug?.[0]],
+        cacheTime: 0,
         queryFn: () => getPetById(parseInt(slug?.[1] as string)),
         onSuccess: (data) => {
             const result = convertData(data.data, petMapping);
@@ -119,6 +112,7 @@ export default function Page(props: PageProps) {
     const accessoriesQuery = useQuery({
         queryKey: ["accessoriesProduct", slug?.[0]],
         queryFn: () => getAccessoriesById(parseInt(slug?.[1] as string)),
+        cacheTime: 0,
         onSuccess: (data) => {
             const result = convertData(data.data, accessMapping);
             setAccessTable(result);
@@ -133,7 +127,11 @@ export default function Page(props: PageProps) {
     const handleSendInteraction = async (itemId: string) => {
         const userId = Cookies.get("user");
         if (!!userId) {
-            const { recommId, items } = await store.setRecommid(userId);
+            // Get recently viewed products for user
+            const { recommId, items } = await store.getProductByRecombee(
+                userId,
+                "recently-viewed",
+            );
 
             setRecentViewProducts(items);
             recombeeClient.client

@@ -1,7 +1,7 @@
 import { AspectRatio, Box, Card, Group, Stack, Text } from "@mantine/core";
 import Image from "next/image";
 import MyText from "../MyText";
-import BlogImage from "@my-images/blog/blog_1.png"
+import BlogImage from "@my-images/blog/blog_1.png";
 
 export type BlogProps = {
     tags?: string[];

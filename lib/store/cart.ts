@@ -17,7 +17,7 @@ export type CartStore = {
     removeAll: () => void;
 };
 
-const cartUser = Cookies.get("cartUser"); 
+const cartUser = Cookies.get("cartUser");
 
 export const useCartStore = create<CartStore>((set, get) => ({
     cart: [],
@@ -33,7 +33,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
     add: (product: petsData | accessoriesData | undefined) => {
         const { cart } = get();
         // if (cart.length < 1) {
-        //     const updatedCart = 
+        //     const updatedCart =
         // }
         const updatedCart = updateCart(product, cart);
         set({ cart: updatedCart });
@@ -47,7 +47,6 @@ export const useCartStore = create<CartStore>((set, get) => ({
             ),
         }));
 
-        
         if (cartUser?.length > 0 && cartUser !== undefined) {
             const cartUserObj = JSON.parse(cartUser);
             const cartUserObjUpdated = cartUserObj.map((product: any) =>
@@ -55,10 +54,9 @@ export const useCartStore = create<CartStore>((set, get) => ({
                     ? { ...product, quantity: newQuantity }
                     : product,
             );
-            console.log('cartUserObj', cartUserObj);
-            console.log('cartUserObjUpdated', cartUserObjUpdated);
+            console.log("cartUserObj", cartUserObj);
+            console.log("cartUserObjUpdated", cartUserObjUpdated);
             Cookies.set("cartUser", JSON.stringify(cartUserObjUpdated));
-
         }
     },
     remove: (idProduct: number, sku: string) => {
@@ -108,8 +106,10 @@ function removeCart(
     cart: CartItem[],
 ): CartItem[] {
     const cartUserObj = JSON.parse(cartUser);
-    const cartItemRemove = cartUserObj.filter((item: any) => !(item.id == idProduct && item.sku == sku));
-    console.log('cartItemRemove check', cartItemRemove);
+    const cartItemRemove = cartUserObj.filter(
+        (item: any) => !(item.id == idProduct && item.sku == sku),
+    );
+    console.log("cartItemRemove check", cartItemRemove);
     Cookies.set("cartUser", JSON.stringify(cartItemRemove));
     return cart.filter((item) => !(item.id == idProduct && item.sku == sku));
 }

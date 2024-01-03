@@ -26,7 +26,7 @@ export default function Page(props: PageProps) {
         queryFn: getPet,
         onSuccess: (data) => {},
         onError: (error) => {
-            console.error('err', error);
+            console.error("err", error);
         },
         refetchOnWindowFocus: false,
     });
