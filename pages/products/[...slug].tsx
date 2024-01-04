@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from "next";
 import { Carousel } from "@mantine/carousel";
-import { Button, Group, Skeleton, Table, Text } from "@mantine/core";
+import { ActionIcon, Button, CopyButton, Group, Skeleton, Table, Text, Tooltip } from "@mantine/core";
 import ChatIcon from "@my-images/Chat_Dots.svg";
 import FacebookIcon from "@my-images/facebook.svg";
 import TwitterIcon from "@my-images/twitter.svg";
@@ -56,33 +56,6 @@ const socialMedia = [
         link: "https://youtube.com",
     },
 ];
-
-const customerList = [
-    { image: "/images/customer/customer1.png", alt: "customer1" },
-    { image: "/images/customer/customer2.png", alt: "customer2" },
-    { image: "/images/customer/customer3.png", alt: "customer3" },
-    { image: "/images/customer/customer4.png", alt: "customer4" },
-    { image: "/images/customer/customer5.png", alt: "customer5" },
-    { image: "/images/customer/customer1.png", alt: "customer1" },
-    { image: "/images/customer/customer2.png", alt: "customer2" },
-    { image: "/images/customer/customer3.png", alt: "customer3" },
-    { image: "/images/customer/customer4.png", alt: "customer4" },
-    { image: "/images/customer/customer5.png", alt: "customer5" },
-];
-
-function CardImage({ image, alt }: { image: string; alt: string }) {
-    return (
-        <div className="w-[15.5rem] h-[21.25rem] rounded-xl overflow-hidden">
-            <Image
-                src={image}
-                alt={alt}
-                width={328}
-                height={352}
-                className="object-cover object-center rounded-xl"
-            />
-        </div>
-    );
-}
 
 export default function Page(props: PageProps) {
     const store = useStore();
@@ -349,7 +322,7 @@ export default function Page(props: PageProps) {
                                         )}
                                 </Carousel>
                             )}
-                        
+
                             <div className="bg-yellow-light flex flex-row items-center justify-around px-3 py-2 my-4 rounded-xl    ">
                                 {guarantee.map((item, index) => (
                                     <div
@@ -364,16 +337,28 @@ export default function Page(props: PageProps) {
                                 ))}
                             </div>
 
-                            <div className="px-2.5 py-4 flex flex-row gap-5 items-center">
-                                <Link
-                                    href={`/products/${petDetailQuery.data?.data?.id}`}
-                                    className="flex flex-row gap-2 items-center justify-center w-fit"
-                                >
-                                    <ShareIcon className="w-5 h-5" />
-                                    <Text className="text-black-bold text-sm font-bold mt-0.5">
-                                        Share:
-                                    </Text>
-                                </Link>
+                            <div className="px-2.5 py-4 flex flex-row gap-5 items-center">  
+                                <CopyButton value={`https://pet-shop-tinhau1204.vercel.app/${router.asPath}`} timeout={2000}  >
+                                    {({ copied, copy }) => (
+                                        <Tooltip label={copied ? 'Copied' : 'Copy Link'} withArrow position="right">
+                                            <ActionIcon
+                                                color={copied ? 'teal' : 'gray'}
+                                                variant="subtle"
+                                                onClick={copy}>
+                                                {copied ? (
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                                        <g fill="none" fill-rule="evenodd">
+                                                            <path d="M24 0v24H0V0zM12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035c-.01-.004-.019-.001-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427c-.002-.01-.009-.017-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093c.012.004.023 0 .029-.008l.004-.014l-.034-.614c-.003-.012-.01-.02-.02-.022m-.715.002a.023.023 0 0 0-.027.006l-.006.014l-.034.614c0 .012.007.02.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+                                                            <path fill="currentColor" d="M21.546 5.111a1.5 1.5 0 0 1 0 2.121L10.303 18.475a1.6 1.6 0 0 1-2.263 0L2.454 12.89a1.5 1.5 0 1 1 2.121-2.121l4.596 4.596L19.424 5.111a1.5 1.5 0 0 1 2.122 0" />
+                                                        </g>
+                                                    </svg>
+                                                ) : (
+                                                    <ShareIcon className="w-5 h-5" />
+                                                )}
+                                            </ActionIcon>
+                                        </Tooltip>
+                                    )}
+                                </CopyButton>
 
                                 <div className="flex flex-row items-center justify-center gap-4">
                                     {socialMedia.map((link, index) => {
