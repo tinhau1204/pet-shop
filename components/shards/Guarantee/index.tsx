@@ -16,8 +16,8 @@ function CardImage({ src, alt, text }: { src: string, alt: string, text: string 
     }
     return (
         <>
-            <div className="w-full h-full px-2.5 gap-4 flex flex-col items-center justify-center" onClick={openOverlay}>
-                <div className="p-2 rounded-xl shadow-[0_15px_20px_-15px_#e0d500] bg-primary">
+            <div className="w-full h-full px-2.5 gap-4 flex flex-col items-center justify-center " onClick={openOverlay}>
+                <div className="p-2 rounded-xl shadow-[0_15px_20px_-15px_#e0d500] bg-primary cursor-pointer group hover:scale-105">
                     <div className="max-w-[200px] max-h-[200px] overflow-hidden">
                         <Image
                             src={src}
@@ -29,7 +29,7 @@ function CardImage({ src, alt, text }: { src: string, alt: string, text: string 
                         />
                     </div>
 
-                    <div className="py-4 text-center">
+                    <div className="py-4 text-center group-hover:underline group-hover:underline-offset-2">
                         {text}
                     </div>
                 </div>
@@ -38,7 +38,7 @@ function CardImage({ src, alt, text }: { src: string, alt: string, text: string 
             {isOverlay && (
                 <div className="flex fixed top-0 left-0 w-full h-full bg-black-bold/70 justify-center items-center z-50" onClick={closeOverlay}>
                     <span
-                        className="absolute top-3 right-3 cursor-pointer text-primary text-4xl"
+                        className="absolute top-3 right-3 cursor-pointer text-primary text-4xl hover:scale-110"
                         onClick={closeOverlay}
                     >
                         &times;

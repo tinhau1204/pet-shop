@@ -66,6 +66,11 @@ const config = {
                 destination: "/categories/pets",
                 permanent: true,
             },
+            {
+                source: "/order",
+                destination: "/order/history",
+                permanent: true,
+            },
 
         ];
     }

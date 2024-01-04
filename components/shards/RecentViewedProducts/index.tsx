@@ -67,7 +67,7 @@ function RecentViewedProducts({
                         </Text>
                     </Stack>
                     {getProductsQuery.isSuccess ? (
-                        <Group className="flex-wrap gap-0">
+                        <Group className="flex-wrap gap-x-0 gap-y-2">
                             {(getProductsQuery.data || []).map(
                                 (item: any, index: number) => {
                                     const link = item.sku.includes("PET")
