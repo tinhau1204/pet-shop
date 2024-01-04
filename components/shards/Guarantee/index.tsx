@@ -38,7 +38,7 @@ function CardImage({ src, alt, text }: { src: string, alt: string, text: string 
             {isOverlay && (
                 <div className="flex fixed top-0 left-0 w-full h-full bg-black-bold/70 justify-center items-center z-50" onClick={closeOverlay}>
                     <span
-                        className="absolute top-3 right-3 cursor-pointer text-primary text-xl"
+                        className="absolute top-3 right-3 cursor-pointer text-primary text-4xl"
                         onClick={closeOverlay}
                     >
                         &times;

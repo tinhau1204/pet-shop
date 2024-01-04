@@ -57,33 +57,6 @@ const socialMedia = [
     },
 ];
 
-const customerList = [
-    { image: "/images/customer/customer1.png", alt: "customer1" },
-    { image: "/images/customer/customer2.png", alt: "customer2" },
-    { image: "/images/customer/customer3.png", alt: "customer3" },
-    { image: "/images/customer/customer4.png", alt: "customer4" },
-    { image: "/images/customer/customer5.png", alt: "customer5" },
-    { image: "/images/customer/customer1.png", alt: "customer1" },
-    { image: "/images/customer/customer2.png", alt: "customer2" },
-    { image: "/images/customer/customer3.png", alt: "customer3" },
-    { image: "/images/customer/customer4.png", alt: "customer4" },
-    { image: "/images/customer/customer5.png", alt: "customer5" },
-];
-
-function CardImage({ image, alt }: { image: string; alt: string }) {
-    return (
-        <div className="w-[15.5rem] h-[21.25rem] rounded-xl overflow-hidden">
-            <Image
-                src={image}
-                alt={alt}
-                width={328}
-                height={352}
-                className="object-cover object-center rounded-xl"
-            />
-        </div>
-    );
-}
-
 export default function Page(props: PageProps) {
     const store = useStore();
     const router = useRouter();

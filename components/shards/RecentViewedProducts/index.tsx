@@ -55,13 +55,13 @@ function RecentViewedProducts({
     }, [list]);
 
     return (
-        <Stack>
+        <Stack className="mt-8">
             {
                 <>
                     <Stack>
-                        <Text className="font-medium text-base text-black-bold">
+                        {/* <Text className="font-medium text-base text-black-bold">
                             Whats new?
-                        </Text>
+                        </Text> */}
                         <Text className="font-bold text-2xl text-blue-medium">
                             Your recently viewed products
                         </Text>
@@ -125,8 +125,8 @@ function ProductMiniCard({
                         />
                     </Card.Section>
 
-                    <Group
-                        justify="space-between"
+                    <Stack
+                        // justify="space-between"
                         className="px-[15px] py-[15px]"
                     >
                         <Text
@@ -138,7 +138,7 @@ function ProductMiniCard({
                         <Text size="sm" c="dimmed" className="truncate ...">
                             {description}
                         </Text>
-                    </Group>
+                    </Stack>
                 </Link>
             </Card>
         </Box>
