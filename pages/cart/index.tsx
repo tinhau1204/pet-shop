@@ -379,7 +379,7 @@ function MoMoMethod() {
             setMomoUrl(data.data);
         },
         onError: (error) => {
-            toast.error("Payment failed", {
+            toast.error("Thanh toán thất bại vui lòng thử lại!", {
                 position: "bottom-right",
                 autoClose: 3000,
                 closeOnClick: true,

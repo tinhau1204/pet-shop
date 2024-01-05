@@ -137,10 +137,13 @@ const PaypalButton = ({ cartData, totalAmount }: PaypalProps) => {
                         }
                     }}
                     onCancel={(data) => {
-                        toast.warn("Payment cancelled try again", {
-                            position: "bottom-right",
-                            autoClose: 2000,
-                        });
+                        toast.warn(
+                            "Giao dịch đã bị huỷ vui lòng thử lại trong vài giây",
+                            {
+                                position: "bottom-right",
+                                autoClose: 2000,
+                            },
+                        );
                     }}
                     onError={(data) => {
                         console.log("Error", data);
