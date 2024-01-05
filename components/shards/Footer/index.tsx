@@ -11,7 +11,7 @@ type FooterProps = {
 };
 
 const HeaderLink = [
-    { name: "Home", link: "/home" },
+    { name: "Home", link: "/" },
     { name: "Category", link: "/categories" },
     { name: "About", link: "/about" },
     // { name: "Contact", link: "/contact" },

@@ -86,7 +86,7 @@ export default function Profile() {
             });
         },
         onError: (err) => {
-            toast.error("Something went wrong", {
+            toast.error("Lỗi xảy ra ở phía máy chủ vui lòng thử lại sau", {
                 position: "bottom-right",
                 autoClose: 2000,
             });
