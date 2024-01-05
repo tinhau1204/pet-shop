@@ -323,7 +323,7 @@ export default function Page(props: PageProps) {
                                 </Carousel>
                             )}
 
-                            <div className="bg-yellow-light flex flex-row items-center justify-around px-3 py-2 my-4 rounded-xl    ">
+                            {/* <div className="bg-yellow-light flex flex-row items-center justify-around px-3 py-2 my-4 rounded-xl    ">
                                 {guarantee.map((item, index) => (
                                     <div
                                         key={index}
@@ -335,7 +335,7 @@ export default function Page(props: PageProps) {
                                         </Text>
                                     </div>
                                 ))}
-                            </div>
+                            </div> */}
 
                             <div className="px-2.5 py-4 flex flex-row gap-5 items-center">  
                                 <CopyButton value={`https://pet-shop-tinhau1204.vercel.app/${router.asPath}`} timeout={2000}  >
