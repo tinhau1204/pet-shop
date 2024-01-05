@@ -96,11 +96,11 @@ const transformGenderData = (data: petTypesData[]) => {
 
 const transformAllFilter = (data: any) => {
     const nameData = transformNameData(data);
-    const genderData = transformGenderData(data);
+    // const genderData = transformGenderData(data);
     // const origin = transformOriginData(data)
     return (data = [
         nameData,
-        genderData,
+        // genderData,
         // origin
     ]);
 };
@@ -198,6 +198,7 @@ export default function Filter({ slug, onClickFilter }: FilterProps) {
         } else {
             setFilter((prev) => [...prev, item]);
         }
+        
     }
 
     function handleCheckboxFilter(item: string[]) {
